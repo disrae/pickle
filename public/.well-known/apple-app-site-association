@@ -1,0 +1,27 @@
+{
+    "applinks": {
+        "details": [
+            {
+                "appIDs": [
+                    "4N28MZ8HQT.com.dannyisrael.pickle"
+                ],
+                "components": [
+                    {
+                        "/": "/auth/verify",
+                        "comment": "Matches verification links from email"
+                    }
+                ]
+            }
+        ]
+    },
+    "activitycontinuation": {
+        "apps": [
+            "4N28MZ8HQT.com.dannyisrael.pickle"
+        ]
+    },
+    "webcredentials": {
+        "apps": [
+            "4N28MZ8HQT.com.dannyisrael.pickle"
+        ]
+    }
+}

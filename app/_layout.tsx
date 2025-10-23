@@ -1,8 +1,37 @@
 import { ThemeProvider, useTheme } from '@/lib/theme-context';
-import { ConvexProvider, ConvexReactClient } from "convex/react";
-import { Stack } from 'expo-router';
-import { View } from 'react-native';
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { ConvexReactClient } from "convex/react";
+import { Stack } from "expo-router";
+import Head from 'expo-router/head';
+import * as SecureStore from "expo-secure-store";
+import { Platform, View } from 'react-native';
 import '../global.css';
+
+// Wrap SecureStore methods to handle errors gracefully
+const secureStorage = {
+  getItem: async (key: string) => {
+    try {
+      return await SecureStore.getItemAsync(key);
+    } catch (error) {
+      console.error('SecureStore getItem error:', error);
+      return null;
+    }
+  },
+  setItem: async (key: string, value: string) => {
+    try {
+      await SecureStore.setItemAsync(key, value);
+    } catch (error) {
+      console.error('SecureStore setItem error:', error);
+    }
+  },
+  removeItem: async (key: string) => {
+    try {
+      await SecureStore.deleteItemAsync(key);
+    } catch (error) {
+      console.error('SecureStore removeItem error:', error);
+    }
+  },
+};
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -10,10 +39,20 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 
 export default function RootLayout() {
   return (
+
     <ThemeProvider defaultTheme="system">
-      <ConvexProvider client={convex}>
+      <ConvexAuthProvider
+        client={convex}
+        storage={
+          Platform.OS === "android" || Platform.OS === "ios"
+            ? secureStorage
+            : undefined
+        }>
+        <Head>
+          <meta name="apple-itunes-app" content="app-id=6754373389" />
+        </Head>
         <AppContent />
-      </ConvexProvider>
+      </ConvexAuthProvider>
     </ThemeProvider>
   );
 }

@@ -1,4 +1,7 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useState } from "react";
+import { Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Pickleball hole pattern component
@@ -32,10 +35,20 @@ function PickleballHoles() {
 }
 
 // Styled input component
-export function StyledInput({ label, placeholder, secureTextEntry }: {
+export function StyledInput({
+  label,
+  placeholder,
+  secureTextEntry,
+  value,
+  onChangeText,
+  keyboardType = "default"
+}: {
   label: string;
   placeholder: string;
   secureTextEntry?: boolean;
+  value?: string;
+  onChangeText?: (text: string) => void;
+  keyboardType?: "default" | "email-address";
 }) {
   return (
     <View className="w-full">
@@ -43,6 +56,9 @@ export function StyledInput({ label, placeholder, secureTextEntry }: {
       <TextInput
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
+        value={value}
+        onChangeText={onChangeText}
+        keyboardType={keyboardType}
         className="bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 text-base"
         placeholderTextColor="#94a3b8"
       />
@@ -73,58 +89,125 @@ function StyledButton({ onPress, title }: { onPress: () => void; title: string; 
 
 export default function Index() {
   const { top } = useSafeAreaInsets();
+  const { signIn } = useAuthActions();
+  const [email, setEmail] = useState("danny.israel@gmail.com");
 
-  const handleLogin = () => {
-    console.log('Login pressed');
+  const handleSendLoginLink = async () => {
+    if (!email.trim()) return;
+
+    try {
+      await signIn("resend-otp", {
+        email: email.trim().toLowerCase(),
+        redirectTo: "https://jpickle.win/auth/verify"
+      });
+      alert("Check your email! We sent you a magic link to sign in.");
+    } catch (error) {
+      console.error("Sign in error:", error);
+      alert("Failed to send email. Please try again.");
+    }
   };
 
   return (
-    <View
-      className="bg-lime-400 flex-1 items-center gap-4"
-      style={{ paddingTop: top }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 bg-lime-400"
     >
-      {/* Pickleball hole pattern */}
-      <View className="absolute inset-0 overflow-hidden">
-        <PickleballHoles />
-      </View>
-
-      {/* Login Form */}
-      <View className="flex-1 px-6 w-full max-w-md top-[25%] self-center">
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View
-          className="bg-white/95 px-6 py-8 w-full rounded-3xl"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.15,
-            shadowRadius: 16,
-            elevation: 8,
-          }}
+          className="bg-lime-400 flex-1 items-center gap-4"
+          style={{ paddingTop: top }}
         >
-          <Text className="text-3xl font-bold text-slate-800 text-center mb-2">
-            Welcome Back
-          </Text>
-          <Text className="text-slate-500 text-center mb-8">
-            Sign in to continue
-          </Text>
+          {/* Pickleball hole pattern */}
+          <View className="absolute inset-0 overflow-hidden">
+            <PickleballHoles />
+          </View>
 
-          <StyledInput
-            label="Username"
-            placeholder="Enter your username"
-          />
+          {/* Vignette overlay - darker edges */}
+          <View className="absolute inset-0 pointer-events-none">
+            {/* Top shadow */}
+            <LinearGradient
+              colors={['rgba(0,0,0,0.3)', 'transparent']}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                height: 150,
+              }}
+            />
+            {/* Bottom shadow */}
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.3)']}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 150,
+              }}
+            />
+            {/* Left shadow */}
+            <LinearGradient
+              colors={['rgba(0,0,0,0.1)', 'transparent']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: 60,
+              }}
+            />
+            {/* Right shadow */}
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.1)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                bottom: 0,
+                width: 60,
+              }}
+            />
+          </View>
 
-          <View className="h-5" />
+          {/* Login Form */}
+          <View className="flex-1 px-6 w-full max-w-md top-[25%] self-center">
+            <View
+              className="bg-white/95 px-6 py-8 w-full rounded-3xl"
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.15,
+                shadowRadius: 16,
+                elevation: 8,
+              }}
+            >
+              <Text className="text-3xl font-bold text-slate-800 text-center mb-2">
+                Welcome Back
+              </Text>
+              <Text className="text-slate-500 text-center mb-8">
+                Sign in to continue
+              </Text>
 
-          <StyledInput
-            label="Password"
-            placeholder="Enter your password"
-            secureTextEntry
-          />
+              <StyledInput
+                label="Email"
+                placeholder="Enter your email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+              />
 
-          <View className="h-8" />
+              <View className="h-8" />
 
-          <StyledButton onPress={handleLogin} title="Sign In" />
+              <StyledButton onPress={handleSendLoginLink} title="Send login link" />
+            </View>
+          </View>
         </View>
-      </View>
-    </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
