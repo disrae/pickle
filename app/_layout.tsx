@@ -1,7 +1,7 @@
 import { ThemeProvider, useTheme } from '@/lib/theme-context';
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient } from "convex/react";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import Head from 'expo-router/head';
 import * as SecureStore from "expo-secure-store";
 import { Platform, View } from 'react-native';
@@ -38,6 +38,8 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 });
 
 export default function RootLayout() {
+  const pathname = usePathname();
+  console.log("pathname", pathname);
   return (
 
     <ThemeProvider defaultTheme="system">

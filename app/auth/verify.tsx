@@ -1,21 +1,28 @@
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Linking, Platform, Text, TouchableOpacity, View } from "react-native";
 
 export default function AuthVerify() {
     const { signIn } = useAuthActions();
     const router = useRouter();
+    const pathname = usePathname();
     const params = useLocalSearchParams();
     const [error, setError] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(true);
     const [showDeepLinkPrompt, setShowDeepLinkPrompt] = useState(false);
+    const hasProcessedAuth = useRef(false);
 
     useEffect(() => {
+        if (hasProcessedAuth.current) return;
+        hasProcessedAuth.current = true;
+
         const handleAuth = async () => {
             try {
                 const token = params.token as string;
                 const email = params.email as string;
+
+                console.log("auth/verify", { token, email, pathname });
 
                 if (!token) {
                     setError("Invalid verification link");
@@ -43,9 +50,10 @@ export default function AuthVerify() {
                 }
 
                 // On native, complete the sign-in
+                console.log("signing in with email", email, "and code", token);
                 await signIn("resend-otp", {
+                    email,
                     code: token,
-                    ...(email && { email })
                 });
 
                 setIsProcessing(false);
@@ -60,7 +68,7 @@ export default function AuthVerify() {
         };
 
         void handleAuth();
-    }, [params, signIn, router]);
+    }, [params, signIn, router, pathname]);
 
     const handleOpenApp = () => {
         const token = params.token as string;

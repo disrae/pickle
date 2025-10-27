@@ -8,9 +8,10 @@
  * @module
  */
 
-import type * as ResendOTPPasswordless from "../ResendOTPPasswordless.js";
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
+import type * as otp_ResendOTP from "../otp/ResendOTP.js";
+import type * as otp_email from "../otp/email.js";
 import type * as users from "../users.js";
 
 import type {
@@ -28,9 +29,10 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  ResendOTPPasswordless: typeof ResendOTPPasswordless;
   auth: typeof auth;
   http: typeof http;
+  "otp/ResendOTP": typeof otp_ResendOTP;
+  "otp/email": typeof otp_email;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
