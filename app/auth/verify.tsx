@@ -1,7 +1,11 @@
+import { PickleballBouncing } from "@/assets/icons/pickleball-bouncing";
+import { PickleballLoading } from "@/assets/icons/pickleball-loading";
+import { Background } from "@/components/ui/Background";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { Link, useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Linking, Platform, Text, TouchableOpacity, View } from "react-native";
+import { Linking, Platform, Text, TouchableOpacity, View } from "react-native";
 
 export default function AuthVerify() {
     const { signIn } = useAuthActions();
@@ -123,24 +127,31 @@ export default function AuthVerify() {
 
     if (error) {
         return (
-            <View className="flex-1 bg-lime-400 items-center justify-center px-6">
-                <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
-                    <Text className="text-6xl mb-4">❌</Text>
-                    <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
-                        Oops!
-                    </Text>
-                    <Text className="text-slate-600 text-center mb-6">
-                        {error}
-                    </Text>
-                    <TouchableOpacity
-                        onPress={handleTryAgain}
-                        className="bg-lime-500 rounded-xl px-8 py-4 w-full"
-                    >
-                        <Text className="text-white text-center font-bold text-base">
-                            Try Again
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+            <View className="flex-1 bg-lime-400">
+                <Background>
+                    <View className="flex-1 items-center justify-center px-6">
+                        <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center gap-4">
+                            <Text className="text-2xl font-medium">Something Went Wrong</Text>
+                            <Text className="text-lg text-red-700 tracking-wide">
+                                {error}
+                            </Text>
+                            <Text className="text-lg text-slate-800 ">
+                                Login Links expire after 20 minutes and can only be used once.
+                            </Text>
+                            <Text className="text-lg text-slate-800 ">
+                                You can try again or contact: <Link href="mailto:support@wepickle.win">support@wepickle.win</Link>
+                            </Text>
+                            <TouchableOpacity
+                                onPress={handleTryAgain}
+                                className="bg-lime-500 rounded-xl px-8 py-4 w-full"
+                            >
+                                <Text className="text-white text-center font-bold text-base">
+                                    Try Again
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Background>
             </View>
         );
     }
@@ -148,35 +159,39 @@ export default function AuthVerify() {
     // Update prompt UI to include continue in browser button
     if (showDeepLinkPrompt) {
         return (
-            <View className="flex-1 bg-lime-400 items-center justify-center px-6">
-                <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
-                    <Text className="text-6xl mb-4">🎾</Text>
-                    <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
-                        Verify Your Login
-                    </Text>
-                    <Text className="text-slate-600 text-center mb-6">
-                        Open in the Pickle app or continue here in your browser.
-                    </Text>
-                    <TouchableOpacity
-                        onPress={handleOpenApp}
-                        className="bg-lime-500 rounded-xl px-8 py-4 w-full mb-3"
-                    >
-                        <Text className="text-white text-center font-bold text-base">
-                            Open in App
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={handleContinueInBrowser}
-                        className="bg-lime-600 rounded-xl px-8 py-4 w-full mb-3"
-                    >
-                        <Text className="text-white text-center font-bold text-base">
-                            Continue in Browser
-                        </Text>
-                    </TouchableOpacity>
-                    <Text className="text-slate-500 text-sm text-center">
-                        {`Don't have the app? Download it first.`}
-                    </Text>
-                </View>
+            <View className="flex-1 bg-lime-400">
+                <Background>
+                    <View className="flex-1 items-center justify-center px-6">
+                        <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
+                            <PickleballBouncing bounceHeight={4} duration={2500} />
+                            <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
+                                Verify Your Login
+                            </Text>
+                            <Text className="text-slate-600 text-center mb-6">
+                                Open in the Pickle app or continue here in your browser.
+                            </Text>
+                            <TouchableOpacity
+                                onPress={handleOpenApp}
+                                className="bg-lime-500 rounded-xl px-8 py-4 w-full mb-3"
+                            >
+                                <Text className="text-white text-center font-bold text-base">
+                                    Open in App
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleContinueInBrowser}
+                                className="bg-lime-600 rounded-xl px-8 py-4 w-full mb-3"
+                            >
+                                <Text className="text-white text-center font-bold text-base">
+                                    Continue in Browser
+                                </Text>
+                            </TouchableOpacity>
+                            <Text className="text-slate-500 text-sm text-center">
+                                {`Don't have the app? Download it first.`}
+                            </Text>
+                        </View>
+                    </View>
+                </Background>
             </View>
         );
     }
@@ -184,27 +199,35 @@ export default function AuthVerify() {
     // Add success UI
     if (isSuccess) {
         return (
-            <View className="flex-1 bg-lime-400 items-center justify-center px-6">
-                <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
-                    <Text className="text-6xl mb-4">✅</Text>
-                    <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
-                        Success!
-                    </Text>
-                    <Text className="text-slate-600 text-center mb-6">
-                        You&apos;re now signed in. Redirecting...
-                    </Text>
-                </View>
+            <View className="flex-1 bg-lime-400">
+                <Background>
+                    <View className="flex-1 items-center justify-center px-6">
+                        <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
+                            <Ionicons name="checkmark-circle" size={48} color="green" />
+                            <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
+                                Success!
+                            </Text>
+                            <Text className="text-slate-600 text-center mb-6">
+                                You&apos;re now signed in. Redirecting...
+                            </Text>
+                        </View>
+                    </View>
+                </Background>
             </View>
         );
     }
 
-    if (isProcessing) {
+    if (!isProcessing) {
         return (
-            <View className="flex-1 bg-lime-400 items-center justify-center">
-                <ActivityIndicator size="large" color="#84cc16" />
-                <Text className="mt-4 text-white text-lg font-semibold">
-                    {Platform.OS === "web" ? "Opening app..." : "Signing you in..."}
-                </Text>
+            <View className="flex-1 bg-lime-400">
+                <Background>
+                    <View className="flex-1 items-center justify-center px-6">
+                        <PickleballLoading />
+                        <Text className="mt-4 text-slate-800 text-2xl font-semibold">
+                            {Platform.OS === "web" ? "Opening app..." : "Signing you in..."}
+                        </Text>
+                    </View>
+                </Background>
             </View>
         );
     }

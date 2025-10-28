@@ -1,11 +1,14 @@
+import { LoadingScreen } from "@/components/screens/Loading";
 import { api } from "@/convex/_generated/api";
+import { LoadingProvider, useLoading } from '@/lib/loading-context';
 import { ThemeProvider, useTheme } from '@/lib/theme-context';
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient, useQuery } from "convex/react";
 import { Stack, usePathname } from "expo-router";
 import Head from 'expo-router/head';
 import * as SecureStore from "expo-secure-store";
-import { ActivityIndicator, Platform, View } from 'react-native';
+import { useEffect } from 'react';
+import { Platform, View } from 'react-native';
 import '../global.css';
 
 // Wrap SecureStore methods to handle errors gracefully
@@ -42,7 +45,6 @@ export default function RootLayout() {
   const pathname = usePathname();
   console.log("pathname", pathname);
   return (
-
     <ThemeProvider defaultTheme="system">
       <ConvexAuthProvider
         client={convex}
@@ -54,7 +56,10 @@ export default function RootLayout() {
         <Head>
           <meta name="apple-itunes-app" content="app-id=6754373389" />
         </Head>
-        <AppContent />
+        <LoadingProvider>
+          <AppContent />
+          <LoadingScreen />
+        </LoadingProvider>
       </ConvexAuthProvider>
     </ThemeProvider>
   );
@@ -63,16 +68,17 @@ export default function RootLayout() {
 function AppContent() {
   const { activeTheme } = useTheme();
   const user = useQuery(api.users.currentUser);
-  const isLoading = user === undefined;
+  const isLoadingUser = user === undefined;
   const isAuthenticated = user !== null;
+  const { showLoading, hideLoading } = useLoading();
 
-  if (isLoading) {
-    return (
-      <View style={activeTheme} className="flex-1 items-center justify-center bg-lime-400">
-        <ActivityIndicator size="large" color="#65a30d" />
-      </View>
-    );
-  }
+  useEffect(() => {
+    if (isLoadingUser) {
+      showLoading();
+    } else {
+      hideLoading();
+    }
+  }, [isLoadingUser, showLoading, hideLoading]);
 
   return (
     <View style={activeTheme} className="flex-1 bg-background">
