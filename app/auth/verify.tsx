@@ -175,7 +175,7 @@ export default function AuthVerify() {
                                 className="bg-lime-500 rounded-xl px-8 py-4 w-full mb-3"
                             >
                                 <Text className="text-white text-center font-bold text-base">
-                                    Open in App
+                                    Continue in App
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity

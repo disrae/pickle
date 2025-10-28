@@ -25,19 +25,20 @@ export default function CourtsScreen() {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-                <View
-                    className="px-6 pb-6"
-                    style={{ paddingTop: top + 20 }}
-                >
+                <View className="">
                     {/* Header */}
-                    <View className="mb-6">
-                        <Text className="text-3xl font-bold text-slate-800">
+                    {/* Header should use glass */}
+                    <View
+                        style={{ paddingTop: top + 20 }}
+                        className="px-4 mb-6 border bg-black/20"
+                    >
+                        <Text className="text-4xl font-bold text-slate-200">
                             Jericho Pickle Courts
                         </Text>
                         <View className="flex-row items-center mt-2">
                             <Ionicons name="location" size={16} color="#64748b" />
-                            <Text className="text-slate-500 ml-1">
-                                Jericho, NY
+                            <Text className="text-lg text-slate-200 ml-1">
+                                Jericho Beach
                             </Text>
                         </View>
                     </View>

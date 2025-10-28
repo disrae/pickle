@@ -50,7 +50,7 @@ export default function Index() {
         email: email.trim().toLowerCase(),
       });
       setPopupTitle("Login Link Sent");
-      setPopupMessage("Check your email!");
+      setPopupMessage("Check your email for a login link.");
       setShowPopup(true);
       // Show Popup 
 
