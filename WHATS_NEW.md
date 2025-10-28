@@ -38,7 +38,7 @@ convex/
   └── ResendOTPPasswordless.ts
       • Custom Resend provider
       • Beautiful email template
-      • Configured for jpickle.win
+      • Configured for wepickle.win
 
 app/
   ├── +html.tsx
@@ -88,7 +88,7 @@ AUTH_RESEND_KEY=re_your_key_here
 ```
 
 ### 3. Verify Domain in Resend
-Make sure `jpickle.win` is verified in your Resend account so you can send from `onboarding@jpickle.win`
+Make sure `wepickle.win` is verified in your Resend account so you can send from `onboarding@wepickle.win`
 
 ### 4. Deploy
 ```bash
@@ -97,8 +97,8 @@ vercel --prod
 ```
 
 ### 5. Test These URLs
-- ✅ https://jpickle.win/.well-known/apple-app-site-association
-- ✅ https://jpickle.win/.well-known/assetlinks.json
+- ✅ https://wepickle.win/.well-known/apple-app-site-association
+- ✅ https://wepickle.win/.well-known/assetlinks.json
 
 Both should return JSON (not 404)
 
@@ -160,7 +160,7 @@ Check `SETUP.md` for the complete setup guide with troubleshooting tips!
 Just need to:
 1. `npm install resend`
 2. Set API key in Convex  
-3. Deploy to jpickle.win
+3. Deploy to wepickle.win
 4. Rebuild app
 5. Test!
 

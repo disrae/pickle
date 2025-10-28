@@ -5,13 +5,13 @@
 ✅ **Custom Resend email template** with beautiful Pickle branding  
 ✅ **Universal Links (iOS)** + **App Links (Android)** - Opens app directly  
 ✅ **Smart web fallback** - Works on desktop or when app not installed  
-✅ **All configured for jpickle.win**
+✅ **All configured for wepickle.win**
 
 ## How It Works
 
 1. **User enters email** → Clicks "Send login link"
 2. **Resend sends beautiful email** → Custom Pickle-branded template 🎾
-3. **User clicks link** → `https://jpickle.win/auth/verify?token=...`
+3. **User clicks link** → `https://wepickle.win/auth/verify?token=...`
 4. **Magic happens:**
    - **iOS with app** → Universal Links open app automatically
    - **Android with app** → App Links open app automatically
@@ -38,7 +38,7 @@ Get your API key from [Resend Dashboard](https://resend.com/api-keys)
 
 ### 3. Verify Domain in Resend
 
-In Resend, verify `jpickle.win` so you can send from `onboarding@jpickle.win`
+In Resend, verify `wepickle.win` so you can send from `onboarding@wepickle.win`
 
 ### 4. Deploy to Vercel
 
@@ -46,15 +46,15 @@ In Resend, verify `jpickle.win` so you can send from `onboarding@jpickle.win`
 # Build web version
 npx expo export -p web
 
-# Deploy (make sure it's connected to jpickle.win)
+# Deploy (make sure it's connected to wepickle.win)
 vercel --prod
 ```
 
 ### 5. Verify These URLs Work
 
 Test in your browser:
-- ✅ `https://jpickle.win/.well-known/apple-app-site-association` (should return JSON)
-- ✅ `https://jpickle.win/.well-known/assetlinks.json` (should return JSON)
+- ✅ `https://wepickle.win/.well-known/apple-app-site-association` (should return JSON)
+- ✅ `https://wepickle.win/.well-known/assetlinks.json` (should return JSON)
 
 ### 6. Android SHA256 (Android Only)
 
@@ -116,7 +116,7 @@ public/
 
 ### Emails not sending?
 - Check `AUTH_RESEND_KEY` is set in Convex dashboard
-- Verify `jpickle.win` is verified in Resend
+- Verify `wepickle.win` is verified in Resend
 - Check Convex logs for errors
 
 ### Universal Links not working on iOS?
@@ -153,7 +153,7 @@ public/
 - [ ] `npm install resend` completed
 - [ ] Resend API key set in Convex
 - [ ] Domain verified in Resend
-- [ ] Website deployed to jpickle.win
+- [ ] Website deployed to wepickle.win
 - [ ] AASA file accessible
 - [ ] Android SHA256 updated (if supporting Android)
 - [ ] App rebuilt with new config

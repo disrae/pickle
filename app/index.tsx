@@ -1,19 +1,38 @@
 import { Background } from "@/components/ui/Background";
+import { Popup } from "@/components/ui/Popup";
 import { StyledButton } from "@/components/ui/StyledButton";
 import { StyledInput } from "@/components/ui/StyledInput";
 import { api } from "@/convex/_generated/api";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex/react";
+import { Redirect, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
   const { top } = useSafeAreaInsets();
+  const router = useRouter();
   const { signIn } = useAuthActions();
   const user = useQuery(api.users.currentUser);
-  console.log("user", user);
   const [email, setEmail] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupTitle, setPopupTitle] = useState("");
+  const [popupMessage, setPopupMessage] = useState("");
+
+  // Redirect to authenticated area if user is already logged in
+  if (user !== undefined && user !== null) {
+    return <Redirect href="/(authenticated)/(tabs)" />;
+  }
+
+  // Show loading while checking auth status
+  if (user === undefined) {
+    return (
+      <View className="flex-1 items-center justify-center bg-lime-400">
+        <ActivityIndicator size="large" color="#65a30d" />
+      </View>
+    );
+  }
 
   const handleSendLoginLink = async () => {
     if (!email.trim()) return;
@@ -21,16 +40,21 @@ export default function Index() {
     try {
       await signIn("resend-otp", {
         email: email.trim().toLowerCase(),
-        // redirectTo: "https://jpickle.win/auth/verify"
       });
-      alert("Check your email! We sent you a magic link to sign in.");
+      setPopupTitle("Success");
+      setPopupMessage("Login link sent! Check your email.");
+      setShowPopup(true);
+      // Show Popup 
+
+      // Navigate to verification screen
+      // router.push("/auth/verify");
     } catch (error) {
       console.error("Sign in error:", error);
-      alert("Failed to send email. Please try again.");
+      setPopupTitle("Error");
+      setPopupMessage("Failed to send email. Please try again.");
+      setShowPopup(true);
     }
   };
-
-
 
   return (
     <KeyboardAvoidingView
@@ -38,7 +62,7 @@ export default function Index() {
       className="flex-1 bg-lime-400"
     >
       <Background>
-        <Pressable className="flex-1" onPress={() => Keyboard.dismiss()}>
+        <Pressable className="flex-1" onPress={Platform.OS !== 'web' ? () => Keyboard.dismiss() : undefined}>
           <View
             className="flex-1 items-center gap-4"
             style={{ paddingTop: top }}
@@ -78,6 +102,13 @@ export default function Index() {
           </View>
         </Pressable>
       </Background>
+
+      <Popup
+        isVisible={showPopup}
+        onClose={() => setShowPopup(false)}
+        title={popupTitle}
+        message={popupMessage}
+      />
     </KeyboardAvoidingView>
   );
 }

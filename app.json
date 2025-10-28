@@ -32,7 +32,7 @@
       "bundler": "metro"
     },
     "plugins": [
-      ["expo-router", { "origin": "https://jpickle.win" }],
+      ["expo-router", { "origin": "https://wepickle.win" }],
       [
         "expo-splash-screen",
         {

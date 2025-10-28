@@ -1,10 +1,11 @@
+import { api } from "@/convex/_generated/api";
 import { ThemeProvider, useTheme } from '@/lib/theme-context';
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
-import { ConvexReactClient } from "convex/react";
+import { ConvexReactClient, useQuery } from "convex/react";
 import { Stack, usePathname } from "expo-router";
 import Head from 'expo-router/head';
 import * as SecureStore from "expo-secure-store";
-import { Platform, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import '../global.css';
 
 // Wrap SecureStore methods to handle errors gracefully
@@ -61,9 +62,25 @@ export default function RootLayout() {
 
 function AppContent() {
   const { activeTheme } = useTheme();
+  const user = useQuery(api.users.currentUser);
+  const isLoading = user === undefined;
+  const isAuthenticated = user !== null;
+
+  if (isLoading) {
+    return (
+      <View style={activeTheme} className="flex-1 items-center justify-center bg-lime-400">
+        <ActivityIndicator size="large" color="#65a30d" />
+      </View>
+    );
+  }
+
   return (
     <View style={activeTheme} className="flex-1 bg-background">
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={isAuthenticated}>
+          <Stack.Screen name="(authenticated)" />
+        </Stack.Protected>
+      </Stack>
     </View>
   );
 }

@@ -12,6 +12,8 @@ export default function AuthVerify() {
     const [isProcessing, setIsProcessing] = useState(true);
     const [showDeepLinkPrompt, setShowDeepLinkPrompt] = useState(false);
     const hasProcessedAuth = useRef(false);
+    // Add new state for success
+    const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
         if (hasProcessedAuth.current) return;
@@ -30,22 +32,11 @@ export default function AuthVerify() {
                     return;
                 }
 
-                // On web, try to open the app via deep link
+                // Handle web-specific flow
                 if (Platform.OS === "web") {
-                    const deepLink = `pickle://auth/verify?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email || '')}`;
-
-                    // Try to open the deep link
-                    try {
-                        window.location.href = deepLink;
-                    } catch (e) {
-                        console.log("Deep link attempt:", e);
-                    }
-
-                    // Show prompt after a delay
-                    setTimeout(() => {
-                        setShowDeepLinkPrompt(true);
-                        setIsProcessing(false);
-                    }, 2000);
+                    // Show prompt immediately with options
+                    setShowDeepLinkPrompt(true);
+                    setIsProcessing(false);
                     return;
                 }
 
@@ -56,10 +47,10 @@ export default function AuthVerify() {
                     code: token,
                 });
 
+                setIsSuccess(true);
                 setIsProcessing(false);
 
-                // Navigate to main app
-                router.replace("/");
+                // REMOVE the router.replace here
             } catch (err) {
                 console.error("Authentication error:", err);
                 setError("Authentication failed. Please try again.");
@@ -69,6 +60,50 @@ export default function AuthVerify() {
 
         void handleAuth();
     }, [params, signIn, router, pathname]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            console.log("Success state triggered, starting redirect timer");
+            const timer = setTimeout(() => {
+                console.log("Attempting redirect to /(authenticated)/(tabs)");
+                router.replace("/(authenticated)/(tabs)");
+            }, 1500);
+
+            return () => {
+                console.log("Cleaning up redirect timer");
+                clearTimeout(timer);
+            };
+        }
+    }, [isSuccess, router]);
+
+    // Optionally, to wait for auth state:
+    // const user = useQuery(api.users.currentUser);
+    // useEffect(() => {
+    //     if (isSuccess && user !== undefined && user !== null) {
+    //         router.replace("/(authenticated)/(tabs)");
+    //     }
+    // }, [isSuccess, user, router]);
+
+    // New function for continuing in browser
+    const handleContinueInBrowser = async () => {
+        try {
+            const token = params.token as string;
+            const email = params.email as string;
+
+            await signIn("resend-otp", {
+                email,
+                code: token,
+            });
+
+            setIsSuccess(true);
+            setShowDeepLinkPrompt(false);
+
+            // REMOVE the router.replace here
+        } catch (err) {
+            console.error("Browser authentication error:", err);
+            setError("Authentication failed in browser. Please try again.");
+        }
+    };
 
     const handleOpenApp = () => {
         const token = params.token as string;
@@ -110,29 +145,53 @@ export default function AuthVerify() {
         );
     }
 
+    // Update prompt UI to include continue in browser button
     if (showDeepLinkPrompt) {
         return (
             <View className="flex-1 bg-lime-400 items-center justify-center px-6">
                 <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
                     <Text className="text-6xl mb-4">🎾</Text>
                     <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
-                        Opening Pickle...
+                        Verify Your Login
                     </Text>
                     <Text className="text-slate-600 text-center mb-6">
-                        {Platform.OS === "web"
-                            ? "If the app doesn't open automatically, click the button below."
-                            : "Redirecting you to the app..."}
+                        Open in the Pickle app or continue here in your browser.
                     </Text>
                     <TouchableOpacity
                         onPress={handleOpenApp}
                         className="bg-lime-500 rounded-xl px-8 py-4 w-full mb-3"
                     >
                         <Text className="text-white text-center font-bold text-base">
-                            Open Pickle App
+                            Open in App
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleContinueInBrowser}
+                        className="bg-lime-600 rounded-xl px-8 py-4 w-full mb-3"
+                    >
+                        <Text className="text-white text-center font-bold text-base">
+                            Continue in Browser
                         </Text>
                     </TouchableOpacity>
                     <Text className="text-slate-500 text-sm text-center">
-                        Don't have the app? Download it first.
+                        {`Don't have the app? Download it first.`}
+                    </Text>
+                </View>
+            </View>
+        );
+    }
+
+    // Add success UI
+    if (isSuccess) {
+        return (
+            <View className="flex-1 bg-lime-400 items-center justify-center px-6">
+                <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
+                    <Text className="text-6xl mb-4">✅</Text>
+                    <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
+                        Success!
+                    </Text>
+                    <Text className="text-slate-600 text-center mb-6">
+                        You&apos;re now signed in. Redirecting...
                     </Text>
                 </View>
             </View>
@@ -150,18 +209,6 @@ export default function AuthVerify() {
         );
     }
 
-    return (
-        <View className="flex-1 bg-lime-400 items-center justify-center px-6">
-            <View className="bg-white/95 p-8 rounded-3xl max-w-md w-full items-center">
-                <Text className="text-6xl mb-4">✅</Text>
-                <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
-                    {`You're in!`}
-                </Text>
-                <Text className="text-slate-600 text-center">
-                    Welcome to Pickle 🎾
-                </Text>
-            </View>
-        </View>
-    );
+    // Remove the final return Redirect
 }
 
