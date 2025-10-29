@@ -88,7 +88,7 @@ export default function Index() {
                 }}
               >
                 <Text className="text-3xl font-bold text-slate-800 text-center mb-2">
-                  Jericho Pickle
+                  We Pickle
                 </Text>
                 <Text className="text-slate-500 text-center mb-8">
                   Sign in to continue
