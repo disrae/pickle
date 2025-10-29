@@ -9,9 +9,15 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as chatMessages from "../chatMessages.js";
+import type * as chats from "../chats.js";
+import type * as checkIns from "../checkIns.js";
+import type * as courts from "../courts.js";
+import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as otp_ResendOTP from "../otp/ResendOTP.js";
 import type * as otp_email from "../otp/email.js";
+import type * as plannedVisits from "../plannedVisits.js";
 import type * as users from "../users.js";
 
 import type {
@@ -30,9 +36,15 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  chatMessages: typeof chatMessages;
+  chats: typeof chats;
+  checkIns: typeof checkIns;
+  courts: typeof courts;
+  crons: typeof crons;
   http: typeof http;
   "otp/ResendOTP": typeof otp_ResendOTP;
   "otp/email": typeof otp_email;
+  plannedVisits: typeof plannedVisits;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
