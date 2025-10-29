@@ -10,14 +10,13 @@ import { BlurView } from "expo-blur";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Platform, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CourtsScreen() {
-    const { top } = useSafeAreaInsets();
+    const { top, bottom } = useSafeAreaInsets();
     const router = useRouter();
     const user = useQuery(api.users.currentUser);
-    const [refreshing, setRefreshing] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [showCourtSelector, setShowCourtSelector] = useState(false);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
@@ -44,11 +43,6 @@ export default function CourtsScreen() {
     const checkOut = useMutation(api.checkIns.checkOut);
     const createPlannedVisit = useMutation(api.plannedVisits.create);
     const deletePlannedVisit = useMutation(api.plannedVisits.deleteVisit);
-
-    const onRefresh = async () => {
-        setRefreshing(true);
-        setTimeout(() => setRefreshing(false), 1000);
-    };
 
     const handleCheckIn = async () => {
         if (!court) return;
@@ -225,155 +219,150 @@ export default function CourtsScreen() {
 
     return (
         <Background>
-            <ScrollView
-                className="flex-1 px-4"
-                contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 32 }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        progressViewOffset={headerHeight}
-                    />
-                }
-            >
-                {/* Court Notes */}
-                {court.notes && (
-                    <View className="bg-amber-50 rounded-2xl p-4 mb-4 border-2 border-amber-200">
-                        <View className="flex-row items-start">
-                            <Ionicons name="information-circle" size={24} color="#f59e0b" />
-                            <Text className="text-amber-800 ml-2 flex-1">{court.notes}</Text>
-                        </View>
-                    </View>
-                )}
-
-                {/* Planned Visits Section */}
-                <LiquidGlassCard>
-                    <Text className="text-xl font-bold text-slate-200 mb-4">
-                        📅 Who&apos;s Coming
-                    </Text>
-
-                    {sortedTimeSlots.length > 0 ? (
-                        <View>
-                            {sortedTimeSlots.map((timeSlot) => {
-                                const visits = groupedVisits[timeSlot];
-                                return (
-                                    <View key={timeSlot} className="mb-4 last:mb-0">
-                                        <Text className="text-sm font-semibold text-lime-400 mb-2">
-                                            {formatPlannedTime(timeSlot)}
-                                        </Text>
-                                        {visits.map((visit) => {
-                                            const isUserPlan = visit.userId === user?._id;
-                                            return (
-                                                <View
-                                                    key={visit._id}
-                                                    className="flex-row items-center justify-between py-2 pl-4"
-                                                >
-                                                    <Text className={`text-slate-200 ${isUserPlan ? "font-semibold" : ""}`}>
-                                                        {isUserPlan ? "You" : visit.user.name || visit.user.email}
-                                                    </Text>
-                                                    {isUserPlan && (
-                                                        <TouchableOpacity
-                                                            onPress={() => handleDeletePlan(visit._id)}
-                                                            className="ml-2"
-                                                        >
-                                                            <Ionicons name="close-circle" size={24} color="#ef4444" />
-                                                        </TouchableOpacity>
-                                                    )}
-                                                </View>
-                                            );
-                                        })}
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    ) : (
-                        <View className="items-center py-8">
-                            <Ionicons name="time-outline" size={48} color="#64748b" />
-                            <Text className="text-slate-400 text-center mt-4">
-                                No upcoming plans yet
-                            </Text>
-                            <Text className="text-slate-500 text-center text-sm mt-2">
-                                Be the first to schedule!
-                            </Text>
-                        </View>
-                    )}
-                </LiquidGlassCard>
-
-                {/* I'm Here Button */}
-                <View className="mb-4">
-                    <Button
-                        onPress={isCheckedIn ? handleCheckOut : handleCheckIn}
-                        disabled={isCheckingIn || isCheckingOut}
-                        variant={isCheckedIn ? "destructive" : "default"}
-                        size="lg"
-                        className={`w-full ${isCheckedIn ? "bg-red-500" : "bg-lime-500"}`}
-                    >
-                        {isCheckingIn || isCheckingOut ? (
-                            <ActivityIndicator color="white" />
-                        ) : (
-                            <>
-                                <Ionicons
-                                    name={isCheckedIn ? "exit-outline" : "checkmark-circle"}
-                                    size={28}
-                                    color="white"
-                                />
-                                <Text className="text-white text-xl font-bold ml-2">
-                                    {isCheckedIn ? "Check Out" : "I'm Here!"}
-                                </Text>
-                            </>
+            <View className="flex-1">
+                <ScrollView
+                    className="flex-1 px-4"
+                    contentContainerStyle={{ paddingTop: headerHeight }}
+                >
+                    {/* Content wrapper to keep cards at the start */}
+                    <View className="flex-1 justify-start">
+                        {/* Court Notes */}
+                        {court.notes && (
+                            <View className="bg-amber-50 rounded-2xl p-4 mb-4 border-2 border-amber-200">
+                                <View className="flex-row items-start">
+                                    <Ionicons name="information-circle" size={24} color="#f59e0b" />
+                                    <Text className="text-amber-800 ml-2 flex-1">{court.notes}</Text>
+                                </View>
+                            </View>
                         )}
-                    </Button>
-                </View>
 
-                {/* Plan to Go Later Button */}
-                <View className="mb-4">
-                    <Button
-                        onPress={() => setShowTimePicker(true)}
-                        variant="outline"
-                        size="lg"
-                        className="w-full border-lime-500"
-                    >
-                        <Ionicons name="add-circle-outline" size={24} color="#84cc16" />
-                        <Text className="text-lime-600 text-lg font-semibold ml-2">
-                            Plan to Go Later
-                        </Text>
-                    </Button>
-                </View>
+                        {/* Currently Checked In Section */}
+                        <LiquidGlassCard>
+                            <Text className="text-2xl font-bold text-slate-200 mb-4">
+                                Who&apos;s Here
+                            </Text>
 
-                {/* Currently Checked In Section */}
-                <LiquidGlassCard>
-                    <Text className="text-xl font-bold text-slate-200 mb-4">
-                        🎾 Currently at Courts
-                    </Text>
-
-                    {checkIns && checkIns.length > 0 ? (
-                        <View>
-                            {checkIns.map((checkIn) => (
-                                <View
-                                    key={checkIn._id}
-                                    className="py-3 border-b border-slate-700 last:border-b-0"
-                                >
-                                    <Text className="text-lg text-slate-200 font-semibold">
-                                        {checkIn.user.name || checkIn.user.email}
-                                    </Text>
-                                    <Text className="text-sm text-slate-400 mt-1">
-                                        Checked in {formatTimeAgo(checkIn.checkedInAt)}
+                            {checkIns && checkIns.length > 0 ? (
+                                <View>
+                                    {checkIns.map((checkIn) => (
+                                        <View
+                                            key={checkIn._id}
+                                            className="py-3 border-b border-slate-700 last:border-b-0"
+                                        >
+                                            <Text className=" text-slate-200 font-semibold">
+                                                {checkIn.user.name || checkIn.user.email}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ) : (
+                                <View className="items-center py-4">
+                                    <Text className="text-slate-200 text-center">
+                                        No one is currently checked in
                                     </Text>
                                 </View>
-                            ))}
-                        </View>
-                    ) : (
-                        <View className="items-center py-8">
-                            <Text className="text-slate-400 text-center">
-                                No one is currently checked in
+                            )}
+                        </LiquidGlassCard>
+
+                        {/* Planned Visits Section */}
+                        <LiquidGlassCard>
+                            <Text className="text-2xl font-bold text-slate-200 mb-4">
+                                Who&apos;s Coming
                             </Text>
-                            <Text className="text-slate-500 text-center text-sm mt-2">
-                                Be the first to check in!
+
+                            {sortedTimeSlots.length > 0 ? (
+                                <View>
+                                    {sortedTimeSlots.map((timeSlot) => {
+                                        const visits = groupedVisits[timeSlot];
+                                        return (
+                                            <View key={timeSlot} className="mb-4 last:mb-0">
+                                                <Text className="text-sm font-semibold text-lime-400 mb-2">
+                                                    {formatPlannedTime(timeSlot)}
+                                                </Text>
+                                                {visits.map((visit) => {
+                                                    const isUserPlan = visit.userId === user?._id;
+                                                    return (
+                                                        <View
+                                                            key={visit._id}
+                                                            className="flex-row items-center justify-between py-2 pl-4"
+                                                        >
+                                                            <Text className={`text-slate-200 ${isUserPlan ? "font-semibold" : ""}`}>
+                                                                {isUserPlan ? "You" : visit.user.name || visit.user.email}
+                                                            </Text>
+                                                            {isUserPlan && (
+                                                                <TouchableOpacity
+                                                                    onPress={() => handleDeletePlan(visit._id)}
+                                                                    className="ml-2"
+                                                                >
+                                                                    <Ionicons name="close-circle" size={24} color="#ef4444" />
+                                                                </TouchableOpacity>
+                                                            )}
+                                                        </View>
+                                                    );
+                                                })}
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            ) : (
+                                <View className="items-center py-8">
+                                    <Ionicons name="time-outline" size={48} color="#64748b" />
+                                    <Text className="text-slate-400 text-center mt-4">
+                                        No upcoming plans yet
+                                    </Text>
+                                    <Text className="text-slate-500 text-center text-sm mt-2">
+                                        Be the first to schedule!
+                                    </Text>
+                                </View>
+                            )}
+                        </LiquidGlassCard>
+                    </View>
+                </ScrollView>
+
+                {/* Buttons positioned at the bottom */}
+                <View className="px-4" style={{ paddingBottom: isLiquidGlassAvailable() ? Math.max(bottom, 80) : 32 }}>
+                    {/* I'm Here Button */}
+                    <View className="mb-4 items-center">
+                        <Button
+                            onPress={isCheckedIn ? handleCheckOut : handleCheckIn}
+                            disabled={isCheckingIn || isCheckingOut}
+                            variant={isCheckedIn ? "destructive" : "default"}
+                            size="lg"
+                            className={`${Platform.OS === 'web' ? 'w-full max-w-sm' : 'w-full'} ${isCheckedIn ? "bg-red-500" : "bg-secondary"}`}
+                        >
+                            {isCheckingIn || isCheckingOut ? (
+                                <ActivityIndicator color="white" />
+                            ) : (
+                                <>
+                                    <Ionicons
+                                        name={isCheckedIn ? "exit-outline" : "checkmark-circle"}
+                                        size={28}
+                                        color="white"
+                                    />
+                                    <Text className="text-white text-xl font-bold ml-2">
+                                        {isCheckedIn ? "Check Out" : "I'm Here!"}
+                                    </Text>
+                                </>
+                            )}
+                        </Button>
+                    </View>
+
+                    {/* Plan to Go Later Button */}
+                    <View className="mb-4 items-center">
+                        <Button
+                            onPress={() => setShowTimePicker(true)}
+                            variant="outline"
+                            size="lg"
+                            className={`${Platform.OS === 'web' ? 'w-full max-w-sm' : 'w-full'} border-lime-500`}
+                        >
+                            <Ionicons name="add-circle-outline" size={24} color="#84cc16" />
+                            <Text className="text-lime-600 text-lg font-semibold ml-2">
+                                Plan to Go Later
                             </Text>
-                        </View>
-                    )}
-                </LiquidGlassCard>
-            </ScrollView>
+                        </Button>
+                    </View>
+                </View>
+            </View>
 
             <Header
                 title={court.name}
