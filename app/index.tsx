@@ -107,11 +107,11 @@ export default function Index() {
                 <StyledButton onPress={handleSendLoginLink} title="Send login link" />
 
                 {/* Test verification */}
-                {/* <View className="h-8" />
+                <View className="h-8" />
                 <StyledButton
-                  onPress={() => router.push("/auth/verify?token=98435634&email=danny.israel@gmail.com")}
+                  onPress={() => router.push("/auth/verify?token=12539071&email=danny.israel@gmail.com")}
                   title="Test verification"
-                /> */}
+                />
 
               </View>
             </View>

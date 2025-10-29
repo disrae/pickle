@@ -12,8 +12,7 @@ export default function TabsLayout() {
                     backgroundColor: "#ffffff",
                     borderTopWidth: 1,
                     borderTopColor: "#e2e8f0", // slate-200
-                    // paddingTop: 8,
-                    // paddingBottom: 8,
+
                     // height: 60,
                 },
                 tabBarLabelStyle: {
@@ -46,4 +45,3 @@ export default function TabsLayout() {
         </Tabs>
     );
 }
-
