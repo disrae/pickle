@@ -23,8 +23,8 @@ export default function CourtsScreen() {
     return (
         <Background>
             <ScrollView
-                className="flex-1"
-                contentContainerStyle={{ paddingTop: headerHeight, paddingHorizontal: 16 }}
+                className="flex-1 px-4"
+                contentContainerStyle={{ paddingTop: headerHeight }}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
