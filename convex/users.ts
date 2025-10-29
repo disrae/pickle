@@ -27,3 +27,30 @@ export const updateSelectedCourt = mutation({
         });
     },
 });
+
+export const updateName = mutation({
+    args: {
+        name: v.string(),
+    },
+    handler: async (ctx, { name }) => {
+        const userId = await getAuthUserId(ctx);
+        if (userId === null) {
+            throw new Error("Not authenticated");
+        }
+
+        const trimmedName = name.trim();
+
+        // Validate name
+        if (trimmedName.length < 2) {
+            throw new Error("Name must be at least 2 characters");
+        }
+
+        if (!/[a-zA-Z]/.test(trimmedName)) {
+            throw new Error("Name must contain at least one letter");
+        }
+
+        await ctx.db.patch(userId, {
+            name: trimmedName,
+        });
+    },
+});

@@ -1,5 +1,6 @@
 import { Background } from "@/components/ui/Background";
 import { Popup } from "@/components/ui/Popup";
+import { SetNamePopup } from "@/components/ui/SetNamePopup";
 import { api } from "@/convex/_generated/api";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ export default function ProfileScreen() {
     const [popupMessage, setPopupMessage] = useState("");
     const [popupOnConfirm, setPopupOnConfirm] = useState<(() => Promise<void> | void) | undefined>(undefined);
     const [popupConfirmText, setPopupConfirmText] = useState<string | undefined>(undefined);
+    const [showNamePopup, setShowNamePopup] = useState(false);
 
     const showPopup = (title: string | undefined, message: string, onConfirm?: () => Promise<void> | void, confirmText?: string) => {
         setPopupTitle(title);
@@ -103,7 +105,17 @@ export default function ProfileScreen() {
                                 {user?.name || "Pickle Player"}
                             </Text>
 
-                            <View className="flex-row items-center mt-2">
+                            <TouchableOpacity
+                                onPress={() => setShowNamePopup(true)}
+                                className="flex-row items-center mt-2 px-3 py-1 rounded-full bg-lime-100"
+                            >
+                                <Ionicons name="create-outline" size={16} color="#65a30d" />
+                                <Text className="text-lime-700 ml-1 text-sm font-medium">
+                                    Edit Name
+                                </Text>
+                            </TouchableOpacity>
+
+                            <View className="flex-row items-center mt-3">
                                 <Ionicons name="mail" size={16} color="#64748b" />
                                 <Text className="text-slate-500 ml-2">
                                     {user?.email || "No email"}
@@ -186,6 +198,12 @@ export default function ProfileScreen() {
                 message={popupMessage}
                 onConfirm={popupOnConfirm}
                 confirmText={popupConfirmText}
+            />
+            <SetNamePopup
+                isVisible={showNamePopup}
+                onClose={() => setShowNamePopup(false)}
+                currentName={user?.name || ""}
+                isRequired={false}
             />
         </Background>
     );
