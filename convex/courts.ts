@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
@@ -18,8 +19,19 @@ export const get = query({
 export const getDefault = query({
     args: {},
     handler: async (ctx) => {
-        const courts = await ctx.db.query("courts").collect();
-        return courts[0] ?? null;
+        const userId = await getAuthUserId(ctx);
+
+        // If user is authenticated and has a selected court, return it
+        if (userId) {
+            const user = await ctx.db.get(userId);
+            if (user?.selectedCourtId) {
+                const selectedCourt = await ctx.db.get(user.selectedCourtId);
+                if (selectedCourt) {
+                    return selectedCourt;
+                }
+            }
+        }
+        return null;
     },
 });
 

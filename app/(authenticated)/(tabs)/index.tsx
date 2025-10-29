@@ -1,13 +1,16 @@
 import { Background } from "@/components/ui/Background";
 import { Button } from "@/components/ui/button";
+import { CourtSelectorPopup } from "@/components/ui/CourtSelectorPopup";
 import { Header } from "@/components/ui/header";
 import { TimePickerPopup } from "@/components/ui/TimePickerPopup";
 import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
+import { BlurView } from "expo-blur";
+import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CourtsScreen() {
@@ -16,6 +19,7 @@ export default function CourtsScreen() {
     const user = useQuery(api.users.currentUser);
     const [refreshing, setRefreshing] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
+    const [showCourtSelector, setShowCourtSelector] = useState(false);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
@@ -137,13 +141,84 @@ export default function CourtsScreen() {
     const headerHeight = top + 100;
     const isCheckedIn = !!currentCheckIn;
 
+    const LiquidGlassCard = ({ children, style }: { children: React.ReactNode; style?: any; }) => {
+        if (isLiquidGlassAvailable()) {
+            return (
+                <GlassView
+                    glassEffectStyle="clear"
+                    style={{
+                        borderRadius: 24,
+                        padding: 24,
+                        marginBottom: 16,
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        ...style,
+                    }}
+                >
+                    {children}
+                </GlassView>
+            );
+        } else if (Platform.OS === 'android') {
+            return (
+                <View
+                    style={{
+                        borderRadius: 24,
+                        padding: 24,
+                        marginBottom: 16,
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        ...style,
+                    }}
+                >
+                    {children}
+                </View>
+            );
+        } else {
+            return (
+                <BlurView
+                    intensity={40}
+                    tint="dark"
+                    style={{
+                        borderRadius: 24,
+                        padding: 24,
+                        marginBottom: 16,
+                        overflow: 'hidden',
+                        ...style,
+                    }}
+                >
+                    {children}
+                </BlurView>
+            );
+        }
+    };
+
     if (!court) {
         return (
             <Background>
-                <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#a3e635" />
-                    <Text className="text-slate-600 mt-4">Loading court data...</Text>
+                <View className="flex-1 items-center justify-center px-8">
+
+                    <Ionicons name="location-outline" size={92} color="#000000B3" />
+                    <Text className="text-black/80 text-2xl tracking-wide font-bold mt-6 text-center">
+                        No Court Selected
+                    </Text>
+
+                    <View className="h-10" />
+
+                    <Button
+                        onPress={() => setShowCourtSelector(true)}
+                        size="lg"
+                        className="bg-secondary"
+                    >
+                        <Ionicons name="add-circle-outline" size={24} color="white" />
+                        <Text className="text-white text-lg font-semibold ml-2">
+                            Select Court
+                        </Text>
+                    </Button>
                 </View>
+
+                <CourtSelectorPopup
+                    isVisible={showCourtSelector}
+                    onClose={() => setShowCourtSelector(false)}
+                    currentCourtId={undefined}
+                />
             </Background>
         );
     }
@@ -172,8 +247,8 @@ export default function CourtsScreen() {
                 )}
 
                 {/* Planned Visits Section */}
-                <View className="bg-white/95 rounded-3xl p-6 mb-4 shadow-lg">
-                    <Text className="text-xl font-bold text-slate-800 mb-4">
+                <LiquidGlassCard>
+                    <Text className="text-xl font-bold text-slate-200 mb-4">
                         📅 Who&apos;s Coming
                     </Text>
 
@@ -183,7 +258,7 @@ export default function CourtsScreen() {
                                 const visits = groupedVisits[timeSlot];
                                 return (
                                     <View key={timeSlot} className="mb-4 last:mb-0">
-                                        <Text className="text-sm font-semibold text-lime-600 mb-2">
+                                        <Text className="text-sm font-semibold text-lime-400 mb-2">
                                             {formatPlannedTime(timeSlot)}
                                         </Text>
                                         {visits.map((visit) => {
@@ -193,7 +268,7 @@ export default function CourtsScreen() {
                                                     key={visit._id}
                                                     className="flex-row items-center justify-between py-2 pl-4"
                                                 >
-                                                    <Text className={`text-slate-700 ${isUserPlan ? "font-semibold" : ""}`}>
+                                                    <Text className={`text-slate-200 ${isUserPlan ? "font-semibold" : ""}`}>
                                                         {isUserPlan ? "You" : visit.user.name || visit.user.email}
                                                     </Text>
                                                     {isUserPlan && (
@@ -213,16 +288,16 @@ export default function CourtsScreen() {
                         </View>
                     ) : (
                         <View className="items-center py-8">
-                            <Ionicons name="time-outline" size={48} color="#cbd5e1" />
+                            <Ionicons name="time-outline" size={48} color="#64748b" />
                             <Text className="text-slate-400 text-center mt-4">
                                 No upcoming plans yet
                             </Text>
-                            <Text className="text-slate-400 text-center text-sm mt-2">
+                            <Text className="text-slate-500 text-center text-sm mt-2">
                                 Be the first to schedule!
                             </Text>
                         </View>
                     )}
-                </View>
+                </LiquidGlassCard>
 
                 {/* I'm Here Button */}
                 <View className="mb-4">
@@ -266,8 +341,8 @@ export default function CourtsScreen() {
                 </View>
 
                 {/* Currently Checked In Section */}
-                <View className="bg-white/95 rounded-3xl p-6 mb-4 shadow-lg">
-                    <Text className="text-xl font-bold text-slate-800 mb-4">
+                <LiquidGlassCard>
+                    <Text className="text-xl font-bold text-slate-200 mb-4">
                         🎾 Currently at Courts
                     </Text>
 
@@ -276,12 +351,12 @@ export default function CourtsScreen() {
                             {checkIns.map((checkIn) => (
                                 <View
                                     key={checkIn._id}
-                                    className="py-3 border-b border-slate-100 last:border-b-0"
+                                    className="py-3 border-b border-slate-700 last:border-b-0"
                                 >
-                                    <Text className="text-lg text-slate-800 font-semibold">
+                                    <Text className="text-lg text-slate-200 font-semibold">
                                         {checkIn.user.name || checkIn.user.email}
                                     </Text>
-                                    <Text className="text-sm text-slate-500 mt-1">
+                                    <Text className="text-sm text-slate-400 mt-1">
                                         Checked in {formatTimeAgo(checkIn.checkedInAt)}
                                     </Text>
                                 </View>
@@ -292,24 +367,31 @@ export default function CourtsScreen() {
                             <Text className="text-slate-400 text-center">
                                 No one is currently checked in
                             </Text>
-                            <Text className="text-slate-400 text-center text-sm mt-2">
+                            <Text className="text-slate-500 text-center text-sm mt-2">
                                 Be the first to check in!
                             </Text>
                         </View>
                     )}
-                </View>
+                </LiquidGlassCard>
             </ScrollView>
 
             <Header
                 title={court.name}
                 rightButton="chat"
                 onRightPress={() => router.push(`/chats/${court._id}`)}
+                onTitlePress={() => setShowCourtSelector(true)}
             />
 
             <TimePickerPopup
                 isVisible={showTimePicker}
                 onClose={() => setShowTimePicker(false)}
                 onSelectTime={handleSelectTime}
+            />
+
+            <CourtSelectorPopup
+                isVisible={showCourtSelector}
+                onClose={() => setShowCourtSelector(false)}
+                currentCourtId={court._id}
             />
         </Background>
     );

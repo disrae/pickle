@@ -8,88 +8,72 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "rgb(var(--color-primary) / <alpha-value>)",
-          foreground: "rgb(var(--color-primary-foreground) / <alpha-value>)",
+          DEFAULT: "#000000",
+          foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "rgb(var(--color-secondary) / <alpha-value>)",
-          foreground: "rgb(var(--color-secondary-foreground) / <alpha-value>)",
+          DEFAULT: "#1E40AF", // blue-700 - deeper tennis court blue
+          foreground: "#FFFFFF",
         },
         background: {
-          DEFAULT: "rgb(var(--color-background) / <alpha-value>)",
-          foreground: "rgb(var(--color-background-foreground) / <alpha-value>)",
+          DEFAULT: "#FFFFFF",
+          foreground: "#000000",
         },
         foreground: {
-          DEFAULT: "rgb(var(--color-foreground) / <alpha-value>)",
-          muted: "rgb(var(--color-foreground-muted) / <alpha-value>)",
+          DEFAULT: "#000000",
+          muted: "#737373",
         },
         muted: {
-          DEFAULT: "rgb(var(--color-muted) / <alpha-value>)",
-          foreground: "rgb(var(--color-muted-foreground) / <alpha-value>)",
+          DEFAULT: "#737373",
+          foreground: "#FFFFFF",
         },
         destructive: {
-          DEFAULT: "rgb(var(--color-destructive) / <alpha-value>)",
-          foreground: "rgb(var(--color-destructive-foreground) / <alpha-value>)",
+          DEFAULT: "#EF4444", // red-500
+          foreground: "#FFFFFF",
         },
         success: {
-          DEFAULT: "rgb(var(--color-success) / <alpha-value>)",
-          foreground: "rgb(var(--color-success-foreground) / <alpha-value>)",
+          DEFAULT: "#22C55E", // green-500
+          foreground: "#FFFFFF",
         },
         warning: {
-          DEFAULT: "rgb(var(--color-warning) / <alpha-value>)",
-          foreground: "rgb(var(--color-warning-foreground) / <alpha-value>)",
+          DEFAULT: "#EAB308", // yellow-500
+          foreground: "#FFFFFF",
         },
         info: {
-          DEFAULT: "rgb(var(--color-info) / <alpha-value>)",
-          foreground: "rgb(var(--color-info-foreground) / <alpha-value>)",
+          DEFAULT: "#3B82F6", // blue-500
+          foreground: "#FFFFFF",
         },
         card: {
-          DEFAULT: "rgb(var(--color-card) / <alpha-value>)",
-          foreground: "rgb(var(--color-card-foreground) / <alpha-value>)",
+          DEFAULT: "#FFFFFF",
+          foreground: "#000000",
         },
         popover: {
-          DEFAULT: "rgb(var(--color-popover) / <alpha-value>)",
-          foreground: "rgb(var(--color-popover-foreground) / <alpha-value>)",
+          DEFAULT: "#FFFFFF",
+          foreground: "#000000",
         },
         accent: {
-          DEFAULT: "rgb(var(--color-accent) / <alpha-value>)",
-          foreground: "rgb(var(--color-accent-foreground) / <alpha-value>)",
+          DEFAULT: "#F5F5F5",
+          foreground: "#000000",
         },
         border: {
-          DEFAULT: "rgb(var(--border) / <alpha-value>)",
-          foreground: "rgb(var(--border-foreground) / <alpha-value>)",
+          DEFAULT: "#E5E7EB",
+          foreground: "#000000",
         },
         input: {
-          DEFAULT: "rgb(var(--input) / <alpha-value>)",
-          foreground: "rgb(var(--input-foreground) / <alpha-value>)",
+          DEFAULT: "#E5E7EB",
+          foreground: "#000000",
         },
-
         toggle: {
-          active: "rgb(var(--toggle-active) / <alpha-value>)",
-          "active-foreground": "rgb(var(--toggle-active-foreground) / <alpha-value>)",
-          border: "rgb(var(--toggle-border) / <alpha-value>)",
+          active: "#2D2D2D",
+          "active-foreground": "#FFFFFF",
+          border: "#E5E7EB",
+        },
+        "court-red": {
+          DEFAULT: "#B91C1C", // Tennis court clay red
+          foreground: "#FFFFFF",
         },
       },
     },
   },
-  plugins: [
-    ({ addBase }) => {
-      addBase({
-        ":root": {
-          "--color-primary": "0 0 0",
-          "--color-secondary": "45 45 45",
-          "--color-background": "255 255 255",
-          "--color-primary-foreground": "255 255 255",
-          "--color-foreground": "0 0 0",
-          "--color-destructive": "239 68 68",
-          "--color-success": "34 197 94",
-          "--color-warning": "234 179 8",
-          "--color-info": "59 130 246",
-          "--color-muted": "115 115 115",
-          "--toggle-active": "45 45 45",
-          "--toggle-border": "229 231 235",
-        },
-      });
-    },
-  ],
+  plugins: [],
 };

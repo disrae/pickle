@@ -9,7 +9,7 @@ export function ChatFAB({ onPress }: ChatFABProps) {
     return (
         <TouchableOpacity
             onPress={onPress}
-            className="absolute bottom-8 right-8 bg-blue-500 rounded-full w-16 h-16 items-center justify-center shadow-lg"
+            className="absolute bottom-8 right-8 bg-secondary rounded-full w-16 h-16 items-center justify-center shadow-lg"
             activeOpacity={0.8}
             style={{
                 elevation: 8,

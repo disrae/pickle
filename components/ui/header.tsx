@@ -8,9 +8,10 @@ interface HeaderProps {
     title: string;
     rightButton?: "chat" | "back";
     onRightPress?: () => void;
+    onTitlePress?: () => void;
 }
 
-export function Header({ title, rightButton, onRightPress }: HeaderProps) {
+export function Header({ title, rightButton, onRightPress, onTitlePress }: HeaderProps) {
     const { top } = useSafeAreaInsets();
 
     const RightButton = () => {
@@ -31,6 +32,24 @@ export function Header({ title, rightButton, onRightPress }: HeaderProps) {
         );
     };
 
+    const TitleContent = () => {
+        if (onTitlePress) {
+            return (
+                <TouchableOpacity onPress={onTitlePress} className="flex-row items-center" activeOpacity={0.7}>
+                    <Text className="text-4xl font-bold text-slate-200">
+                        {title}
+                    </Text>
+                    <Ionicons name="chevron-down" size={28} color="white" style={{ marginLeft: 8 }} />
+                </TouchableOpacity>
+            );
+        }
+        return (
+            <Text className="text-4xl font-bold text-slate-200">
+                {title}
+            </Text>
+        );
+    };
+
     return (
         <>
             {isLiquidGlassAvailable() ? (
@@ -47,9 +66,7 @@ export function Header({ title, rightButton, onRightPress }: HeaderProps) {
                         backgroundColor: 'rgba(0, 0, 0, 0.6)',
                     }}
                 >
-                    <Text className="text-4xl font-bold text-slate-200">
-                        {title}
-                    </Text>
+                    <TitleContent />
                     <RightButton />
                 </GlassView>
             ) : Platform.OS === 'android' ? (
@@ -65,9 +82,7 @@ export function Header({ title, rightButton, onRightPress }: HeaderProps) {
                         backgroundColor: 'rgba(0, 0, 0, 0.6)',
                     }}
                 >
-                    <Text className="text-4xl font-bold text-slate-200">
-                        {title}
-                    </Text>
+                    <TitleContent />
                     <RightButton />
                 </View>
             ) : (
@@ -84,9 +99,7 @@ export function Header({ title, rightButton, onRightPress }: HeaderProps) {
                         paddingHorizontal: 16,
                     }}
                 >
-                    <Text className="text-4xl font-bold text-slate-200">
-                        {title}
-                    </Text>
+                    <TitleContent />
                     <RightButton />
                 </BlurView>
             )}
