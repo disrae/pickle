@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
-import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { GlassContainer } from "./GlassContainer";
 
 interface DrillCardProps {
     drill: {
@@ -110,47 +109,17 @@ export function DrillCard({ drill, progress, onPress }: DrillCardProps) {
         </View>
     );
 
-    if (isLiquidGlassAvailable()) {
-        return (
-            <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="mb-3">
-                <GlassView
-                    glassEffectStyle="clear"
-                    style={{
-                        borderRadius: 16,
-                        padding: 16,
-                        backgroundColor: "rgba(0, 0, 0, 0.6)",
-                    }}
-                >
-                    {CardContent}
-                </GlassView>
-            </TouchableOpacity>
-        );
-    } else if (Platform.OS === "android") {
-        return (
-            <TouchableOpacity
-                onPress={onPress}
-                activeOpacity={0.7}
-                className="bg-black/60 rounded-2xl p-4 mb-3"
+    return (
+        <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="mb-3">
+            <GlassContainer
+                style={{
+                    borderRadius: 16,
+                    padding: 16,
+                }}
             >
                 {CardContent}
-            </TouchableOpacity>
-        );
-    } else {
-        return (
-            <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="mb-3">
-                <BlurView
-                    intensity={40}
-                    tint="dark"
-                    style={{
-                        borderRadius: 16,
-                        padding: 16,
-                        overflow: "hidden",
-                    }}
-                >
-                    {CardContent}
-                </BlurView>
-            </TouchableOpacity>
-        );
-    }
+            </GlassContainer>
+        </TouchableOpacity>
+    );
 }
 

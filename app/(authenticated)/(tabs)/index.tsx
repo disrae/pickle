@@ -1,16 +1,15 @@
 import { Background } from "@/components/ui/Background";
 import { Button } from "@/components/ui/button";
 import { CourtSelectorPopup } from "@/components/ui/CourtSelectorPopup";
+import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
 import { TimePickerPopup } from "@/components/ui/TimePickerPopup";
 import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
-import { BlurView } from "expo-blur";
-import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CourtsScreen() {
@@ -135,55 +134,6 @@ export default function CourtsScreen() {
     const headerHeight = top + 100;
     const isCheckedIn = !!currentCheckIn;
 
-    const LiquidGlassCard = ({ children, style }: { children: React.ReactNode; style?: any; }) => {
-        if (isLiquidGlassAvailable()) {
-            return (
-                <GlassView
-                    glassEffectStyle="clear"
-                    style={{
-                        borderRadius: 24,
-                        padding: 24,
-                        marginBottom: 16,
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                        ...style,
-                    }}
-                >
-                    {children}
-                </GlassView>
-            );
-        } else if (Platform.OS === 'android') {
-            return (
-                <View
-                    style={{
-                        borderRadius: 24,
-                        padding: 24,
-                        marginBottom: 16,
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                        ...style,
-                    }}
-                >
-                    {children}
-                </View>
-            );
-        } else {
-            return (
-                <BlurView
-                    intensity={40}
-                    tint="dark"
-                    style={{
-                        borderRadius: 24,
-                        padding: 24,
-                        marginBottom: 16,
-                        overflow: 'hidden',
-                        ...style,
-                    }}
-                >
-                    {children}
-                </BlurView>
-            );
-        }
-    };
-
     if (!court) {
         return (
             <Background>
@@ -237,7 +187,13 @@ export default function CourtsScreen() {
                         )}
 
                         {/* Currently Checked In Section */}
-                        <LiquidGlassCard>
+                        <GlassContainer
+                            style={{
+                                borderRadius: 24,
+                                padding: 24,
+                                marginBottom: 16,
+                            }}
+                        >
                             <View className="flex-row items-center justify-between mb-4">
                                 <Text className="text-2xl font-bold text-slate-200">
                                     Who&apos;s Here
@@ -286,10 +242,16 @@ export default function CourtsScreen() {
                                     </Text>
                                 </View>
                             )}
-                        </LiquidGlassCard>
+                        </GlassContainer>
 
                         {/* Planned Visits Section */}
-                        <LiquidGlassCard>
+                        <GlassContainer
+                            style={{
+                                borderRadius: 24,
+                                padding: 24,
+                                marginBottom: 16,
+                            }}
+                        >
                             <View className="flex-row items-center justify-between mb-4">
                                 <Text className="text-2xl font-bold text-slate-200">
                                     Who&apos;s Coming
@@ -350,7 +312,7 @@ export default function CourtsScreen() {
                                     </Text>
                                 </View>
                             )}
-                        </LiquidGlassCard>
+                        </GlassContainer>
                     </View>
                 </ScrollView>
             </View>
