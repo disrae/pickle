@@ -9,6 +9,7 @@ import Head from 'expo-router/head';
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
 
 // Wrap SecureStore methods to handle errors gracefully
@@ -43,23 +44,25 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider defaultTheme="system">
-      <ConvexAuthProvider
-        client={convex}
-        storage={
-          Platform.OS === "android" || Platform.OS === "ios"
-            ? secureStorage
-            : undefined
-        }>
-        <Head>
-          <meta name="apple-itunes-app" content="app-id=6754373389" />
-        </Head>
-        <LoadingProvider>
-          <AppContent />
-          <LoadingScreen />
-        </LoadingProvider>
-      </ConvexAuthProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider defaultTheme="system">
+        <ConvexAuthProvider
+          client={convex}
+          storage={
+            Platform.OS === "android" || Platform.OS === "ios"
+              ? secureStorage
+              : undefined
+          }>
+          <Head>
+            <meta name="apple-itunes-app" content="app-id=6754373389" />
+          </Head>
+          <LoadingProvider>
+            <AppContent />
+            <LoadingScreen />
+          </LoadingProvider>
+        </ConvexAuthProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
 

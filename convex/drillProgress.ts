@@ -20,8 +20,8 @@ export const getUserProgress = query({
     },
 });
 
-// Complete a milestone for a drill
-export const completeMilestone = mutation({
+// Toggle a milestone for a drill (complete or uncomplete)
+export const toggleMilestone = mutation({
     args: {
         drillId: v.id("drills"),
         milestoneIndex: v.number(),
@@ -30,6 +30,12 @@ export const completeMilestone = mutation({
         const userId = await getAuthUserId(ctx);
         if (!userId) {
             throw new Error("Not authenticated");
+        }
+
+        // Get the drill to understand milestone structure
+        const drill = await ctx.db.get(drillId);
+        if (!drill) {
+            throw new Error("Drill not found");
         }
 
         // Get or create progress
@@ -41,22 +47,45 @@ export const completeMilestone = mutation({
             .first();
 
         if (existingProgress) {
-            // Add milestone if not already completed
-            if (!existingProgress.completedMilestones.includes(milestoneIndex)) {
-                await ctx.db.patch(existingProgress._id, {
-                    completedMilestones: [
-                        ...existingProgress.completedMilestones,
-                        milestoneIndex,
-                    ],
-                    lastPracticedAt: Date.now(),
-                });
+            const isCompleted = existingProgress.completedMilestones.includes(milestoneIndex);
+            let newMilestones: number[];
+
+            if (isCompleted) {
+                // Remove milestone if already completed, plus all higher milestones (progressive)
+                const currentCount = drill.milestones[milestoneIndex].count;
+                newMilestones = existingProgress.completedMilestones.filter(
+                    (completedIndex) => {
+                        const completedCount = drill.milestones[completedIndex].count;
+                        return completedCount < currentCount;
+                    }
+                );
+            } else {
+                // Add milestone if not completed, plus all lower milestones (progressive)
+                const currentCount = drill.milestones[milestoneIndex].count;
+                const milestonesToComplete = drill.milestones
+                    .map((milestone, index) => ({ count: milestone.count, index }))
+                    .filter(milestone => milestone.count <= currentCount)
+                    .map(milestone => milestone.index);
+
+                newMilestones = [...new Set([...existingProgress.completedMilestones, ...milestonesToComplete])];
             }
+
+            await ctx.db.patch(existingProgress._id, {
+                completedMilestones: newMilestones,
+                lastPracticedAt: Date.now(),
+            });
         } else {
-            // Create new progress
+            // Create new progress with milestone completed (and lower ones if progressive)
+            const currentCount = drill.milestones[milestoneIndex].count;
+            const milestonesToComplete = drill.milestones
+                .map((milestone, index) => ({ count: milestone.count, index }))
+                .filter(milestone => milestone.count <= currentCount)
+                .map(milestone => milestone.index);
+
             await ctx.db.insert("drillProgress", {
                 userId,
                 drillId,
-                completedMilestones: [milestoneIndex],
+                completedMilestones: milestonesToComplete,
                 lastPracticedAt: Date.now(),
                 totalSessions: 0,
             });
@@ -177,10 +206,10 @@ export const getAllUserProgress = query({
                     ...progress,
                     drill: drill
                         ? {
-                              title: drill.title,
-                              category: drill.category,
-                              difficulty: drill.difficulty,
-                          }
+                            title: drill.title,
+                            category: drill.category,
+                            difficulty: drill.difficulty,
+                        }
                         : null,
                 };
             })

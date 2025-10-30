@@ -1,31 +1,61 @@
 import { Ionicons } from "@expo/vector-icons";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { useEffect } from "react";
+import { Platform, TouchableOpacity } from "react-native";
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
-    withSpring,
+    withRepeat,
+    withSequence,
+    withTiming,
 } from "react-native-reanimated";
-import { TouchableOpacity } from "react-native";
-import { useEffect } from "react";
 
 interface TrainingFABProps {
     onPress: () => void;
 }
 
 export function TrainingFAB({ onPress }: TrainingFABProps) {
-    const scale = useSharedValue(0);
+    const scale = useSharedValue(1);
+    const glowOpacity = useSharedValue(0.3);
 
     useEffect(() => {
-        // Animate in on mount
-        scale.value = withSpring(1, {
-            damping: 15,
-            stiffness: 150,
-        });
+        // Subtle pulse animation - only run once on mount
+        scale.value = withRepeat(
+            withSequence(
+                withTiming(1.05, { duration: 2000 }),
+                withTiming(1, { duration: 2000 })
+            ),
+            -1, // infinite repeat
+            true // reverse
+        );
+
+        // Pulsing glow effect
+        glowOpacity.value = withRepeat(
+            withSequence(
+                withTiming(0.8, { duration: 2000 }),
+                withTiming(0.3, { duration: 2000 })
+            ),
+            -1, // infinite repeat
+            true // reverse
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const animatedStyle = useAnimatedStyle(() => {
-        return {
+        const baseStyle = {
             transform: [{ scale: scale.value }],
         };
+
+        // Only add shadow properties on non-web platforms
+        if (Platform.OS !== 'web') {
+            return {
+                ...baseStyle,
+                shadowOpacity: glowOpacity.value,
+                shadowRadius: 6 + (glowOpacity.value * 6), // Dynamic radius for glow effect
+            };
+        }
+
+        return baseStyle;
     });
 
     return (
@@ -33,13 +63,13 @@ export function TrainingFAB({ onPress }: TrainingFABProps) {
             style={[
                 {
                     position: "absolute",
-                    bottom: 24,
+                    bottom: isLiquidGlassAvailable() ? 90 : 16,
                     right: 24,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 8,
-                    elevation: 8,
+                    ...(Platform.OS !== 'web' && {
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 2 },
+                        elevation: 4,
+                    }),
                 },
                 animatedStyle,
             ]}
@@ -49,7 +79,7 @@ export function TrainingFAB({ onPress }: TrainingFABProps) {
                 className="bg-lime-500 rounded-full w-16 h-16 items-center justify-center"
                 activeOpacity={0.8}
             >
-                <Ionicons name="add" size={32} color="white" />
+                <Ionicons name="add" size={32} color="#000000" />
             </TouchableOpacity>
         </Animated.View>
     );
