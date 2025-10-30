@@ -76,6 +76,65 @@ const schema = defineSchema({
         .index("by_chat", ["chatId"])
         .index("by_user", ["userId"])
         .index("by_chat_user", ["chatId", "userId"]),
+
+    drills: defineTable({
+        title: v.string(),
+        description: v.string(),
+        category: v.string(),
+        difficulty: v.string(),
+        tags: v.array(v.string()),
+        milestones: v.array(v.object({
+            count: v.number(),
+            description: v.string(),
+        })),
+        metricType: v.string(),
+        metricDescription: v.string(),
+        createdBy: v.id("users"),
+        isOfficial: v.boolean(),
+        createdAt: v.number(),
+    })
+        .index("by_category", ["category"])
+        .index("by_difficulty", ["difficulty"])
+        .index("by_creator", ["createdBy"]),
+
+    drillProgress: defineTable({
+        userId: v.id("users"),
+        drillId: v.id("drills"),
+        completedMilestones: v.array(v.number()),
+        personalBest: v.optional(v.number()),
+        lastPracticedAt: v.optional(v.number()),
+        totalSessions: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_drill", ["drillId"])
+        .index("by_user_drill", ["userId", "drillId"]),
+
+    trainingChats: defineTable({
+        title: v.string(),
+        description: v.optional(v.string()),
+        createdBy: v.id("users"),
+        createdAt: v.number(),
+        lastMessageAt: v.optional(v.number()),
+    })
+        .index("by_last_message", ["lastMessageAt"]),
+
+    trainingChatMessages: defineTable({
+        chatId: v.id("trainingChats"),
+        userId: v.id("users"),
+        message: v.string(),
+        createdAt: v.number(),
+    })
+        .index("by_chat", ["chatId"])
+        .index("by_created", ["chatId", "createdAt"]),
+
+    trainingChatParticipants: defineTable({
+        chatId: v.id("trainingChats"),
+        userId: v.id("users"),
+        joinedAt: v.number(),
+    })
+        .index("by_chat", ["chatId"])
+        .index("by_user", ["userId"])
+        .index("by_chat_user", ["chatId", "userId"]),
 });
 
 export default schema;
