@@ -25,9 +25,9 @@ export const ResendOTP = Email({
     }) {
         const resend = new ResendAPI(provider.apiKey);
         const { error } = await resend.emails.send({
-            from: process.env.AUTH_EMAIL ?? "Jericho Pickle <signin@wepickle.win>",
+            from: process.env.AUTH_EMAIL ?? "We Pickle <signin@wepickle.win>",
             to: [email],
-            subject: `Sign in to Jericho Pickle`,
+            subject: `Sign in to We Pickle`,
             react: VerificationCodeEmail({ code: token, expires, email }),
         });
         console.log(`https://wepickle.win/auth/verify?token=${token}&email=${email}`);
