@@ -12,8 +12,8 @@ export default function TabLayout() {
                     <Label hidden>Court</Label>
                     <Icon sf="figure.pickleball" />
                 </NativeTabs.Trigger>
-                <NativeTabs.Trigger name="training" >
-                    <Label hidden>Training</Label>
+                <NativeTabs.Trigger name="drills" >
+                    <Label hidden>Drills</Label>
                     <Icon sf="dumbbell.fill" />
                 </NativeTabs.Trigger>
                 <NativeTabs.Trigger name="profile" >
@@ -46,9 +46,9 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="training"
+                    name="drills"
                     options={{
-                        title: "Training",
+                        title: "Drills",
                         tabBarIcon: ({ color, size }) => <Ionicons name="barbell-outline" color={color} size={size * 1.2} />,
                     }}
                 />

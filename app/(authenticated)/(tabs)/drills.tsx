@@ -14,10 +14,10 @@ import { useMemo, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const CATEGORIES = ["All", "Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
-const DIFFICULTIES = ["All", "Beginner", "Intermediate", "Advanced", "Expert"];
+const CATEGORIES = ["Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
+const DIFFICULTIES = ["Beginner", "Intermediate", "Advanced", "Expert"];
 
-export default function TrainingScreen() {
+export default function DrillsScreen() {
     const { top, bottom } = useSafeAreaInsets();
     const router = useRouter();
 
@@ -133,10 +133,17 @@ export default function TrainingScreen() {
                             <TouchableOpacity
                                 key={category}
                                 onPress={() => toggleCategory(category)}
-                                className={`rounded-full px-4 py-2 mr-2 border ${selectedCategories.includes(category) ? "bg-lime-500 border-lime-500" : "bg-black/60 border-slate-600/50"}`}
+                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedCategories.includes(category) ? "bg-lime-400 border-lime-300" : "bg-black/60 border-slate-600/50"}`}
+                                style={selectedCategories.includes(category) ? {
+                                    shadowColor: '#84cc16',
+                                    shadowOffset: { width: 0, height: 0 },
+                                    shadowOpacity: 0.6,
+                                    shadowRadius: 10,
+                                    elevation: 8,
+                                } : {}}
                             >
                                 <Text
-                                    className={`font-medium ${selectedCategories.includes(category) ? "text-white" : "text-slate-200"}`}
+                                    className={`font-semibold ${selectedCategories.includes(category) ? "text-black" : "text-slate-200"}`}
                                 >
                                     {category}
                                 </Text>
@@ -155,10 +162,17 @@ export default function TrainingScreen() {
                             <TouchableOpacity
                                 key={difficulty}
                                 onPress={() => toggleDifficulty(difficulty)}
-                                className={`rounded-full px-4 py-2 mr-2 border ${selectedDifficulties.includes(difficulty) ? "bg-lime-500 border-lime-500" : "bg-black/60 border-slate-600/50"}`}
+                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedDifficulties.includes(difficulty) ? "bg-lime-400 border-lime-300" : "bg-black/60 border-slate-600/50"}`}
+                                style={selectedDifficulties.includes(difficulty) ? {
+                                    shadowColor: '#84cc16',
+                                    shadowOffset: { width: 0, height: 0 },
+                                    shadowOpacity: 0.6,
+                                    shadowRadius: 10,
+                                    elevation: 8,
+                                } : {}}
                             >
                                 <Text
-                                    className={`font-medium ${selectedDifficulties.includes(difficulty) ? "text-white" : "text-slate-200"}`}
+                                    className={`font-semibold ${selectedDifficulties.includes(difficulty) ? "text-black" : "text-slate-200"}`}
                                 >
                                     {difficulty}
                                 </Text>
