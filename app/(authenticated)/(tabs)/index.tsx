@@ -222,7 +222,7 @@ export default function CourtsScreen() {
             <View className="flex-1">
                 <ScrollView
                     className="flex-1 px-4"
-                    contentContainerStyle={{ paddingTop: headerHeight }}
+                    contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: Math.max(bottom, 32) }}
                 >
                     {/* Content wrapper to keep cards at the start */}
                     <View className="flex-1 justify-start">
@@ -238,9 +238,33 @@ export default function CourtsScreen() {
 
                         {/* Currently Checked In Section */}
                         <LiquidGlassCard>
-                            <Text className="text-2xl font-bold text-slate-200 mb-4">
-                                Who&apos;s Here
-                            </Text>
+                            <View className="flex-row items-center justify-between mb-4">
+                                <Text className="text-2xl font-bold text-slate-200">
+                                    Who&apos;s Here
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={isCheckedIn ? handleCheckOut : handleCheckIn}
+                                    disabled={isCheckingIn || isCheckingOut}
+                                    className={`flex-row items-center px-3 py-1.5 rounded-lg ${isCheckedIn ? "bg-slate-700/80 border border-red-400" : "bg-slate-700/80 border border-lime-400"
+                                        }`}
+                                >
+                                    {isCheckingIn || isCheckingOut ? (
+                                        <ActivityIndicator size="small" color={isCheckedIn ? "#ef4444" : "#84cc16"} />
+                                    ) : (
+                                        <>
+                                            <Ionicons
+                                                name={isCheckedIn ? "exit-outline" : "checkmark-circle"}
+                                                size={18}
+                                                color={isCheckedIn ? "#ef4444" : "#84cc16"}
+                                            />
+                                            <Text className={`text-sm font-semibold ml-1.5 ${isCheckedIn ? "text-red-400" : "text-lime-400"
+                                                }`}>
+                                                {isCheckedIn ? "Check Out" : "Check In"}
+                                            </Text>
+                                        </>
+                                    )}
+                                </TouchableOpacity>
+                            </View>
 
                             {checkIns && checkIns.length > 0 ? (
                                 <View>
@@ -266,9 +290,20 @@ export default function CourtsScreen() {
 
                         {/* Planned Visits Section */}
                         <LiquidGlassCard>
-                            <Text className="text-2xl font-bold text-slate-200 mb-4">
-                                Who&apos;s Coming
-                            </Text>
+                            <View className="flex-row items-center justify-between mb-4">
+                                <Text className="text-2xl font-bold text-slate-200">
+                                    Who&apos;s Coming
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={() => setShowTimePicker(true)}
+                                    className="flex-row items-center px-3 py-1.5 rounded-lg bg-slate-700/80 border border-lime-400"
+                                >
+                                    <Ionicons name="add-circle-outline" size={18} color="#84cc16" />
+                                    <Text className="text-sm font-semibold ml-1.5 text-lime-400">
+                                        Plan
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
 
                             {sortedTimeSlots.length > 0 ? (
                                 <View>
@@ -318,50 +353,6 @@ export default function CourtsScreen() {
                         </LiquidGlassCard>
                     </View>
                 </ScrollView>
-
-                {/* Buttons positioned at the bottom */}
-                <View className="px-4" style={{ paddingBottom: isLiquidGlassAvailable() ? Math.max(bottom, 80) : 32 }}>
-                    {/* I'm Here Button */}
-                    <View className="mb-4 items-center">
-                        <Button
-                            onPress={isCheckedIn ? handleCheckOut : handleCheckIn}
-                            disabled={isCheckingIn || isCheckingOut}
-                            variant={isCheckedIn ? "destructive" : "default"}
-                            size="lg"
-                            className={`${Platform.OS === 'web' ? 'w-full max-w-sm' : 'w-full'} ${isCheckedIn ? "bg-red-500" : "bg-secondary"}`}
-                        >
-                            {isCheckingIn || isCheckingOut ? (
-                                <ActivityIndicator color="white" />
-                            ) : (
-                                <>
-                                    <Ionicons
-                                        name={isCheckedIn ? "exit-outline" : "checkmark-circle"}
-                                        size={28}
-                                        color="white"
-                                    />
-                                    <Text className="text-white text-xl font-bold ml-2">
-                                        {isCheckedIn ? "Check Out" : "I'm Here!"}
-                                    </Text>
-                                </>
-                            )}
-                        </Button>
-                    </View>
-
-                    {/* Plan to Go Later Button */}
-                    <View className="mb-4 items-center">
-                        <Button
-                            onPress={() => setShowTimePicker(true)}
-                            variant="outline"
-                            size="lg"
-                            className={`${Platform.OS === 'web' ? 'w-full max-w-sm' : 'w-full'} border-lime-500`}
-                        >
-                            <Ionicons name="add-circle-outline" size={24} color="#84cc16" />
-                            <Text className="text-lime-600 text-lg font-semibold ml-2">
-                                Plan to Go Later
-                            </Text>
-                        </Button>
-                    </View>
-                </View>
             </View>
 
             <Header
