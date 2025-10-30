@@ -44,3 +44,12 @@ export function Background({ children }: { children: React.ReactNode; }) {
         </View>
     );
 }
+
+export function ChatBackground({ children }: { children: React.ReactNode; }) {
+    return (
+        <View className="flex-1 bg-lime-600">
+            {/* Content rendered on chat background */}
+            {children}
+        </View>
+    );
+}

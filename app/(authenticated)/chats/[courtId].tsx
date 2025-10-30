@@ -1,4 +1,4 @@
-import { Background } from "@/components/ui/Background";
+import { ChatBackground } from "@/components/ui/Background";
 import { ChatFAB } from "@/components/ui/ChatFAB";
 import { Header } from "@/components/ui/header";
 import { NewChatModal } from "@/components/ui/NewChatModal";
@@ -10,12 +10,11 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
-    RefreshControl,
     ScrollView,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -76,31 +75,24 @@ export default function ChatListScreen() {
         return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
     };
 
-    const headerHeight = top + 100;
+    const headerHeight = top + 80;
 
     if (!court) {
         return (
-            <Background>
+            <ChatBackground>
                 <View className="flex-1 items-center justify-center">
                     <ActivityIndicator size="large" color="#a3e635" />
                     <Text className="text-slate-600 mt-4">Loading chats...</Text>
                 </View>
-            </Background>
+            </ChatBackground>
         );
     }
 
     return (
-        <Background>
+        <ChatBackground>
             <ScrollView
-                className="flex-1"
-                contentContainerStyle={{ paddingTop: headerHeight + 16, paddingBottom: 100 }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        progressViewOffset={headerHeight}
-                    />
-                }
+                className="flex-1 pt-4"
+                contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 100 }}
             >
                 {/* Search Bar */}
                 <View className="px-4 mb-4">
@@ -188,6 +180,7 @@ export default function ChatListScreen() {
 
             <Header
                 title={`${court.name} Chats`}
+                titleSize="text-2xl"
                 rightButton="back"
                 onRightPress={() => router.back()}
             />
@@ -199,7 +192,7 @@ export default function ChatListScreen() {
                 onClose={() => setShowNewChatModal(false)}
                 onCreate={handleCreateChat}
             />
-        </Background>
+        </ChatBackground>
     );
 }
 

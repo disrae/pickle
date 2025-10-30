@@ -1,4 +1,4 @@
-import { Background } from "@/components/ui/Background";
+import { ChatBackground } from "@/components/ui/Background";
 import { Header } from "@/components/ui/header";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -132,17 +132,17 @@ export default function ChatScreen() {
 
     if (!chat || !messages || !currentUser) {
         return (
-            <Background>
+            <ChatBackground>
                 <View className="flex-1 items-center justify-center">
                     <ActivityIndicator size="large" color="#a3e635" />
                     <Text className="text-slate-600 mt-4">Loading chat...</Text>
                 </View>
-            </Background>
+            </ChatBackground>
         );
     }
 
     return (
-        <Background>
+        <ChatBackground>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : undefined}
                 className="flex-1"
@@ -290,7 +290,7 @@ export default function ChatScreen() {
                     onRightPress={() => router.back()}
                 />
             </KeyboardAvoidingView>
-        </Background>
+        </ChatBackground>
     );
 }
 

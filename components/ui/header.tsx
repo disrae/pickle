@@ -6,12 +6,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface HeaderProps {
     title: string;
+    titleSize?: "text-2xl" | "text-3xl" | "text-4xl";
     rightButton?: "chat" | "back";
     onRightPress?: () => void;
     onTitlePress?: () => void;
 }
 
-export function Header({ title, rightButton, onRightPress, onTitlePress }: HeaderProps) {
+export function Header({ title, titleSize = "text-2xl", rightButton, onRightPress, onTitlePress }: HeaderProps) {
     const { top } = useSafeAreaInsets();
 
     const RightButton = () => {
@@ -21,7 +22,6 @@ export function Header({ title, rightButton, onRightPress, onTitlePress }: Heade
             <TouchableOpacity
                 onPress={onRightPress}
                 className="p-2"
-                style={{ position: "absolute", right: 16, top: top + 10 }}
             >
                 <Ionicons
                     name={rightButton === "chat" ? "chatbubbles" : "arrow-back"}
@@ -36,7 +36,7 @@ export function Header({ title, rightButton, onRightPress, onTitlePress }: Heade
         if (onTitlePress) {
             return (
                 <TouchableOpacity onPress={onTitlePress} className="flex-row items-center" activeOpacity={0.7}>
-                    <Text className="text-4xl font-bold text-slate-200">
+                    <Text className={`${titleSize} font-bold text-slate-200`}>
                         {title}
                     </Text>
                     <Ionicons name="chevron-down" size={28} color="white" style={{ marginLeft: 8 }} />
@@ -44,7 +44,7 @@ export function Header({ title, rightButton, onRightPress, onTitlePress }: Heade
             );
         }
         return (
-            <Text className="text-4xl font-bold text-slate-200">
+            <Text className={`${titleSize} font-bold text-slate-200`}>
                 {title}
             </Text>
         );
@@ -66,8 +66,10 @@ export function Header({ title, rightButton, onRightPress, onTitlePress }: Heade
                         backgroundColor: 'rgba(0, 0, 0, 0.6)',
                     }}
                 >
-                    <TitleContent />
-                    <RightButton />
+                    <View className="flex-row items-center justify-between">
+                        <TitleContent />
+                        <RightButton />
+                    </View>
                 </GlassView>
             ) : Platform.OS === 'android' ? (
                 <View
@@ -82,8 +84,10 @@ export function Header({ title, rightButton, onRightPress, onTitlePress }: Heade
                         backgroundColor: 'rgba(0, 0, 0, 0.6)',
                     }}
                 >
-                    <TitleContent />
-                    <RightButton />
+                    <View className="flex-row items-center justify-between">
+                        <TitleContent />
+                        <RightButton />
+                    </View>
                 </View>
             ) : (
                 <BlurView
@@ -99,8 +103,10 @@ export function Header({ title, rightButton, onRightPress, onTitlePress }: Heade
                         paddingHorizontal: 16,
                     }}
                 >
-                    <TitleContent />
-                    <RightButton />
+                    <View className="flex-row items-center justify-between">
+                        <TitleContent />
+                        <RightButton />
+                    </View>
                 </BlurView>
             )}
         </>
