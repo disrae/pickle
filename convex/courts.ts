@@ -35,32 +35,46 @@ export const getDefault = query({
     },
 });
 
-// Seeder mutation to create initial court
+// Seeder mutation to create initial courts
 // Run this once from Convex dashboard
 export const seedInitialCourt = mutation({
     args: {},
     handler: async (ctx) => {
-        // Check if Jericho Beach court already exists
-        const existing = await ctx.db
-            .query("courts")
-            .filter((q) => q.eq(q.field("name"), "Queen Elizabeth Park"))
-            .first();
+        const results = [];
 
-        if (existing) {
-            return { message: "Queen Elizabeth Park court already exists", courtId: existing._id };
+        // Define the courts to seed
+        const courtsToSeed = [
+            {
+                name: "Queen Elizabeth Park",
+                location: { lat: 49.237805, lng: 123.111925 }
+            },
+            {
+                name: "Jericho Beach",
+                location: { lat: 49.273685, lng: -123.199509 }
+            }
+        ];
+
+        for (const courtData of courtsToSeed) {
+            // Check if court already exists
+            const existing = await ctx.db
+                .query("courts")
+                .filter((q) => q.eq(q.field("name"), courtData.name))
+                .first();
+
+            if (existing) {
+                results.push({ message: `${courtData.name} court already exists`, courtId: existing._id });
+            } else {
+                // Create the court
+                const courtId = await ctx.db.insert("courts", {
+                    name: courtData.name,
+                    location: courtData.location,
+                    notes: undefined,
+                });
+                results.push({ message: `${courtData.name} court created`, courtId });
+            }
         }
 
-        // Create Queen Elizabeth Park court
-        const courtId = await ctx.db.insert("courts", {
-            name: "Queen Elizabeth Park",
-            location: {
-                lat: 49.237805,
-                lng: 123.111925,
-            },
-            notes: undefined,
-        });
-
-        return { message: "Queen Elizabeth Park court created", courtId };
+        return { results };
     },
 });
 
