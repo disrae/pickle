@@ -22,9 +22,10 @@ The training tab has been successfully implemented with full drill management, p
 
 ### 3. UI Components
 - `DrillCard`: Display drill with progress indicators
-- `DrillDetailModal`: View drill details, complete milestones, log personal best
-- `CreateDrillModal`: Create new user-submitted drills
+- `DrillDetailCard`: View drill details, complete milestones, log personal best
+- `CreateDrillCard`: Create new user-submitted drills
 - `TrainingFAB`: Floating action button with animation
+- `BottomSheetCard`: Reusable bottom sheet with gesture handling
 
 ### 4. Screens
 - `app/(authenticated)/(tabs)/training.tsx`: Main training screen with stats, filters, drill list

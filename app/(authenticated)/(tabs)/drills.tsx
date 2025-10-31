@@ -1,7 +1,7 @@
 import { Background } from "@/components/ui/Background";
-import { CreateDrillModal } from "@/components/ui/CreateDrillModal";
+import { CreateDrillCard } from "@/components/ui/CreateDrillCard";
 import { DrillCard } from "@/components/ui/DrillCard";
-import { DrillDetailModal } from "@/components/ui/DrillDetailModal";
+import { DrillDetailCard } from "@/components/ui/DrillDetailCard";
 import { Header } from "@/components/ui/header";
 import { TrainingFAB } from "@/components/ui/TrainingFAB";
 import { api } from "@/convex/_generated/api";
@@ -276,12 +276,12 @@ export default function DrillsScreen() {
 
             <TrainingFAB onPress={() => setShowCreateModal(true)} />
 
-            <CreateDrillModal
+            <CreateDrillCard
                 isVisible={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
             />
 
-            <DrillDetailModal
+            <DrillDetailCard
                 isVisible={showDetailModal}
                 onClose={() => {
                     setShowDetailModal(false);

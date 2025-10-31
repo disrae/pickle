@@ -103,7 +103,7 @@ export default function ChatListScreen() {
                             onChangeText={setSearchQuery}
                             placeholder="Search chats..."
                             className="flex-1 ml-2 text-slate-800 text-base"
-                            placeholderTextColor="#94a3b8"
+                            placeholderTextColor="#475569"
                         />
                         {searchQuery.length > 0 && (
                             <TouchableOpacity onPress={() => setSearchQuery("")}>

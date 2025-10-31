@@ -26,7 +26,7 @@ export function StyledInput({
                 onChangeText={onChangeText}
                 keyboardType={keyboardType}
                 className="bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5"
-                placeholderTextColor="#94a3b8"
+                placeholderTextColor="#475569"
             />
         </View>
     );

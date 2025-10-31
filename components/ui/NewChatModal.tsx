@@ -67,7 +67,7 @@ export function NewChatModal({ isVisible, onClose, onCreate }: NewChatModalProps
                                             onChangeText={setTitle}
                                             placeholder="Enter chat title"
                                             className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800 text-base"
-                                            placeholderTextColor="#94a3b8"
+                                            placeholderTextColor="#64748b"
                                             editable={!isCreating}
                                             returnKeyType="next"
                                         />
@@ -84,7 +84,7 @@ export function NewChatModal({ isVisible, onClose, onCreate }: NewChatModalProps
                                             multiline
                                             numberOfLines={3}
                                             className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800 text-base"
-                                            placeholderTextColor="#94a3b8"
+                                            placeholderTextColor="#64748b"
                                             style={{ minHeight: 80, textAlignVertical: "top" }}
                                             editable={!isCreating}
                                             blurOnSubmit

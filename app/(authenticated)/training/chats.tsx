@@ -76,7 +76,7 @@ export default function TrainingChatsListScreen() {
                             onChangeText={setSearchQuery}
                             placeholder="Search training chats..."
                             className="flex-1 ml-2 text-slate-800 text-base"
-                            placeholderTextColor="#94a3b8"
+                            placeholderTextColor="#475569"
                         />
                         {searchQuery.length > 0 && (
                             <TouchableOpacity onPress={() => setSearchQuery("")}>

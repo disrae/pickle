@@ -63,6 +63,11 @@ module.exports = {
           DEFAULT: "#E5E7EB",
           foreground: "#000000",
         },
+        placeholder: {
+          "on-white": "#475569", // slate-600 - for white backgrounds (bg-white)
+          "on-light": "#64748b", // slate-500 - for light gray backgrounds (bg-slate-50, bg-gray-50)
+          "on-dark": "#94a3b8", // slate-400 - for dark backgrounds (bg-black, bg-slate-800)
+        },
         toggle: {
           active: "#2D2D2D",
           "active-foreground": "#FFFFFF",

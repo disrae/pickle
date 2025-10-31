@@ -261,7 +261,7 @@ export default function ChatScreen() {
                                     onChangeText={setMessage}
                                     placeholder="Type a message..."
                                     className="text-base text-slate-800 max-h-24"
-                                    placeholderTextColor="#94a3b8"
+                                    placeholderTextColor="#64748b"
                                     multiline
                                     editable={!isSending}
                                 />
