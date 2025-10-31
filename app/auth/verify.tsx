@@ -112,7 +112,7 @@ export default function AuthVerify() {
     const handleOpenApp = () => {
         const token = params.token as string;
         const email = params.email as string;
-        const deepLink = `pickle://auth/verify?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email || '')}`;
+        const deepLink = `wepickle://auth/verify?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email || '')}`;
 
         if (Platform.OS === "web") {
             window.location.href = deepLink;

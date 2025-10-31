@@ -29,7 +29,7 @@ export function VerificationCodeEmail({
                     </Text> */}
                     {/* <Text className="font-semibold">Use the button below to sign in</Text> */}
                     <Button
-                        className="bg-lime-600 rounded-lg px-8 -py-2 mb-6"
+                        className="bg-lime-600 rounded-lg px-8 -py-2 my-6"
                         href={`https://wepickle.win/auth/verify?token=${code}&email=${email}`}>
                         <Text className="text-white font-bold text-xl text-center">Sign in</Text>
                     </Button>

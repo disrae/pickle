@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "pickle",
-    "slug": "pickle",
+    "name": "We Pickle",
+    "slug": "we-pickle",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "pickle",
+    "scheme": "wepickle",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dannyisrael.pickle",
+      "bundleIdentifier": "com.dannyisrael.wepickle",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -29,7 +29,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.dannyisrael.pickle",
+      "package": "com.dannyisrael.wepickle",
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
@@ -79,16 +79,19 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {},
+      "router": {
+        "origin": "https://wepickle.win"
+      },
       "eas": {
-        "projectId": "a06c44d8-f3f2-48e3-8ce2-b7c7d0e864d9"
+        "projectId": "f5c860c2-f551-4b02-a169-b7ddc5c5e7a9"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/a06c44d8-f3f2-48e3-8ce2-b7c7d0e864d9"
-    }
+      "url": "https://u.expo.dev/f5c860c2-f551-4b02-a169-b7ddc5c5e7a9"
+    },
+    "owner": "disrae"
   }
 }
