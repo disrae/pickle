@@ -29,7 +29,11 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.dannyisrael.pickle"
+      "package": "com.dannyisrael.pickle",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -37,7 +41,12 @@
       "bundler": "metro"
     },
     "plugins": [
-      ["expo-router", { "origin": "https://wepickle.win" }],
+      [
+        "expo-router",
+        {
+          "origin": "https://wepickle.win"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -74,6 +83,12 @@
       "eas": {
         "projectId": "a06c44d8-f3f2-48e3-8ce2-b7c7d0e864d9"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a06c44d8-f3f2-48e3-8ce2-b7c7d0e864d9"
     }
   }
 }
