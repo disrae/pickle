@@ -11,7 +11,7 @@ const schema = defineSchema({
         emailVerificationTime: v.optional(v.number()),
         phone: v.optional(v.string()),
         phoneVerificationTime: v.optional(v.number()),
-        image: v.optional(v.string()),
+        image: v.optional(v.id("_storage")),
         isAnonymous: v.optional(v.boolean()),
         isAdmin: v.optional(v.boolean()),
         selectedCourtId: v.optional(v.id("courts")),

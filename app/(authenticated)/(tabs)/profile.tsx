@@ -1,19 +1,23 @@
 import { Background } from "@/components/ui/Background";
+import { GlassContainer } from "@/components/ui/GlassContainer";
+import { Header } from "@/components/ui/header";
 import { Popup } from "@/components/ui/Popup";
 import { SetNamePopup } from "@/components/ui/SetNamePopup";
 import { api } from "@/convex/_generated/api";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "convex/react";
-import { useRouter } from "expo-router";
+import { useMutation, useQuery } from "convex/react";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
-    const { top } = useSafeAreaInsets();
-    const router = useRouter();
+    const { top, bottom } = useSafeAreaInsets();
     const user = useQuery(api.users.currentUser);
+    const profileImageUrl = useQuery(api.users.getProfileImageUrl);
     const { signOut } = useAuthActions();
 
     const [popupVisible, setPopupVisible] = useState(false);
@@ -22,6 +26,11 @@ export default function ProfileScreen() {
     const [popupOnConfirm, setPopupOnConfirm] = useState<(() => Promise<void> | void) | undefined>(undefined);
     const [popupConfirmText, setPopupConfirmText] = useState<string | undefined>(undefined);
     const [showNamePopup, setShowNamePopup] = useState(false);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+    const generateUploadUrl = useMutation(api.users.generateUploadUrl);
+    const saveProfileImage = useMutation(api.users.saveProfileImage);
+    const deleteAccount = useMutation(api.users.deleteAccount);
 
     const showPopup = (title: string | undefined, message: string, onConfirm?: () => Promise<void> | void, confirmText?: string) => {
         setPopupTitle(title);
@@ -29,10 +38,6 @@ export default function ProfileScreen() {
         setPopupOnConfirm(() => onConfirm);
         setPopupConfirmText(confirmText);
         setPopupVisible(true);
-    };
-
-    const _signout = () => {
-        signOut();
     };
 
     const handleSignOut = () => {
@@ -44,153 +49,211 @@ export default function ProfileScreen() {
         );
     };
 
-    const settingsOptions = [
-        {
-            id: "court",
-            title: "Home Court",
-            subtitle: "Jericho Pickle Courts",
-            icon: "location",
-            onPress: () => {
-                // TODO: Navigate to court selection
-                showPopup("Coming Soon", "Court selection will be available soon!");
+    const handleDeleteAccount = () => {
+        showPopup(
+            "Delete Account",
+            "This will permanently delete your account and all associated data. This action cannot be undone.",
+            async () => {
+                await deleteAccount();
+                await signOut();
             },
-        },
-        {
-            id: "notifications",
-            title: "Notifications",
-            subtitle: "Manage your alerts",
-            icon: "notifications",
-            onPress: () => {
-                // TODO: Navigate to notifications settings
-                showPopup("Coming Soon", "Notification settings coming soon!");
-            },
-        },
-        {
-            id: "privacy",
-            title: "Privacy & Security",
-            subtitle: "Manage your data",
-            icon: "shield-checkmark",
-            onPress: () => {
-                // TODO: Navigate to privacy settings
-                showPopup("Coming Soon", "Privacy settings coming soon!");
-            },
-        },
-    ];
+            "Delete Account"
+        );
+    };
+
+    const handleImagePick = async () => {
+        try {
+            // Request permissions
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+            if (status !== "granted") {
+                showPopup("Permission Required", "We need access to your photo library to update your profile picture.");
+                return;
+            }
+
+            // Launch image picker
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: "images",
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+            });
+
+            if (!result.canceled && result.assets[0]) {
+                setIsUploadingImage(true);
+
+                // Get upload URL
+                const uploadUrl = await generateUploadUrl();
+
+                // Upload image
+                const response = await fetch(result.assets[0].uri);
+                const blob = await response.blob();
+
+                const uploadResponse = await fetch(uploadUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": blob.type },
+                    body: blob,
+                });
+
+                const { storageId } = await uploadResponse.json();
+
+                // Save storage ID to user
+                await saveProfileImage({ storageId });
+
+                setIsUploadingImage(false);
+            }
+        } catch (error) {
+            console.error("Image upload error:", error);
+            setIsUploadingImage(false);
+            showPopup("Upload Failed", "There was an error uploading your profile picture. Please try again.");
+        }
+    };
+
+    const headerHeight = top + 100;
 
     return (
         <Background>
-            <ScrollView className="flex-1">
-                <View
-                    className="px-6 pb-6"
-                    style={{ paddingTop: top + 20 }}
+            <View className="flex-1">
+                <ScrollView
+                    className="flex-1 px-4"
+                    contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: Math.max(bottom, 32) }}
                 >
-                    {/* Header */}
-                    <View className="mb-6">
-                        <Text className="text-3xl font-bold text-slate-800">
-                            Profile
-                        </Text>
-                    </View>
+                    {/* Profile Card */}
+                    <GlassContainer
+                        style={{
+                            borderRadius: 24,
+                            padding: 24,
+                            marginBottom: 16,
+                        }}
+                    >
+                        <View className="items-center mb-6">
+                            {/* Profile Image */}
+                            <TouchableOpacity
+                                onPress={handleImagePick}
+                                disabled={isUploadingImage}
+                                className="relative"
+                            >
+                                <View className="w-32 h-32 rounded-full bg-lime-400 items-center justify-center">
+                                    {isUploadingImage ? (
+                                        <ActivityIndicator size="large" color="white" />
+                                    ) : profileImageUrl ? (
+                                        <Image
+                                            source={{ uri: profileImageUrl }}
+                                            style={{
+                                                width: 128,
+                                                height: 128,
+                                                borderRadius: 64,
+                                            }}
+                                            contentFit="cover"
+                                        />
+                                    ) : (
+                                        <Text className="text-6xl font-bold text-white">
+                                            {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "?"}
+                                        </Text>
+                                    )}
+                                </View>
+                                {!isUploadingImage && (
+                                    <View className="absolute bottom-0 right-0 bg-lime-600 rounded-full p-2 border-4 border-slate-800/80">
+                                        <Ionicons name="camera" size={20} color="white" />
+                                    </View>
+                                )}
+                            </TouchableOpacity>
 
-                    {/* User Info Card */}
-                    <View className="bg-white/95 rounded-3xl p-6 mb-4 shadow-lg">
-                        <View className="items-center mb-4">
-                            {/* Avatar Placeholder */}
-                            <View className="w-24 h-24 rounded-full bg-lime-400 items-center justify-center mb-4">
-                                <Text className="text-4xl font-bold text-white">
-                                    {user?.email?.[0]?.toUpperCase() || "?"}
-                                </Text>
-                            </View>
-
-                            <Text className="text-2xl font-bold text-slate-800">
+                            {/* Name */}
+                            <Text className="text-3xl font-bold text-slate-200 mt-4">
                                 {user?.name || "Pickle Player"}
                             </Text>
 
+                            {/* Edit Name Button */}
                             <TouchableOpacity
                                 onPress={() => setShowNamePopup(true)}
-                                className="flex-row items-center mt-2 px-3 py-1 rounded-full bg-lime-100"
+                                className="flex-row items-center mt-2 px-3 py-1.5 rounded-lg bg-slate-700/80 border border-lime-400"
                             >
-                                <Ionicons name="create-outline" size={16} color="#65a30d" />
-                                <Text className="text-lime-700 ml-1 text-sm font-medium">
+                                <Ionicons name="create-outline" size={16} color="#84cc16" />
+                                <Text className="text-lime-400 ml-1.5 text-sm font-semibold">
                                     Edit Name
                                 </Text>
                             </TouchableOpacity>
 
-                            <View className="flex-row items-center mt-3">
-                                <Ionicons name="mail" size={16} color="#64748b" />
-                                <Text className="text-slate-500 ml-2">
-                                    {user?.email || "No email"}
-                                </Text>
-                            </View>
-                        </View>
-
-                        {/* Stats Row */}
-                        <View className="flex-row justify-around pt-4 border-t border-slate-200">
-                            <View className="items-center">
-                                <Text className="text-2xl font-bold text-lime-600">0</Text>
-                                <Text className="text-slate-500 text-sm mt-1">Games</Text>
-                            </View>
-                            <View className="h-full w-px bg-slate-200" />
-                            <View className="items-center">
-                                <Text className="text-2xl font-bold text-lime-600">0</Text>
-                                <Text className="text-slate-500 text-sm mt-1">Hours</Text>
-                            </View>
-                            <View className="h-full w-px bg-slate-200" />
-                            <View className="items-center">
-                                <Text className="text-2xl font-bold text-lime-600">0</Text>
-                                <Text className="text-slate-500 text-sm mt-1">Friends</Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    {/* Settings Section */}
-                    <Text className="text-xl font-bold text-slate-800 mb-4">
-                        Settings
-                    </Text>
-
-                    {settingsOptions.map((option) => (
-                        <TouchableOpacity
-                            key={option.id}
-                            onPress={option.onPress}
-                            className="bg-white/95 rounded-2xl p-5 mb-3 shadow"
-                        >
-                            <View className="flex-row items-center">
-                                <View className="bg-lime-100 rounded-full p-3 mr-4">
-                                    <Ionicons name={option.icon as any} size={24} color="#65a30d" />
-                                </View>
-                                <View className="flex-1">
-                                    <Text className="text-lg font-semibold text-slate-800">
-                                        {option.title}
-                                    </Text>
-                                    <Text className="text-slate-500 text-sm mt-1">
-                                        {option.subtitle}
+                            {/* Email with Privacy Notice */}
+                            <View className="items-center mt-4">
+                                <View className="flex-row items-center">
+                                    <Ionicons name="mail" size={16} color="#94a3b8" />
+                                    <Text className="text-slate-300 ml-2">
+                                        {user?.email || "No email"}
                                     </Text>
                                 </View>
-                                <Text className="text-slate-400">›</Text>
+                                <View className="flex-row items-center mt-2 px-3 py-1 rounded-lg bg-slate-700/50">
+                                    <Ionicons name="lock-closed" size={12} color="#64748b" />
+                                    <Text className="text-slate-400 text-xs ml-1">
+                                        Your email is private and only visible to you
+                                    </Text>
+                                </View>
                             </View>
-                        </TouchableOpacity>
-                    ))}
+                        </View>
+                    </GlassContainer>
 
-                    {/* Sign Out Button */}
-                    <View className="mt-6">
+                    {/* Account Actions */}
+                    <GlassContainer
+                        style={{
+                            borderRadius: 24,
+                            padding: 24,
+                            marginBottom: 16,
+                        }}
+                    >
+                        <Text className="text-xl font-bold text-slate-200 mb-4">
+                            Account
+                        </Text>
+
+                        {/* Sign Out Button */}
                         <TouchableOpacity
                             onPress={handleSignOut}
-                            className="bg-red-50 rounded-2xl p-5 border border-red-200"
+                            className="flex-row items-center justify-between p-4 rounded-xl bg-slate-700/50 border border-slate-600 mb-3"
                         >
-                            <View className="flex-row items-center justify-center">
-                                <Ionicons name="log-out-outline" size={20} color="#dc2626" />
-                                <Text className="text-red-600 font-semibold ml-2 text-lg">
+                            <View className="flex-row items-center">
+                                <View className="bg-slate-600 rounded-full p-2 mr-3">
+                                    <Ionicons name="log-out-outline" size={20} color="#94a3b8" />
+                                </View>
+                                <Text className="text-slate-200 font-semibold text-lg">
                                     Sign Out
                                 </Text>
                             </View>
+                            <Ionicons name="chevron-forward" size={20} color="#64748b" />
                         </TouchableOpacity>
-                    </View>
+
+                        {/* Delete Account Button */}
+                        <TouchableOpacity
+                            onPress={handleDeleteAccount}
+                            className="flex-row items-center justify-between p-4 rounded-xl bg-red-950/30 border border-red-900/50"
+                        >
+                            <View className="flex-row items-center">
+                                <View className="bg-red-900/50 rounded-full p-2 mr-3">
+                                    <Ionicons name="trash-outline" size={20} color="#ef4444" />
+                                </View>
+                                <View>
+                                    <Text className="text-red-400 font-semibold text-lg">
+                                        Delete Account
+                                    </Text>
+                                    <Text className="text-red-400/90 text-sm mt-0.5">
+                                        This action cannot be undone
+                                    </Text>
+                                </View>
+                            </View>
+                            <Ionicons name="chevron-forward" size={20} color="#ef4444" />
+                        </TouchableOpacity>
+                    </GlassContainer>
 
                     {/* App Info */}
-                    <Text className="text-slate-400 text-center text-sm mt-8">
-                        Jericho Pickle v1.0.0
+                    <Text className="text-slate-500 text-center text-sm mt-4">
+                        WePickle v1.0.0
                     </Text>
-                </View>
-            </ScrollView>
+                    {isLiquidGlassAvailable() && <View className="h-20" />}
+                </ScrollView>
+
+            </View>
+
+            <Header title="Profile" />
+
             <Popup
                 isVisible={popupVisible}
                 onClose={() => setPopupVisible(false)}
@@ -208,4 +271,3 @@ export default function ProfileScreen() {
         </Background>
     );
 }
-
