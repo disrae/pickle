@@ -135,6 +135,53 @@ const schema = defineSchema({
         .index("by_chat", ["chatId"])
         .index("by_user", ["userId"])
         .index("by_chat_user", ["chatId", "userId"]),
+
+    featureRequests: defineTable({
+        title: v.string(),
+        description: v.string(),
+        category: v.string(),
+        createdBy: v.id("users"),
+        createdAt: v.number(),
+        isPreset: v.boolean(),
+    })
+        .index("by_creator", ["createdBy"])
+        .index("by_created", ["createdAt"]),
+
+    featureVotes: defineTable({
+        userId: v.id("users"),
+        featureRequestId: v.id("featureRequests"),
+        createdAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_feature", ["featureRequestId"])
+        .index("by_user_feature", ["userId", "featureRequestId"]),
+
+    builderChats: defineTable({
+        title: v.string(),
+        description: v.optional(v.string()),
+        createdBy: v.id("users"),
+        createdAt: v.number(),
+        lastMessageAt: v.optional(v.number()),
+    })
+        .index("by_last_message", ["lastMessageAt"]),
+
+    builderChatMessages: defineTable({
+        chatId: v.id("builderChats"),
+        userId: v.id("users"),
+        message: v.string(),
+        createdAt: v.number(),
+    })
+        .index("by_chat", ["chatId"])
+        .index("by_created", ["chatId", "createdAt"]),
+
+    builderChatParticipants: defineTable({
+        chatId: v.id("builderChats"),
+        userId: v.id("users"),
+        joinedAt: v.number(),
+    })
+        .index("by_chat", ["chatId"])
+        .index("by_user", ["userId"])
+        .index("by_chat_user", ["chatId", "userId"]),
 });
 
 export default schema;
