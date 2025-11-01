@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.dannyisrael.wepickle",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "SupportURL": "https://wepickle.win/support"
       },
       "icon": {
         "dark": "./assets/icons/ios-dark.png",
