@@ -115,11 +115,11 @@ export default function Index() {
                 )}
 
                 {/* Test verification */}
-                <View className="h-8" />
+                {/* <View className="h-8" />
                 <StyledButton
-                  onPress={() => router.push("/auth/verify?token=92829804&email=danny.israel@gmail.com")}
+                  onPress={() => router.push("/auth/verify?token=55688520&email=danny.israel@gmail.com")}
                   title="Test verification"
-                />
+                /> */}
 
               </View>
             </View>
