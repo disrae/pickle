@@ -13,10 +13,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
   const { top } = useSafeAreaInsets();
-  const router = useRouter();
   const { signIn } = useAuthActions();
+  const router = useRouter();
   const user = useQuery(api.users.currentUser);
   const [email, setEmail] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [popupTitle, setPopupTitle] = useState("");
   const [popupMessage, setPopupMessage] = useState("");
@@ -49,11 +50,7 @@ export default function Index() {
       await signIn("resend-otp", {
         email: email.trim().toLowerCase(),
       });
-      setPopupTitle("Login Link Sent");
-      setPopupMessage("Check your email for a login link.");
-      setShowPopup(true);
-      // Show Popup 
-
+      setEmailSent(true);
       // Navigate to verification screen
       // router.push("/auth/verify");
     } catch (error) {
@@ -88,7 +85,7 @@ export default function Index() {
                 }}
               >
                 <Text className="text-3xl font-bold text-slate-800 text-center mb-2">
-                  We Pickle
+                  WePickle
                 </Text>
                 <Text className="text-slate-500 text-center mb-8">
                   Sign in to continue
@@ -104,14 +101,25 @@ export default function Index() {
 
                 <View className="h-8" />
 
-                <StyledButton onPress={handleSendLoginLink} title="Send login link" />
+                <StyledButton
+                  onPress={handleSendLoginLink}
+                  title={emailSent ? "Email Sent ✓" : "Send login link"}
+                  variant={emailSent ? "success" : "primary"}
+                  disabled={emailSent}
+                />
+
+                {emailSent && (
+                  <Text className="text-slate-600 text-center mt-4 text-sm">
+                    Check your email for a login link. It may take a few seconds or minutes to arrive.
+                  </Text>
+                )}
 
                 {/* Test verification */}
-                {/* <View className="h-8" />
+                <View className="h-8" />
                 <StyledButton
-                  onPress={() => router.push("/auth/verify?token=12539071&email=danny.israel@gmail.com")}
+                  onPress={() => router.push("/auth/verify?token=92829804&email=danny.israel@gmail.com")}
                   title="Test verification"
-                /> */}
+                />
 
               </View>
             </View>
