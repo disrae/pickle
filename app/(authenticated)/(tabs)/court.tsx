@@ -128,6 +128,16 @@ export default function CourtsScreen() {
     const headerHeight = top + 100;
     const isCheckedIn = !!currentCheckIn;
 
+    if (court === undefined) {
+        return (
+            <Background>
+                <View className="flex-1 items-center justify-center px-8">
+                    <ActivityIndicator size="large" color="#65a30d" />
+                </View>
+            </Background>
+        );
+    }
+
     if (!court && Boolean(user)) {
         return (
             <Background>

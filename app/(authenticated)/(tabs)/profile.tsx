@@ -48,7 +48,8 @@ export default function ProfileScreen() {
             "Are you sure you want to sign out?",
             () => {
                 signOut();
-                router.push('/login');
+                router.dismissAll();
+                router.replace('/login');
             },
             "Sign Out"
         );
