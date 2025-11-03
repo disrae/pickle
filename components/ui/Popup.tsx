@@ -21,23 +21,23 @@ export const Popup = ({ isVisible, onClose, title, message, buttonText = "OK", o
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <View className="flex-1 justify-center items-center bg-black/50">
+            <View className="flex-1 justify-center items-center bg-black/70">
                 <View
-                    className="bg-white/95 p-6 rounded-3xl w-4/5 max-w-md items-center"
+                    className="bg-slate-800/95 border border-slate-700 p-6 rounded-3xl w-4/5 max-w-md items-center"
                     style={{
                         shadowColor: "#000",
                         shadowOffset: { width: 0, height: 8 },
-                        shadowOpacity: 0.15,
+                        shadowOpacity: 0.3,
                         shadowRadius: 16,
                         elevation: 8,
                     }}
                 >
                     {title && (
-                        <Text className="text-2xl font-bold text-slate-800 mb-4 text-center">
+                        <Text className="text-2xl font-bold text-slate-200 mb-2 text-center">
                             {title}
                         </Text>
                     )}
-                    <Text className="text-slate-600 text-center mb-6">{message}</Text>
+                    <Text className="text-slate-300 text-center mb-6">{message}</Text>
                     <View className={`w-full ${onConfirm ? "flex-row space-x-4" : ""}`}>
                         {onConfirm ? (
                             <>
