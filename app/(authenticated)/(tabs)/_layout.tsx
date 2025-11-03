@@ -1,8 +1,11 @@
 import { PicklePaddle } from "@/assets/icons/picklepaddle";
+import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "convex/react";
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
+    const user = useQuery(api.users.currentUser);
     return (
         <Tabs
             screenOptions={{
@@ -20,6 +23,13 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
+                    href: null,
+                }}
+            />
+            <Tabs.Screen
+                name="court"
+                options={{
+                    title: "Court",
                     tabBarIcon: ({ color, size }) => <PicklePaddle width={size} height={size} tintColor={color} />,
                 }}
             />
@@ -42,6 +52,7 @@ export default function TabsLayout() {
                 options={{
                     title: "Profile",
                     tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size} />,
+                    href: user ? "/profile" : null,
                 }}
             />
         </Tabs>

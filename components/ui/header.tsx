@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GlassContainer } from "./GlassContainer";
+import { GuestModeBanner } from "./GuestModeBanner";
 
 interface HeaderProps {
     title: string;
@@ -9,10 +10,15 @@ interface HeaderProps {
     rightButton?: "chat" | "back";
     onRightPress?: () => void;
     onTitlePress?: () => void;
+    user?: any; // User object from Convex query
 }
 
-export function Header({ title, titleSize = "text-2xl", rightButton, onRightPress, onTitlePress }: HeaderProps) {
+export function Header({ title, titleSize = "text-2xl", rightButton, onRightPress, onTitlePress, user }: HeaderProps) {
     const { top } = useSafeAreaInsets();
+    const isGuestMode = user === null;
+    const bannerHeight = isGuestMode
+        ? top + (Platform.OS === "web" ? 52 : 0)
+        : 0;
 
     const RightButton = () => {
         if (!rightButton || !onRightPress) return null;
@@ -50,21 +56,24 @@ export function Header({ title, titleSize = "text-2xl", rightButton, onRightPres
     };
 
     return (
-        <GlassContainer
-            style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                paddingTop: top + 20,
-                paddingBottom: 20,
-                paddingHorizontal: 16,
-            }}
-        >
-            <View className="flex-row items-center justify-between">
-                <TitleContent />
-                <RightButton />
-            </View>
-        </GlassContainer>
+        <>
+            <GuestModeBanner isVisible={isGuestMode} />
+            <GlassContainer
+                style={{
+                    position: 'absolute',
+                    top: bannerHeight,
+                    left: 0,
+                    right: 0,
+                    paddingTop: top - 8,
+                    paddingBottom: 8,
+                    paddingHorizontal: 16,
+                }}
+            >
+                <View className="flex-row items-center justify-between">
+                    <TitleContent />
+                    <RightButton />
+                </View>
+            </GlassContainer>
+        </>
     );
 }

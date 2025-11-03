@@ -1,14 +1,17 @@
 import { PicklePaddle } from "@/assets/icons/picklepaddle";
+import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "convex/react";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
 export default function TabLayout() {
+    const user = useQuery(api.users.currentUser);
     if (isLiquidGlassAvailable()) {
         return (
             <NativeTabs tintColor="#65a30d">
-                <NativeTabs.Trigger name="index"  >
+                <NativeTabs.Trigger name="court"  >
                     <Label hidden>Court</Label>
                     <Icon sf="figure.pickleball" />
                 </NativeTabs.Trigger>
@@ -20,7 +23,7 @@ export default function TabLayout() {
                     <Label hidden>Builder</Label>
                     <Icon sf="hammer.fill" />
                 </NativeTabs.Trigger>
-                <NativeTabs.Trigger name="profile" >
+                <NativeTabs.Trigger name="profile" hidden={!user}>
                     <Label hidden>Profile</Label>
                     <Icon sf="person.fill" />
                 </NativeTabs.Trigger>
@@ -45,6 +48,12 @@ export default function TabLayout() {
                 <Tabs.Screen
                     name="index"
                     options={{
+                        href: null,
+                    }}
+                />
+                <Tabs.Screen
+                    name="court"
+                    options={{
                         title: "Court",
                         tabBarIcon: ({ color, size }) => <PicklePaddle width={size * 1.2} height={size * 1.2} tintColor={color} />,
                     }}
@@ -67,7 +76,9 @@ export default function TabLayout() {
                     name="profile"
                     options={{
                         title: "Profile",
-                        tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size * 1.2} />,
+                        tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size * 1.2}
+                        />,
+                        href: user ? "/profile" : null,
                     }}
                 />
             </Tabs>

@@ -10,11 +10,13 @@ import { useMutation, useQuery } from "convex/react";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
+    const router = useRouter();
     const { top, bottom } = useSafeAreaInsets();
     const user = useQuery(api.users.currentUser);
     const profileImageUrl = useQuery(api.users.getProfileImageUrl);
@@ -44,7 +46,10 @@ export default function ProfileScreen() {
         showPopup(
             "Sign Out",
             "Are you sure you want to sign out?",
-            () => signOut(),
+            () => {
+                signOut();
+                router.push('/login');
+            },
             "Sign Out"
         );
     };
@@ -252,7 +257,7 @@ export default function ProfileScreen() {
 
             </View>
 
-            <Header title="Profile" />
+            <Header title="Profile" user={user} />
 
             <Popup
                 isVisible={popupVisible}

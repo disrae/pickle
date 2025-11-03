@@ -38,6 +38,9 @@ export default function ChatListScreen() {
             : "skip"
     );
 
+    // Get current user
+    const user = useQuery(api.users.currentUser);
+
     const createChat = useMutation(api.chats.createChat);
 
     const chats = searchQuery.trim() ? searchResults : allChats;
@@ -183,6 +186,7 @@ export default function ChatListScreen() {
                 titleSize="text-2xl"
                 rightButton="back"
                 onRightPress={() => router.back()}
+                user={user}
             />
 
             <ChatFAB onPress={() => setShowNewChatModal(true)} />

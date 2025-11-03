@@ -34,6 +34,9 @@ export default function DrillsScreen() {
     // const stats = useQuery(api.drillProgress.getUserStats);
     const allProgress = useQuery(api.drillProgress.getAllUserProgress);
 
+    // Get current user
+    const user = useQuery(api.users.currentUser);
+
     // Create progress lookup for drill cards
     const progressLookup: Record<string, any> = {};
     if (allProgress) {
@@ -272,6 +275,7 @@ export default function DrillsScreen() {
                 titleSize="text-2xl"
                 rightButton="chat"
                 onRightPress={() => router.push("/training/chats")}
+                user={user}
             />
 
             <TrainingFAB onPress={() => setShowCreateModal(true)} />

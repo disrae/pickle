@@ -268,6 +268,7 @@ export default function BuilderChatScreen() {
                     title={chat.title}
                     rightButton="back"
                     onRightPress={() => router.back()}
+                    user={currentUser}
                 />
             </KeyboardAvoidingView>
         </ChatBackground>

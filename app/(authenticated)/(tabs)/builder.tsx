@@ -27,6 +27,9 @@ export default function BuilderScreen() {
     const features = useQuery(api.featureRequests.list);
     const createFeature = useMutation(api.featureRequests.create);
 
+    // Get current user
+    const user = useQuery(api.users.currentUser);
+
     const handleSubmit = async () => {
         if (!title.trim() || !description.trim()) {
             return;
@@ -243,6 +246,7 @@ export default function BuilderScreen() {
                 titleSize="text-2xl"
                 rightButton="chat"
                 onRightPress={() => router.push("/builder/chats")}
+                user={user}
             />
         </Background>
     );

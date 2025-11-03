@@ -29,6 +29,9 @@ export default function BuilderChatsListScreen() {
         searchQuery.trim() ? { searchTerm: searchQuery } : "skip"
     );
 
+    // Get current user
+    const user = useQuery(api.users.currentUser);
+
     const createChat = useMutation(api.builderChats.create);
 
     const chats = searchQuery.trim() ? searchResults : allChats;
@@ -158,6 +161,7 @@ export default function BuilderChatsListScreen() {
                 titleSize="text-2xl"
                 rightButton="back"
                 onRightPress={() => router.back()}
+                user={user}
             />
 
             <ChatFAB onPress={() => setShowNewChatModal(true)} />

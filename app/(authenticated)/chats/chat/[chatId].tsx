@@ -288,6 +288,7 @@ export default function ChatScreen() {
                     title={chat.title}
                     rightButton="back"
                     onRightPress={() => router.back()}
+                    user={currentUser}
                 />
             </KeyboardAvoidingView>
         </ChatBackground>

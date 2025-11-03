@@ -1,16 +1,23 @@
 import { LoadingScreen } from "@/components/screens/Loading";
 import { api } from "@/convex/_generated/api";
-import { LoadingProvider, useLoading } from '@/lib/loading-context';
+import { LoadingProvider } from '@/lib/loading-context';
 import { ThemeProvider, useTheme } from '@/lib/theme-context';
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient, useQuery } from "convex/react";
 import { Stack } from "expo-router";
 import Head from 'expo-router/head';
 import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
+
+SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+  duration: 600,
+  fade: true,
+});
 
 // Wrap SecureStore methods to handle errors gracefully
 const secureStorage = {
@@ -69,25 +76,16 @@ export default function RootLayout() {
 function AppContent() {
   const { activeTheme } = useTheme();
   const user = useQuery(api.users.currentUser);
-  const isLoadingUser = user === undefined;
-  const isAuthenticated = user !== null;
-  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
-    if (isLoadingUser) {
-      showLoading();
-    } else {
-      hideLoading();
+    if (user !== undefined) {
+      SplashScreen.hideAsync();
     }
-  }, [isLoadingUser, showLoading, hideLoading]);
+  }, [user]);
 
   return (
     <View style={activeTheme} className="flex-1 bg-background">
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={isAuthenticated}>
-          <Stack.Screen name="(authenticated)" />
-        </Stack.Protected>
-      </Stack>
+      <Stack screenOptions={{ headerShown: false }} />
     </View>
   );
 }

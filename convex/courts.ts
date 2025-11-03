@@ -31,7 +31,20 @@ export const getDefault = query({
                 }
             }
         }
-        return null;
+
+        // Fallback: return Jericho Beach for unauthenticated users
+        const jerichoCourt = await ctx.db
+            .query("courts")
+            .filter((q) => q.eq(q.field("name"), "Jericho Beach"))
+            .first();
+
+        if (jerichoCourt) {
+            return jerichoCourt;
+        }
+
+        // If Jericho Beach doesn't exist, return the first court in the database
+        const firstCourt = await ctx.db.query("courts").first();
+        return firstCourt;
     },
 });
 
