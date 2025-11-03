@@ -10,7 +10,7 @@ import { useMutation, useQuery } from "convex/react";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CourtsScreen() {
@@ -191,6 +191,7 @@ export default function CourtsScreen() {
                         )}
 
                         {isLiquidGlassAvailable() && <View className='h-6' />}
+                        {Platform.OS === 'web' && <View className='h-6' />}
 
                         {/* Currently Checked In Section */}
                         <GlassContainer
