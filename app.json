@@ -13,7 +13,8 @@
       "bundleIdentifier": "com.dannyisrael.wepickle",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "SupportURL": "https://wepickle.win/support"
+        "SupportURL": "https://wepickle.win/support",
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos so you acan select a profile image which may be used as your avatar in the app. Specifically, in the chats."
       },
       "icon": {
         "dark": "./assets/icons/ios-dark.png",
@@ -31,10 +32,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.dannyisrael.wepickle",
-      "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": []
     },
     "web": {
       "output": "static",
@@ -71,7 +69,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "The app accesses your photos to set your profile image which may be used as your avatar in the app. Specifically, in the chats."
         }
       ]
     ],
