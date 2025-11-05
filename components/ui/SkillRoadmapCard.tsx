@@ -416,9 +416,9 @@ interface RadarChartProps {
 }
 
 function RadarChart({ skillProgress }: RadarChartProps) {
-    const size = 280;
+    const size = 320;
     const center = size / 2;
-    const maxRadius = size / 2 - 40; // Leave room for labels
+    const maxRadius = size / 2 - 60; // Leave room for labels
     const numSkills = SKILL_CATEGORIES.length;
 
     // Calculate points for the skill polygon
@@ -430,8 +430,8 @@ function RadarChart({ skillProgress }: RadarChartProps) {
             return {
                 x: center + radius * Math.cos(angle),
                 y: center + radius * Math.sin(angle),
-                labelX: center + (maxRadius + 25) * Math.cos(angle),
-                labelY: center + (maxRadius + 25) * Math.sin(angle),
+                labelX: center + (maxRadius + 15) * Math.cos(angle),
+                labelY: center + (maxRadius + 35) * Math.sin(angle),
                 skill: skill.name,
             };
         });
