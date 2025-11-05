@@ -3,6 +3,7 @@ import { CreateDrillCard } from "@/components/ui/CreateDrillCard";
 import { DrillCard } from "@/components/ui/DrillCard";
 import { DrillDetailCard } from "@/components/ui/DrillDetailCard";
 import { Header } from "@/components/ui/header";
+import { SkillRoadmapCard } from "@/components/ui/SkillRoadmapCard";
 import { TrainingFAB } from "@/components/ui/TrainingFAB";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -54,6 +55,43 @@ export default function DrillsScreen() {
             includeScore: true,
         });
     }, [allDrills]);
+
+    // Calculate skill progress per category
+    const skillProgress = useMemo(() => {
+        if (!allDrills || !allProgress) {
+            return {};
+        }
+
+        const progressByCategory: Record<string, { completed: number; total: number }> = {};
+
+        // Initialize all categories
+        CATEGORIES.forEach(category => {
+            progressByCategory[category] = { completed: 0, total: 0 };
+        });
+
+        // Count drills and completions per category
+        allDrills.forEach(drill => {
+            if (progressByCategory[drill.category]) {
+                progressByCategory[drill.category].total++;
+
+                // Check if drill has any completed milestones
+                const drillProgress = allProgress.find(p => p.drillId === drill._id);
+                if (drillProgress && drillProgress.completedMilestones.length > 0) {
+                    // Weight completion by milestone completion percentage
+                    const completionRate = drillProgress.completedMilestones.length / drill.milestones.length;
+                    progressByCategory[drill.category].completed += completionRate;
+                }
+            }
+        });
+
+        // Convert to percentages
+        const percentages: Record<string, number> = {};
+        Object.entries(progressByCategory).forEach(([category, data]) => {
+            percentages[category] = data.total > 0 ? (data.completed / data.total) * 100 : 0;
+        });
+
+        return percentages;
+    }, [allDrills, allProgress]);
 
     // Filter drills on client side
     const drills = useMemo(() => {
@@ -125,6 +163,13 @@ export default function DrillsScreen() {
                     }}
                     showsVerticalScrollIndicator={false}
                 >
+                    {/* Skill Roadmap Card */}
+                    <View className="px-4">
+                        <SkillRoadmapCard
+                            skillProgress={skillProgress}
+                        />
+                    </View>
+
                     {/* Category Filter - Full Width */}
                     <ScrollView
                         horizontal
