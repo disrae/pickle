@@ -26,6 +26,12 @@ const schema = defineSchema({
             lng: v.number(),
         }),
         notes: v.optional(v.string()),
+        lineupSlots: v.optional(v.number()),
+        currentLineupCount: v.optional(v.number()),
+        lineupReportedBy: v.optional(v.id("users")),
+        lineupReportedAt: v.optional(v.number()),
+        courtReportedDryAt: v.optional(v.number()),
+        courtReportedDryBy: v.optional(v.id("users")),
     }),
 
     checkIns: defineTable({
@@ -182,6 +188,23 @@ const schema = defineSchema({
         .index("by_chat", ["chatId"])
         .index("by_user", ["userId"])
         .index("by_chat_user", ["chatId", "userId"]),
+
+    lineupReports: defineTable({
+        courtId: v.id("courts"),
+        userId: v.id("users"),
+        lineupCount: v.number(),
+        reportedAt: v.number(),
+    })
+        .index("by_court", ["courtId"])
+        .index("by_user", ["userId"]),
+
+    conditionReports: defineTable({
+        courtId: v.id("courts"),
+        userId: v.id("users"),
+        reportedAt: v.number(),
+    })
+        .index("by_court", ["courtId"])
+        .index("by_user", ["userId"]),
 });
 
 export default schema;

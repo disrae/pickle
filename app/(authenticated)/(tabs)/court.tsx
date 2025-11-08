@@ -1,3 +1,4 @@
+import { PicklePaddle } from "@/assets/icons/picklepaddle";
 import { Background } from "@/components/ui/Background";
 import { Button } from "@/components/ui/button";
 import { CourtSelectorPopup } from "@/components/ui/CourtSelectorPopup";
@@ -21,6 +22,8 @@ export default function CourtsScreen() {
     const [showCourtSelector, setShowCourtSelector] = useState(false);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
+    const [isReportingLineup, setIsReportingLineup] = useState(false);
+    const [isReportingCondition, setIsReportingCondition] = useState(false);
 
     // Get default court
     const court = useQuery(api.courts.getDefault);
@@ -38,11 +41,31 @@ export default function CourtsScreen() {
         court ? { courtId: court._id } : "skip"
     );
 
+    // Get court condition and reporter info
+    const isCourtDry = useQuery(
+        api.courts.isCourtDry,
+        court ? { courtId: court._id } : "skip"
+    );
+    const isLineupValid = useQuery(
+        api.courts.isLineupValid,
+        court ? { courtId: court._id } : "skip"
+    );
+    const lineupReporter = useQuery(
+        api.courts.getLineupReporter,
+        court?.lineupReportedBy ? { userId: court.lineupReportedBy } : "skip"
+    );
+    const conditionReporter = useQuery(
+        api.courts.getConditionReporter,
+        court?.courtReportedDryBy ? { userId: court.courtReportedDryBy } : "skip"
+    );
+
     // Mutations
     const checkIn = useMutation(api.checkIns.checkIn);
     const checkOut = useMutation(api.checkIns.checkOut);
     const createPlannedVisit = useMutation(api.plannedVisits.create);
     const deletePlannedVisit = useMutation(api.plannedVisits.deleteVisit);
+    const reportLineup = useMutation(api.courts.reportLineup);
+    const reportCourtDry = useMutation(api.courts.reportCourtDry);
 
     const handleCheckIn = async () => {
         if (!court) return;
@@ -84,6 +107,30 @@ export default function CourtsScreen() {
         }
     };
 
+    const handleReportLineup = async (lineupCount: number) => {
+        if (!court) return;
+        setIsReportingLineup(true);
+        try {
+            await reportLineup({ courtId: court._id, lineupCount });
+        } catch (error) {
+            console.error("Report lineup error:", error);
+        } finally {
+            setIsReportingLineup(false);
+        }
+    };
+
+    const handleReportCourtDry = async () => {
+        if (!court) return;
+        setIsReportingCondition(true);
+        try {
+            await reportCourtDry({ courtId: court._id });
+        } catch (error) {
+            console.error("Report court dry error:", error);
+        } finally {
+            setIsReportingCondition(false);
+        }
+    };
+
 
     const formatPlannedTime = (timestamp: number) => {
         const date = new Date(timestamp);
@@ -111,6 +158,29 @@ export default function CourtsScreen() {
         return `${dayLabel} at ${displayHours}:${displayMins} ${ampm}`;
     };
 
+    const formatReportTime = (timestamp: number) => {
+        const date = new Date(timestamp);
+        const now = Date.now();
+        const diffMs = now - timestamp;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+        if (diffMins < 1) {
+            return "just now";
+        } else if (diffMins < 60) {
+            return `${diffMins}m ago`;
+        } else if (diffHours < 24) {
+            return `${diffHours}h ago`;
+        } else {
+            const hours = date.getHours();
+            const mins = date.getMinutes();
+            const ampm = hours >= 12 ? "PM" : "AM";
+            const displayHours = hours % 12 || 12;
+            const displayMins = mins.toString().padStart(2, "0");
+            return `${date.toLocaleDateString("en-US", { month: "short", day: "numeric" })} at ${displayHours}:${displayMins} ${ampm}`;
+        }
+    };
+
     // Group planned visits by time slot
     const groupedVisits = plannedVisits?.reduce((acc, visit) => {
         const timeKey = visit.plannedTime;
@@ -125,7 +195,7 @@ export default function CourtsScreen() {
         .map(Number)
         .sort((a, b) => a - b);
 
-    const headerHeight = top + 100;
+    const headerHeight = 100;
     const isCheckedIn = !!currentCheckIn;
 
     if (court === undefined) {
@@ -193,6 +263,130 @@ export default function CourtsScreen() {
                         {isLiquidGlassAvailable() && <View className='h-6' />}
                         {Platform.OS === 'web' && <View className='h-6' />}
 
+                        {/* Lineup and Condition Section */}
+                        <GlassContainer
+                            style={{
+                                borderRadius: 24,
+                                padding: 24,
+                                marginBottom: 16,
+                            }}
+                        >
+                            {/* Lineup Section */}
+                            <View className="mb-6">
+                                {isCheckedIn ? (
+                                    <View>
+                                        <View className="flex-row flex-wrap items-center gap-3 mb-3">
+                                            {Array.from({ length: 8 }, (_, i) => {
+                                                const paddleNumber = i + 1;
+                                                const isFilled = isLineupValid && court?.currentLineupCount !== undefined && paddleNumber <= court.currentLineupCount;
+                                                const isSelected = isLineupValid && court?.currentLineupCount === paddleNumber;
+                                                return (
+                                                    <TouchableOpacity
+                                                        key={i}
+                                                        onPress={() => handleReportLineup(isSelected ? 0 : paddleNumber)}
+                                                        disabled={isReportingLineup}
+                                                        className="opacity-90"
+                                                    >
+                                                        <PicklePaddle
+                                                            width={28}
+                                                            height={28}
+                                                            tintColor={isFilled ? "#a8f238" : "#1a8db0"}
+                                                        />
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                        {isLineupValid && court?.currentLineupCount !== undefined && court.currentLineupCount > 0 && lineupReporter && (
+                                            <Text className="text-slate-200 text-sm">
+                                                Lineup for {court.currentLineupCount} {court.currentLineupCount === 1 ? "court" : "courts"}, reported by {lineupReporter.name || lineupReporter.email}
+                                                {court.lineupReportedAt && ` ${formatReportTime(court.lineupReportedAt)}`}
+                                            </Text>
+                                        )}
+                                        {(!isLineupValid || !court?.currentLineupCount || court.currentLineupCount === 0) && (
+                                            <Text className="text-slate-400 text-sm">
+                                                Tap a paddle to report lineup
+                                            </Text>
+                                        )}
+                                    </View>
+                                ) : (
+                                    <View>
+                                        <View className="flex-row flex-wrap gap-3 mb-3 opacity-50">
+                                            {Array.from({ length: 8 }, (_, i) => {
+                                                const paddleNumber = i + 1;
+                                                const isFilled = isLineupValid && court?.currentLineupCount !== undefined && paddleNumber <= court.currentLineupCount;
+                                                return (
+                                                    <View key={i}>
+                                                        <PicklePaddle
+                                                            width={30}
+                                                            height={30}
+                                                            tintColor={isFilled ? "#a8f238" : "#1a8db0"}
+                                                        />
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                        {isLineupValid && court?.currentLineupCount !== undefined && court.currentLineupCount > 0 && lineupReporter && (
+                                            <Text className="text-slate-300 text-sm">
+                                                Lineup for {court.currentLineupCount} {court.currentLineupCount === 1 ? "court" : "courts"}, reported by {lineupReporter.name || lineupReporter.email}
+                                                {court.lineupReportedAt && ` ${formatReportTime(court.lineupReportedAt)}`}
+                                            </Text>
+                                        )}
+                                        {(!isLineupValid || !court?.currentLineupCount || court.currentLineupCount === 0) && (
+                                            <Text className="text-slate-400 text-sm">
+                                                Check in to report lineup
+                                            </Text>
+                                        )}
+                                    </View>
+                                )}
+                            </View>
+
+                            {/* Court Condition Section */}
+                            {((user && isCheckedIn) || (!user && isCourtDry)) && (
+                                <View className="mt-">
+                                    {isCourtDry && conditionReporter && court?.courtReportedDryAt ? (
+                                        <View className="flex-row items-center">
+                                            <Ionicons
+                                                name="flame"
+                                                size={24}
+                                                color="#ef4444"
+                                            />
+                                            <Text className="text-slate-300 text-sm ml-2">
+                                                Court reported dry by {conditionReporter.name || conditionReporter.email} {formatReportTime(court.courtReportedDryAt)}
+                                            </Text>
+                                        </View>
+                                    ) : (
+                                        <View className="flex-row items-center justify-between">
+                                            <View className="flex-row items-center">
+                                                <Ionicons
+                                                    name="flame"
+                                                    size={24}
+                                                    color="#64748b"
+                                                />
+                                            </View>
+                                            {user && isCheckedIn && !isCourtDry && (
+                                                <TouchableOpacity
+                                                    onPress={handleReportCourtDry}
+                                                    disabled={isReportingCondition}
+                                                    className="flex-row items-center px-3 py-1.5 rounded-lg bg-slate-700/80 border border-red-400"
+                                                >
+                                                    {isReportingCondition ? (
+                                                        <ActivityIndicator size="small" color="#ef4444" />
+                                                    ) : (
+                                                        <>
+                                                            <Ionicons name="flame" size={18} color="#ef4444" />
+                                                            <Text className="text-sm font-semibold ml-1.5 text-red-400">
+                                                                Report Dry
+                                                            </Text>
+                                                        </>
+                                                    )}
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
+                                    )}
+                                </View>
+                            )}
+                        </GlassContainer>
+                        
                         {/* Currently Checked In Section */}
                         <GlassContainer
                             style={{
