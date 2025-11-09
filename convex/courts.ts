@@ -233,7 +233,7 @@ export const isCourtDry = query({
     },
 });
 
-// Helper query to check if lineup report is still valid (within 1 hour)
+// Helper query to check if lineup report is still valid (within 20 minutes)
 export const isLineupValid = query({
     args: {
         courtId: v.id("courts"),
@@ -244,9 +244,9 @@ export const isLineupValid = query({
             return false;
         }
 
-        const ONE_HOUR_MS = 60 * 60 * 1000;
+        const TWENTY_MINUTES_MS = 20 * 60 * 1000;
         const now = Date.now();
-        return (now - court.lineupReportedAt) < ONE_HOUR_MS;
+        return (now - court.lineupReportedAt) < TWENTY_MINUTES_MS;
     },
 });
 

@@ -288,9 +288,9 @@ export default function CourtsScreen() {
                                                         className="opacity-90"
                                                     >
                                                         <PicklePaddle
-                                                            width={28}
-                                                            height={28}
-                                                            tintColor={isFilled ? "#a8f238" : "#1a8db0"}
+                                                            width={30}
+                                                            height={30}
+                                                            tintColor={isFilled ? "#b8ff48" : "#aaa"}
                                                         />
                                                     </TouchableOpacity>
                                                 );
@@ -303,14 +303,14 @@ export default function CourtsScreen() {
                                             </Text>
                                         )}
                                         {(!isLineupValid || !court?.currentLineupCount || court.currentLineupCount === 0) && (
-                                            <Text className="text-slate-400 text-sm">
+                                            <Text className="text-slate-300 tracking-wide text-sm">
                                                 Tap a paddle to report lineup
                                             </Text>
                                         )}
                                     </View>
                                 ) : (
                                     <View>
-                                        <View className="flex-row flex-wrap gap-3 mb-3 opacity-50">
+                                        <View className="flex-row flex-wrap gap-3 mb-3 opacity-65">
                                             {Array.from({ length: 8 }, (_, i) => {
                                                 const paddleNumber = i + 1;
                                                 const isFilled = isLineupValid && court?.currentLineupCount !== undefined && paddleNumber <= court.currentLineupCount;
@@ -319,7 +319,7 @@ export default function CourtsScreen() {
                                                         <PicklePaddle
                                                             width={30}
                                                             height={30}
-                                                            tintColor={isFilled ? "#a8f238" : "#1a8db0"}
+                                                            tintColor={isFilled ? "#b8ff48" : "#aaa"}
                                                         />
                                                     </View>
                                                 );
@@ -332,7 +332,7 @@ export default function CourtsScreen() {
                                             </Text>
                                         )}
                                         {(!isLineupValid || !court?.currentLineupCount || court.currentLineupCount === 0) && (
-                                            <Text className="text-slate-400 text-sm">
+                                            <Text className="text-slate-200 text-sm">
                                                 Check in to report lineup
                                             </Text>
                                         )}
@@ -341,7 +341,7 @@ export default function CourtsScreen() {
                             </View>
 
                             {/* Court Condition Section */}
-                            {((user && isCheckedIn) || (!user && isCourtDry)) && (
+                            {((isCourtDry || (user && isCheckedIn))) && (
                                 <View className="mt-">
                                     {isCourtDry && conditionReporter && court?.courtReportedDryAt ? (
                                         <View className="flex-row items-center">
@@ -350,7 +350,7 @@ export default function CourtsScreen() {
                                                 size={24}
                                                 color="#ef4444"
                                             />
-                                            <Text className="text-slate-300 text-sm ml-2">
+                                            <Text className="text-slate-200 text-sm tracking-wide ml-2">
                                                 Court reported dry by {conditionReporter.name || conditionReporter.email} {formatReportTime(court.courtReportedDryAt)}
                                             </Text>
                                         </View>
