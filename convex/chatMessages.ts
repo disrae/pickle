@@ -77,6 +77,45 @@ export const sendMessage = mutation({
             });
         }
 
+        // Send notifications to participants who have enabled notifications
+        const sender = await ctx.db.get(userId);
+        const senderName = sender?.name || sender?.email || "Someone";
+        
+        const participants = await ctx.db
+            .query("chatParticipants")
+            .withIndex("by_chat", (q) => q.eq("chatId", chatId))
+            .collect();
+
+        for (const participant of participants) {
+            // Skip the sender
+            if (participant.userId === userId) continue;
+            
+            // Only notify if they have enabled notifications
+            if (participant.notifyOnNewMessage) {
+                const user = await ctx.db.get(participant.userId);
+                if (user?.expoPushToken) {
+                    // Send notification using Expo push API
+                    try {
+                        await fetch("https://exp.host/--/api/v2/push/send", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                to: user.expoPushToken,
+                                sound: "default",
+                                title: chat?.title || "New message",
+                                body: `${senderName}: ${message.slice(0, 100)}${message.length > 100 ? "..." : ""}`,
+                                data: { chatId, type: "court_chat" },
+                            }),
+                        });
+                    } catch (error) {
+                        console.error("Error sending push notification:", error);
+                    }
+                }
+            }
+        }
+
         return messageId;
     },
 });

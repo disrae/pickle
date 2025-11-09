@@ -18,7 +18,7 @@ interface UpdatesContextType {
 const UpdatesContext = createContext<UpdatesContextType | undefined>(undefined);
 
 export function UpdatesProvider({ children }: { children: React.ReactNode }) {
-    const [isUpdateAvailable, setIsUpdateAvailable] = useState(true);
+    const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
     const [isChecking, setIsChecking] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [updateInfo, setUpdateInfo] = useState<Updates.UpdateCheckResult | null>(null);

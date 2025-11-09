@@ -36,6 +36,16 @@ export default function ChatScreen() {
 
     const sendMessage = useMutation(api.chatMessages.sendMessage);
     const deleteChat = useMutation(api.chats.deleteChat);
+    const toggleNotifications = useMutation(api.chats.toggleChatNotifications);
+
+    const handleToggleNotifications = async () => {
+        if (!chatId) return;
+        try {
+            await toggleNotifications({ chatId: chatId as Id<"chats"> });
+        } catch (error) {
+            console.error("Error toggling notifications:", error);
+        }
+    };
 
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
@@ -149,14 +159,34 @@ export default function ChatScreen() {
                 keyboardVerticalOffset={0}
             >
                 <View className="flex-1" style={{ paddingTop: headerHeight }}>
-                    {/* Chat Description */}
-                    {chat.description && (
-                        <View className="px-4 py-3 bg-slate-100/80">
-                            <Text className="text-sm text-slate-600 text-center">
+                    {/* Chat Description & Notification Toggle */}
+                    <View className="px-4 py-3 bg-slate-100/80">
+                        {chat.description && (
+                            <Text className="text-sm text-slate-600 text-center mb-2">
                                 {chat.description}
                             </Text>
-                        </View>
-                    )}
+                        )}
+                        <TouchableOpacity
+                            onPress={handleToggleNotifications}
+                            className="flex-row items-center justify-center py-2"
+                            activeOpacity={0.7}
+                        >
+                            <Ionicons
+                                name={chat.notifyOnNewMessage ? "notifications" : "notifications-off-outline"}
+                                size={18}
+                                color={chat.notifyOnNewMessage ? "#84cc16" : "#94a3b8"}
+                            />
+                            <Text
+                                className={`text-sm ml-2 ${
+                                    chat.notifyOnNewMessage ? "text-lime-600 font-semibold" : "text-slate-500"
+                                }`}
+                            >
+                                {chat.notifyOnNewMessage
+                                    ? "Notifications enabled"
+                                    : "Enable notifications"}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
                     {/* Messages */}
                     <ScrollView

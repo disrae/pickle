@@ -14,7 +14,8 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "SupportURL": "https://wepickle.win/support",
-        "NSPhotoLibraryUsageDescription": "The app accesses your photos so you acan select a profile image which may be used as your avatar in the app. Specifically, in the chats."
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos so you acan select a profile image which may be used as your avatar in the app. Specifically, in the chats.",
+        "NSUserNotificationsUsageDescription": "WePickle uses notifications to keep you updated on chat messages, training reminders, and court check-ins from your pickleball community."
       },
       "icon": {
         "dark": "./assets/icons/ios-dark.png",

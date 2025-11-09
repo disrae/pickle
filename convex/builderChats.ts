@@ -39,6 +39,7 @@ export const list = query({
 export const get = query({
     args: { chatId: v.id("builderChats") },
     handler: async (ctx, { chatId }) => {
+        const userId = await getAuthUserId(ctx);
         const chat = await ctx.db.get(chatId);
         if (!chat) return null;
 
@@ -60,10 +61,18 @@ export const get = query({
             })
         );
 
+        // Get current user's notification preference
+        let notifyOnNewMessage = false;
+        if (userId) {
+            const currentUserParticipant = participants.find((p) => p.userId === userId);
+            notifyOnNewMessage = currentUserParticipant?.notifyOnNewMessage ?? false;
+        }
+
         return {
             ...chat,
             creator: creator ? { name: creator.name, email: creator.email } : null,
             participants: participantDetails,
+            notifyOnNewMessage,
         };
     },
 });
@@ -183,6 +192,36 @@ export const search = query({
         return matchingChats
             .filter((chat) => chat !== null)
             .sort((a, b) => (b!.lastMessageAt ?? 0) - (a!.lastMessageAt ?? 0));
+    },
+});
+
+// Toggle builder chat notification preference
+export const toggleNotifications = mutation({
+    args: { chatId: v.id("builderChats") },
+    handler: async (ctx, { chatId }) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) {
+            throw new Error("Not authenticated");
+        }
+
+        // Find the participant record
+        const participant = await ctx.db
+            .query("builderChatParticipants")
+            .withIndex("by_chat_user", (q) =>
+                q.eq("chatId", chatId).eq("userId", userId)
+            )
+            .first();
+
+        if (!participant) {
+            throw new Error("User is not a participant in this chat");
+        }
+
+        // Toggle the notification preference
+        await ctx.db.patch(participant._id, {
+            notifyOnNewMessage: !participant.notifyOnNewMessage,
+        });
+
+        return !participant.notifyOnNewMessage;
     },
 });
 

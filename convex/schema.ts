@@ -79,6 +79,7 @@ const schema = defineSchema({
         chatId: v.id("chats"),
         userId: v.id("users"),
         joinedAt: v.number(),
+        notifyOnNewMessage: v.optional(v.boolean()),
     })
         .index("by_chat", ["chatId"])
         .index("by_user", ["userId"])
@@ -138,6 +139,7 @@ const schema = defineSchema({
         chatId: v.id("trainingChats"),
         userId: v.id("users"),
         joinedAt: v.number(),
+        notifyOnNewMessage: v.optional(v.boolean()),
     })
         .index("by_chat", ["chatId"])
         .index("by_user", ["userId"])
@@ -185,6 +187,7 @@ const schema = defineSchema({
         chatId: v.id("builderChats"),
         userId: v.id("users"),
         joinedAt: v.number(),
+        notifyOnNewMessage: v.optional(v.boolean()),
     })
         .index("by_chat", ["chatId"])
         .index("by_user", ["userId"])
