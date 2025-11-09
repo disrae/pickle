@@ -62,6 +62,9 @@ export const getCurrentCheckIns = query({
         courtId: v.id("courts"),
     },
     handler: async (ctx, args) => {
+        const currentUserId = await getAuthUserId(ctx);
+        if (!currentUserId) return [];
+
         const now = Date.now();
         const checkIns = await ctx.db
             .query("checkIns")
@@ -74,13 +77,33 @@ export const getCurrentCheckIns = query({
             if (checkIn.expiresAt > now) {
                 const user = await ctx.db.get(checkIn.userId);
                 if (user) {
-                    activeCheckIns.push({
-                        ...checkIn,
-                        user: {
-                            name: user.name,
-                            email: user.email,
-                        },
-                    });
+                    // Check for blocking relationship
+                    const [blockedByMe, blockedByThem] = await Promise.all([
+                        ctx.db
+                            .query("blockedUsers")
+                            .withIndex("by_user_and_blocked", (q) =>
+                                q.eq("userId", currentUserId).eq("blockedUserId", checkIn.userId)
+                            )
+                            .first(),
+                        ctx.db
+                            .query("blockedUsers")
+                            .withIndex("by_user_and_blocked", (q) =>
+                                q.eq("userId", checkIn.userId).eq("blockedUserId", currentUserId)
+                            )
+                            .first(),
+                    ]);
+
+                    // Skip if there's any blocking relationship
+                    if (!blockedByMe && !blockedByThem) {
+                        activeCheckIns.push({
+                            ...checkIn,
+                            user: {
+                                _id: user._id,
+                                name: user.name,
+                                email: user.email,
+                            },
+                        });
+                    }
                 }
             }
         }

@@ -47,7 +47,7 @@ export function Background({ children }: { children: React.ReactNode; }) {
 
 export function ChatBackground({ children }: { children: React.ReactNode; }) {
     return (
-        <View className="flex-1 bg-lime-600">
+        <View className="flex-1 bg-lime-500">
             {/* Content rendered on chat background */}
             {children}
         </View>

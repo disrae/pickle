@@ -229,7 +229,102 @@ export const deleteAccount = mutation({
             await ctx.db.delete(vote._id);
         }
 
+        // Delete notification settings
+        const notificationSettings = await ctx.db
+            .query("userNotificationSettings")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .collect();
+        for (const setting of notificationSettings) {
+            await ctx.db.delete(setting._id);
+        }
+
+        // Delete notification settings where this user is subscribed to
+        const subscribedToSettings = await ctx.db
+            .query("userNotificationSettings")
+            .withIndex("by_subscribed_to", (q) => q.eq("subscribedToUserId", userId))
+            .collect();
+        for (const setting of subscribedToSettings) {
+            await ctx.db.delete(setting._id);
+        }
+
+        // Delete blocked users records
+        const blockedByUser = await ctx.db
+            .query("blockedUsers")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .collect();
+        for (const blocked of blockedByUser) {
+            await ctx.db.delete(blocked._id);
+        }
+
+        // Delete records where this user is blocked
+        const blockedUser = await ctx.db
+            .query("blockedUsers")
+            .withIndex("by_blocked_user", (q) => q.eq("blockedUserId", userId))
+            .collect();
+        for (const blocked of blockedUser) {
+            await ctx.db.delete(blocked._id);
+        }
+
         // Finally, delete the user document
         await ctx.db.delete(userId);
+    },
+});
+
+// Get user by ID (for viewing other user profiles)
+export const getUserById = query({
+    args: { userId: v.id("users") },
+    handler: async (ctx, { userId }) => {
+        return await ctx.db.get(userId);
+    },
+});
+
+// Get profile image URL for any user
+export const getUserProfileImageUrl = query({
+    args: { userId: v.id("users") },
+    handler: async (ctx, { userId }) => {
+        const user = await ctx.db.get(userId);
+        if (!user?.image) return null;
+
+        return await ctx.storage.getUrl(user.image);
+    },
+});
+
+// List all users (for browse players screen)
+export const listAllUsers = query({
+    args: {},
+    handler: async (ctx) => {
+        const currentUserId = await getAuthUserId(ctx);
+        if (!currentUserId) return [];
+
+        const allUsers = await ctx.db.query("users").collect();
+        
+        // Filter out current user
+        return allUsers.filter(user => user._id !== currentUserId);
+    },
+});
+
+// Save expo push token
+export const saveExpoPushToken = mutation({
+    args: {
+        token: v.string(),
+    },
+    handler: async (ctx, { token }) => {
+        const userId = await getAuthUserId(ctx);
+        if (userId === null) {
+            throw new Error("Not authenticated");
+        }
+
+        await ctx.db.patch(userId, {
+            expoPushToken: token,
+        });
+    },
+});
+
+// Get expo push token for a user
+export const getExpoPushToken = query({
+    args: { userId: v.id("users") },
+    handler: async (ctx, { userId }) => {
+        const user = await ctx.db.get(userId);
+        return user?.expoPushToken || null;
     },
 });

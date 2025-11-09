@@ -246,7 +246,7 @@ export default function CourtsScreen() {
             <View className="flex-1">
                 <ScrollView
                     className="flex-1 px-4"
-                    contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: Math.max(bottom, 32) }}
+                    contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: Math.max(bottom, (isLiquidGlassAvailable() ? 80 : 32)) }}
                 >
                     {/* Content wrapper to keep cards at the start */}
                     <View className="flex-1 justify-start">
@@ -426,14 +426,16 @@ export default function CourtsScreen() {
                             {checkIns && checkIns.length > 0 ? (
                                 <View>
                                     {checkIns.map((checkIn) => (
-                                        <View
+                                        <TouchableOpacity
                                             key={checkIn._id}
+                                            onPress={() => router.push(`/profile/${checkIn.user._id}`)}
                                             className="py-3 border-b border-slate-700 last:border-b-0"
+                                            activeOpacity={0.7}
                                         >
                                             <Text className=" text-slate-200 font-semibold">
                                                 {checkIn.user.name || checkIn.user.email}
                                             </Text>
-                                        </View>
+                                        </TouchableOpacity>
                                     ))}
                                 </View>
                             ) : (
@@ -484,9 +486,16 @@ export default function CourtsScreen() {
                                                             key={visit._id}
                                                             className="flex-row items-center justify-between py-2 pl-4"
                                                         >
-                                                            <Text className={`text-slate-200 ${isUserPlan ? "font-semibold" : ""}`}>
-                                                                {isUserPlan ? "You" : visit.user.name || visit.user.email}
-                                                            </Text>
+                                                            <TouchableOpacity
+                                                                onPress={() => !isUserPlan && router.push(`/profile/${visit.user._id}`)}
+                                                                disabled={isUserPlan}
+                                                                activeOpacity={0.7}
+                                                                className="flex-1"
+                                                            >
+                                                                <Text className={`text-slate-200 ${isUserPlan ? "font-semibold" : ""}`}>
+                                                                    {isUserPlan ? "You" : visit.user.name || visit.user.email}
+                                                                </Text>
+                                                            </TouchableOpacity>
                                                             {isUserPlan && (
                                                                 <TouchableOpacity
                                                                     onPress={() => handleDeletePlan(visit._id)}
@@ -514,6 +523,28 @@ export default function CourtsScreen() {
                                 </View>
                             )}
                         </GlassContainer>
+
+                        {/* Browse Players Button */}
+                        <TouchableOpacity
+                            onPress={() => router.push("/players")}
+                            className="mb-4"
+                            activeOpacity={0.7}
+                        >
+                            <GlassContainer
+                                style={{
+                                    borderRadius: 24,
+                                    padding: 20,
+                                }}
+                            >
+                                <View className="flex-row items-center justify-center">
+                                    <Ionicons name="people" size={24} color="#a3e635" />
+                                    <Text className="text-xl font-bold text-slate-200 ml-3">
+                                        Browse All Players
+                                    </Text>
+                                    <Ionicons name="chevron-forward" size={24} color="#cbd5e1" className="ml-2" />
+                                </View>
+                            </GlassContainer>
+                        </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>

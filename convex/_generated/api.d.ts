@@ -10,6 +10,7 @@
 
 import type * as adminHelpers from "../adminHelpers.js";
 import type * as auth from "../auth.js";
+import type * as blockedUsers from "../blockedUsers.js";
 import type * as builderChatMessages from "../builderChatMessages.js";
 import type * as builderChats from "../builderChats.js";
 import type * as chatMessages from "../chatMessages.js";
@@ -28,6 +29,7 @@ import type * as seedDrills from "../seedDrills.js";
 import type * as seedFeatures from "../seedFeatures.js";
 import type * as trainingChatMessages from "../trainingChatMessages.js";
 import type * as trainingChats from "../trainingChats.js";
+import type * as userNotificationSettings from "../userNotificationSettings.js";
 import type * as users from "../users.js";
 
 import type {
@@ -47,6 +49,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   adminHelpers: typeof adminHelpers;
   auth: typeof auth;
+  blockedUsers: typeof blockedUsers;
   builderChatMessages: typeof builderChatMessages;
   builderChats: typeof builderChats;
   chatMessages: typeof chatMessages;
@@ -65,6 +68,7 @@ declare const fullApi: ApiFromModules<{
   seedFeatures: typeof seedFeatures;
   trainingChatMessages: typeof trainingChatMessages;
   trainingChats: typeof trainingChats;
+  userNotificationSettings: typeof userNotificationSettings;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

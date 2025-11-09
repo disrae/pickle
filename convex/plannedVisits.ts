@@ -70,6 +70,9 @@ export const getForCourt = query({
         courtId: v.id("courts"),
     },
     handler: async (ctx, args) => {
+        const currentUserId = await getAuthUserId(ctx);
+        if (!currentUserId) return [];
+
         const now = Date.now();
         const visits = await ctx.db
             .query("plannedVisits")
@@ -82,13 +85,33 @@ export const getForCourt = query({
         for (const visit of visits) {
             const user = await ctx.db.get(visit.userId);
             if (user) {
-                visitsWithUsers.push({
-                    ...visit,
-                    user: {
-                        name: user.name,
-                        email: user.email,
-                    },
-                });
+                // Check for blocking relationship
+                const [blockedByMe, blockedByThem] = await Promise.all([
+                    ctx.db
+                        .query("blockedUsers")
+                        .withIndex("by_user_and_blocked", (q) =>
+                            q.eq("userId", currentUserId).eq("blockedUserId", visit.userId)
+                        )
+                        .first(),
+                    ctx.db
+                        .query("blockedUsers")
+                        .withIndex("by_user_and_blocked", (q) =>
+                            q.eq("userId", visit.userId).eq("blockedUserId", currentUserId)
+                        )
+                        .first(),
+                ]);
+
+                // Skip if there's any blocking relationship
+                if (!blockedByMe && !blockedByThem) {
+                    visitsWithUsers.push({
+                        ...visit,
+                        user: {
+                            _id: user._id,
+                            name: user.name,
+                            email: user.email,
+                        },
+                    });
+                }
             }
         }
 

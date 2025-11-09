@@ -219,3 +219,33 @@ export const getAllUserProgress = query({
     },
 });
 
+// Get any user's drill progress by user ID (for viewing other players)
+export const getUserProgressByUserId = query({
+    args: { userId: v.id("users") },
+    handler: async (ctx, { userId }) => {
+        const allProgress = await ctx.db
+            .query("drillProgress")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .collect();
+
+        // Get drill details for each progress
+        const progressWithDrills = await Promise.all(
+            allProgress.map(async (progress) => {
+                const drill = await ctx.db.get(progress.drillId);
+                return {
+                    ...progress,
+                    drill: drill
+                        ? {
+                            title: drill.title,
+                            category: drill.category,
+                            difficulty: drill.difficulty,
+                        }
+                        : null,
+                };
+            })
+        );
+
+        return progressWithDrills.filter((p) => p.drill !== null);
+    },
+});
+

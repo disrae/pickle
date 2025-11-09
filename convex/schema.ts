@@ -15,6 +15,7 @@ const schema = defineSchema({
         isAnonymous: v.optional(v.boolean()),
         isAdmin: v.optional(v.boolean()),
         selectedCourtId: v.optional(v.id("courts")),
+        expoPushToken: v.optional(v.string()),
     })
         .index("email", ["email"])
         .index("phone", ["phone"]),
@@ -205,6 +206,26 @@ const schema = defineSchema({
     })
         .index("by_court", ["courtId"])
         .index("by_user", ["userId"]),
+
+    userNotificationSettings: defineTable({
+        userId: v.id("users"),
+        subscribedToUserId: v.id("users"),
+        notifyOnCheckIn: v.boolean(),
+        notifyOnPlannedVisit: v.boolean(),
+        createdAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_subscribed_to", ["subscribedToUserId"])
+        .index("by_user_and_subscribed", ["userId", "subscribedToUserId"]),
+
+    blockedUsers: defineTable({
+        userId: v.id("users"),
+        blockedUserId: v.id("users"),
+        createdAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_blocked_user", ["blockedUserId"])
+        .index("by_user_and_blocked", ["userId", "blockedUserId"]),
 });
 
 export default schema;

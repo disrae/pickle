@@ -4,9 +4,11 @@ import { Header } from "@/components/ui/header";
 import { Popup } from "@/components/ui/Popup";
 import { SetNamePopup } from "@/components/ui/SetNamePopup";
 import { api } from "@/convex/_generated/api";
+import { useUpdatesContext } from "@/lib/updates-context";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
+import Constants from "expo-constants";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
@@ -21,6 +23,17 @@ export default function ProfileScreen() {
     const user = useQuery(api.users.currentUser);
     const profileImageUrl = useQuery(api.users.getProfileImageUrl);
     const { signOut } = useAuthActions();
+    const {
+        isUpdateAvailable,
+        isChecking,
+        isDownloading,
+        currentUpdateId,
+        runtimeVersion,
+        channel,
+        lastCheckTime,
+        applyUpdate,
+        checkForUpdate,
+    } = useUpdatesContext();
 
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupTitle, setPopupTitle] = useState<string | undefined>(undefined);
@@ -33,6 +46,9 @@ export default function ProfileScreen() {
     const generateUploadUrl = useMutation(api.users.generateUploadUrl);
     const saveProfileImage = useMutation(api.users.saveProfileImage);
     const deleteAccount = useMutation(api.users.deleteAccount);
+
+    // Get app version from Constants
+    const appVersion = Constants.expoConfig?.version || "1.0.0";
 
     const showPopup = (title: string | undefined, message: string, onConfirm?: () => Promise<void> | void, confirmText?: string) => {
         setPopupTitle(title);
@@ -115,7 +131,7 @@ export default function ProfileScreen() {
         }
     };
 
-    const headerHeight = top + 100;
+    const headerHeight = top + 60;
 
     return (
         <Background>
@@ -249,10 +265,109 @@ export default function ProfileScreen() {
                         </TouchableOpacity>
                     </GlassContainer>
 
-                    {/* App Info */}
-                    <Text className="text-slate-500 text-center text-sm mt-4">
-                        WePickle v1.0.0
-                    </Text>
+                    {/* App Info & Updates */}
+                    <GlassContainer
+                        style={{
+                            borderRadius: 24,
+                            padding: 24,
+                            marginBottom: 16,
+                        }}
+                    >
+                        <Text className="text-xl font-bold text-slate-200 mb-4">
+                            App Info
+                        </Text>
+
+                        {/* Version Info */}
+                        <View className="space-y-2 mb-4">
+                            <View className="flex-row justify-between py-2">
+                                <Text className="text-slate-400 text-sm">Version</Text>
+                                <Text className="text-slate-200 text-sm font-semibold">
+                                    {appVersion}
+                                </Text>
+                            </View>
+                            {runtimeVersion && (
+                                <View className="flex-row justify-between py-2">
+                                    <Text className="text-slate-400 text-sm">Runtime</Text>
+                                    <Text className="text-slate-200 text-sm font-mono">
+                                        {runtimeVersion}
+                                    </Text>
+                                </View>
+                            )}
+                            {channel && (
+                                <View className="flex-row justify-between py-2">
+                                    <Text className="text-slate-400 text-sm">Channel</Text>
+                                    <Text className="text-slate-200 text-sm font-semibold">
+                                        {channel}
+                                    </Text>
+                                </View>
+                            )}
+                            {currentUpdateId && (
+                                <View className="flex-row justify-between py-2">
+                                    <Text className="text-slate-400 text-sm">Update ID</Text>
+                                    <Text className="text-slate-200 text-xs font-mono" numberOfLines={1}>
+                                        {currentUpdateId.substring(0, 16)}...
+                                    </Text>
+                                </View>
+                            )}
+                            {lastCheckTime && (
+                                <View className="flex-row justify-between py-2">
+                                    <Text className="text-slate-400 text-sm">Last Check</Text>
+                                    <Text className="text-slate-200 text-xs">
+                                        {lastCheckTime.toLocaleTimeString()}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+
+                        {/* Update Button - Only show when update is available */}
+                        {isUpdateAvailable && (
+                            <TouchableOpacity
+                                onPress={applyUpdate}
+                                className="flex-row items-center justify-between p-4 rounded-xl bg-lime-500/20 border border-lime-400"
+                            >
+                                <View className="flex-row items-center">
+                                    <View className="bg-lime-500/30 rounded-full p-2 mr-3">
+                                        <Ionicons name="cloud-download" size={20} color="#84cc16" />
+                                    </View>
+                                    <View>
+                                        <Text className="text-lime-400 font-semibold text-lg">
+                                            Update Available
+                                        </Text>
+                                        <Text className="text-lime-400/90 text-sm mt-0.5">
+                                            Tap to restart and update
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Ionicons name="chevron-forward" size={20} color="#84cc16" />
+                            </TouchableOpacity>
+                        )}
+
+                        {/* Check for Updates Button */}
+                        {!isUpdateAvailable && (
+                            <TouchableOpacity
+                                onPress={checkForUpdate}
+                                disabled={isChecking || isDownloading}
+                                className="flex-row items-center justify-center p-4 rounded-xl bg-slate-700/50 border border-slate-600"
+                            >
+                                {isChecking || isDownloading ? (
+                                    <>
+                                        <ActivityIndicator size="small" color="#84cc16" />
+                                        <Text className="text-slate-300 ml-2 font-semibold">
+                                            {isDownloading ? "Downloading..." : "Checking..."}
+                                        </Text>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Ionicons name="refresh" size={20} color="#94a3b8" />
+                                        <Text className="text-slate-300 ml-2 font-semibold">
+                                            Check for Updates
+                                        </Text>
+                                    </>
+                                )}
+                            </TouchableOpacity>
+                        )}
+                    </GlassContainer>
+
                     {isLiquidGlassAvailable() && <View className="h-20" />}
                 </ScrollView>
 

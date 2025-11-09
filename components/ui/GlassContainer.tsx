@@ -3,16 +3,19 @@ import { View, ViewProps } from "react-native";
 
 interface GlassContainerProps extends ViewProps {
     children: React.ReactNode;
+    glassEffectStyle?: "clear" | "regular";
 }
 
-export function GlassContainer({ children, style, ...props }: GlassContainerProps) {
+export function GlassContainer({ children, style, glassEffectStyle = "clear", ...props }: GlassContainerProps) {
+    const backgroundOpacity = glassEffectStyle === "regular" ? 0.8 : 0.6;
+
     if (isLiquidGlassAvailable()) {
         return (
             <GlassView
-                glassEffectStyle="clear"
+                glassEffectStyle={glassEffectStyle}
                 style={[
                     {
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        backgroundColor: `rgba(0, 0, 0, ${backgroundOpacity})`,
                     },
                     style,
                 ]}
@@ -23,12 +26,12 @@ export function GlassContainer({ children, style, ...props }: GlassContainerProp
         );
     }
 
-    // For iOS 18, Android, and web: use plain View with bg-black/60
+    // For iOS 18, Android, and web: use plain View with appropriate background opacity
     return (
         <View
             style={[
                 {
-                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    backgroundColor: `rgba(0, 0, 0, ${backgroundOpacity})`,
                 },
                 style,
             ]}

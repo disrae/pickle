@@ -104,7 +104,7 @@ export default function BuilderChatScreen() {
         });
     };
 
-    const headerHeight = top + 100;
+    const headerHeight = top + 60;
 
     if (!chat || !messages || !currentUser) {
         return (
