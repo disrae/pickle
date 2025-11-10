@@ -1,7 +1,7 @@
-import { Stack } from "expo-router";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { SetNamePopup } from "@/components/ui/SetNamePopup";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { Stack } from "expo-router";
 
 export default function AuthenticatedLayout() {
     const user = useQuery(api.users.currentUser);

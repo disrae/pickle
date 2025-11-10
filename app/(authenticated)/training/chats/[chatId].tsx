@@ -6,8 +6,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import { hasNotificationPermissions, requestNotificationPermissions } from "@/lib/notifications";
 import {
     ActivityIndicator,
+    Alert,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -38,9 +40,35 @@ export default function TrainingChatScreen() {
 
     const sendMessage = useMutation(api.trainingChatMessages.send);
     const toggleNotifications = useMutation(api.trainingChats.toggleNotifications);
+    const saveExpoPushToken = useMutation(api.users.saveExpoPushToken);
 
     const handleToggleNotifications = async () => {
         if (!chatId) return;
+
+        // Check if permissions are granted
+        const hasPermissions = await hasNotificationPermissions();
+
+        if (!hasPermissions) {
+            const token = await requestNotificationPermissions();
+
+            if (!token) {
+                Alert.alert(
+                    "Permission Required",
+                    "Notification permissions are required to receive chat updates. Please enable them in your device settings."
+                );
+                return;
+            }
+
+            // Save token to backend
+            try {
+                await saveExpoPushToken({ token });
+            } catch (error) {
+                console.error("Error saving push token:", error);
+                return;
+            }
+        }
+
+        // Toggle the notification setting
         try {
             await toggleNotifications({ chatId: chatId as Id<"trainingChats"> });
         } catch (error) {
