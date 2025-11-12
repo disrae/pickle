@@ -103,6 +103,8 @@ export default function Index() {
                                     value={email}
                                     onChangeText={setEmail}
                                     keyboardType="email-address"
+                                    autoComplete="email"
+                                    textContentType="emailAddress"
                                 />
 
                                 <View className="h-8" />

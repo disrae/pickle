@@ -7,7 +7,10 @@ export function StyledInput({
     secureTextEntry,
     value,
     onChangeText,
-    keyboardType = "default"
+    keyboardType = "default",
+    autoComplete,
+    textContentType,
+    autoFocus
 }: {
     label: string;
     placeholder: string;
@@ -15,6 +18,9 @@ export function StyledInput({
     value?: string;
     onChangeText?: (text: string) => void;
     keyboardType?: "default" | "email-address";
+    autoComplete?: "email" | "password" | "username" | "name" | "off";
+    textContentType?: "emailAddress" | "password" | "username" | "name";
+    autoFocus?: boolean;
 }) {
     return (
         <View className="w-full">
@@ -25,6 +31,9 @@ export function StyledInput({
                 value={value}
                 onChangeText={onChangeText}
                 keyboardType={keyboardType}
+                autoComplete={autoComplete}
+                textContentType={textContentType}
+                autoFocus={autoFocus}
                 className="bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5"
                 placeholderTextColor="#475569"
             />
