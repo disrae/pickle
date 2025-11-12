@@ -116,7 +116,7 @@ export default function Index() {
 
                                 {emailSent && (
                                     <Text className="text-slate-600 text-center mt-4 text-sm">
-                                        Check your email for a login link. It may take a few seconds or minutes to arrive.
+                                        Check your email for a login link. It could be in your spam folder.
                                     </Text>
                                 )}
 
