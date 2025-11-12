@@ -225,3 +225,40 @@ export const toggleNotifications = mutation({
     },
 });
 
+// Delete a builder chat (admin only)
+export const deleteChat = mutation({
+    args: { chatId: v.id("builderChats") },
+    handler: async (ctx, { chatId }) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) {
+            throw new Error("Not authenticated");
+        }
+
+        const user = await ctx.db.get(userId);
+        if (!user?.isAdmin) {
+            throw new Error("Only admins can delete chats");
+        }
+
+        // Delete all messages
+        const messages = await ctx.db
+            .query("builderChatMessages")
+            .withIndex("by_chat", (q) => q.eq("chatId", chatId))
+            .collect();
+        for (const message of messages) {
+            await ctx.db.delete(message._id);
+        }
+
+        // Delete all participants
+        const participants = await ctx.db
+            .query("builderChatParticipants")
+            .withIndex("by_chat", (q) => q.eq("chatId", chatId))
+            .collect();
+        for (const participant of participants) {
+            await ctx.db.delete(participant._id);
+        }
+
+        // Delete the chat
+        await ctx.db.delete(chatId);
+    },
+});
+

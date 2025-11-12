@@ -213,6 +213,18 @@ export default function ChatScreen() {
                                     : "Enable notifications"}
                             </Text>
                         </TouchableOpacity>
+                        {currentUser?.isAdmin && (
+                            <TouchableOpacity
+                                onPress={handleDeleteChat}
+                                className="flex-row items-center justify-center py-2 mt-2 border-t border-slate-200 pt-2"
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons name="trash-outline" size={18} color="#dc2626" />
+                                <Text className="text-sm ml-2 text-red-600 font-semibold">
+                                    Delete Chat
+                                </Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
 
                     {/* Messages */}

@@ -40,6 +40,7 @@ export default function TrainingChatScreen() {
 
     const sendMessage = useMutation(api.trainingChatMessages.send);
     const toggleNotifications = useMutation(api.trainingChats.toggleNotifications);
+    const deleteChat = useMutation(api.trainingChats.deleteChat);
     const saveExpoPushToken = useMutation(api.users.saveExpoPushToken);
 
     const handleToggleNotifications = async () => {
@@ -74,6 +75,31 @@ export default function TrainingChatScreen() {
         } catch (error) {
             console.error("Error toggling notifications:", error);
         }
+    };
+
+    const handleDeleteChat = () => {
+        if (!chatId) return;
+
+        Alert.alert(
+            "Delete Chat",
+            "Are you sure you want to delete this chat? This action cannot be undone.",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            await deleteChat({ chatId: chatId as Id<"trainingChats"> });
+                            router.back();
+                        } catch (error) {
+                            console.error("Error deleting chat:", error);
+                            Alert.alert("Error", "Failed to delete chat");
+                        }
+                    },
+                },
+            ]
+        );
     };
 
     // Auto-scroll to bottom when new messages arrive
@@ -190,6 +216,18 @@ export default function TrainingChatScreen() {
                                     : "Enable notifications"}
                             </Text>
                         </TouchableOpacity>
+                        {currentUser?.isAdmin && (
+                            <TouchableOpacity
+                                onPress={handleDeleteChat}
+                                className="flex-row items-center justify-center py-2 mt-2 border-t border-slate-200 pt-2"
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons name="trash-outline" size={18} color="#dc2626" />
+                                <Text className="text-sm ml-2 text-red-600 font-semibold">
+                                    Delete Chat
+                                </Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
 
                     {/* Messages */}
