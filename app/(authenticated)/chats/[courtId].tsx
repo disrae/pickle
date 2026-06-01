@@ -16,10 +16,10 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@/lib/header-layout";
 
 export default function ChatListScreen() {
-    const { top } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
     const { courtId } = useLocalSearchParams<{ courtId: string; }>();
     const [searchQuery, setSearchQuery] = useState("");
@@ -78,7 +78,6 @@ export default function ChatListScreen() {
         return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
     };
 
-    const headerHeight = top + 80;
 
     if (!court) {
         return (

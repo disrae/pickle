@@ -1,5 +1,6 @@
+import { getHeaderPaddingBottom, getHeaderPaddingTop } from "@/lib/header-layout";
 import { Ionicons } from "@expo/vector-icons";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GlassContainer } from "./GlassContainer";
 
@@ -74,8 +75,8 @@ export function Header({
                 top: 0,
                 left: 0,
                 right: 0,
-                paddingTop: Platform.OS === "web" ? 16 : top - 8,
-                paddingBottom: 10,
+                paddingTop: getHeaderPaddingTop(top),
+                paddingBottom: getHeaderPaddingBottom(),
                 paddingHorizontal: 16,
                 backgroundColor: "rgba(8, 12, 7, 0.95)",
                 borderWidth: 0,

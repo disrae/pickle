@@ -13,13 +13,15 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import Fuse from "fuse.js";
 import { useMemo, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CATEGORIES = ["Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
 const DIFFICULTIES = ["Beginner", "Intermediate", "Advanced", "Expert"];
 
 export default function DrillsScreen() {
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
     const params = useLocalSearchParams<{ category?: string }>();
 
@@ -153,7 +155,6 @@ export default function DrillsScreen() {
         });
     };
 
-    const headerHeight = top + 60;
 
     return (
         <Background>

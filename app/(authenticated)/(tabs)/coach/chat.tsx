@@ -6,14 +6,13 @@ import { exitCoachChatToCourt } from "@/lib/exit-to-court";
 import { useQuery } from "convex/react";
 import { useNavigation, useRouter } from "expo-router";
 import { useCallback } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@/lib/header-layout";
 
 export default function CoachChatScreen() {
-    const { top } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
     const navigation = useNavigation();
     const profile = useQuery(api.skillsProfiles.getForCurrentUser);
-    const headerHeight = top + 60;
 
     const handleBack = useCallback(() => {
         if (profile?.confirmedAt && router.canGoBack()) {

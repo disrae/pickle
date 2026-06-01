@@ -18,10 +18,12 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TrainingChatScreen() {
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
     const { chatId } = useLocalSearchParams<{ chatId: string }>();
     const [message, setMessage] = useState("");
@@ -168,7 +170,6 @@ export default function TrainingChatScreen() {
         });
     };
 
-    const headerHeight = top + 60;
 
     if (!chat || !messages || !currentUser) {
         return (

@@ -15,10 +15,10 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@/lib/header-layout";
 
 export default function TrainingChatsListScreen() {
-    const { top } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [showNewChatModal, setShowNewChatModal] = useState(false);
@@ -62,7 +62,6 @@ export default function TrainingChatsListScreen() {
         return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
     };
 
-    const headerHeight = top + 80;
 
     return (
         <ChatBackground>

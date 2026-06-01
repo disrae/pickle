@@ -10,18 +10,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
 import { Redirect, useRouter } from "expo-router";
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@/lib/header-layout";
 
 const COACH_NOTE_WITH_PROFILE =
     "Here are my guesses at your skills for now. Play with others or take the drills to re-assess.";
 
 export default function CoachHubScreen() {
-    const { top } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const tabBarHeight = useTabBarHeight();
     const router = useRouter();
     const profile = useQuery(api.skillsProfiles.getForCurrentUser);
 
-    const headerHeight = top + 60;
     const confirmed = !!profile?.confirmedAt;
 
     const goToChat = () => router.push("/(authenticated)/(tabs)/coach/chat");

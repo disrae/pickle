@@ -15,13 +15,15 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { ActivityIndicator, ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type ExpoLocation = typeof import("expo-location");
 
 export default function ProfileScreen() {
     const router = useRouter();
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const user = useQuery(api.users.currentUser);
     const profileImageUrl = useQuery(api.users.getProfileImageUrl);
     const { signOut } = useAuthActions();
@@ -162,7 +164,6 @@ export default function ProfileScreen() {
         }
     };
 
-    const headerHeight = top + 60;
 
     return (
         <Background>

@@ -12,13 +12,15 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Switch, Text, View } from "react-native";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CATEGORIES = ["Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
 
 export default function PlayerProfileScreen() {
     const router = useRouter();
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const { id } = useLocalSearchParams<{ id: string; }>();
     const userId = id as Id<"users">;
 
@@ -110,7 +112,6 @@ export default function PlayerProfileScreen() {
         }
     };
 
-    const headerHeight = top + 60;
 
     if (!profileUser || !currentUser) {
         return (

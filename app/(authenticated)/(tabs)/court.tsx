@@ -6,6 +6,7 @@ import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
 import { TimePickerPopup } from "@/components/ui/TimePickerPopup";
 import { api } from "@/convex/_generated/api";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useLocationCheckIn } from "@/lib/use-location-check-in";
 import { PicklePaddle } from "@/assets/icons/picklepaddle";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,7 +18,8 @@ import { ActivityIndicator, Platform, ScrollView, Text, TouchableOpacity, View }
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CourtsScreen() {
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
     const user = useQuery(api.users.currentUser);
     const [showTimePicker, setShowTimePicker] = useState(false);
@@ -181,7 +183,6 @@ export default function CourtsScreen() {
     }, {} as Record<number, typeof plannedVisits>) || {};
 
     const sortedTimeSlots = Object.keys(groupedVisits).map(Number).sort((a, b) => a - b);
-    const headerHeight = Platform.OS === "web" ? top + 60 : top + 30;
     const isCheckedIn = !!currentCheckIn;
     const hereCount = presence?.hereNow ?? checkIns?.length ?? 0;
     const comingCount = presence?.comingSoon ?? plannedVisits?.length ?? 0;

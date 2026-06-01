@@ -12,6 +12,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Switch, Text, View } from "react-native";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CATEGORIES = ["Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
@@ -22,7 +23,8 @@ interface ProfileScreenProps {
 
 export function ProfileScreen({ userId }: ProfileScreenProps) {
     const router = useRouter();
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
 
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
@@ -112,7 +114,6 @@ export function ProfileScreen({ userId }: ProfileScreenProps) {
         }
     };
 
-    const headerHeight = top + 60;
 
     if (!profileUser || !currentUser) {
         return (

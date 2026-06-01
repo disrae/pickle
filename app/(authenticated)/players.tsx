@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import Fuse from "fuse.js";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CATEGORIES = ["Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
@@ -26,7 +27,8 @@ type UserWithProgress = {
 };
 
 export default function PlayersScreen() {
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -104,7 +106,6 @@ export default function PlayersScreen() {
         });
     };
 
-    const headerHeight = top + 60;
 
     return (
         <ChatBackground>

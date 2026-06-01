@@ -11,10 +11,12 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function BuilderScreen() {
-    const { top, bottom } = useSafeAreaInsets();
+    const { bottom } = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
 
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -25,7 +27,6 @@ export default function BuilderScreen() {
     const user = useQuery(api.users.currentUser);
 
 
-    const headerHeight = top + 60;
 
     // Sort features by vote count (highest first)
     const sortedFeatures = features ? [...features].sort((a, b) => b.voteCount - a.voteCount) : [];
