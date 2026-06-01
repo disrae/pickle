@@ -1,11 +1,11 @@
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { getLocationModule } from "@/lib/location-permissions";
 import { useMutation, useQuery } from "convex/react";
 import { useEffect, useRef } from "react";
 import { AppState, Platform } from "react-native";
 
 const COURT_RADIUS_M = 200;
-type ExpoLocation = typeof import("expo-location");
 type LocationSubscription = { remove: () => void };
 type LocationCoords = {
     latitude: number;
@@ -36,7 +36,6 @@ export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
     const currentCheckIn = useQuery(api.checkIns.getCurrentUserCheckIn);
     const checkIn = useMutation(api.checkIns.checkIn);
     const lastAttempt = useRef(0);
-    const locationModuleRef = useRef<ExpoLocation | null>(null);
 
     useEffect(() => {
         if (Platform.OS === "web") return;
@@ -68,15 +67,7 @@ export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
         };
 
         const start = async () => {
-            if (!locationModuleRef.current) {
-                try {
-                    locationModuleRef.current = await import("expo-location");
-                } catch {
-                    // Native module not available in current runtime.
-                    return;
-                }
-            }
-            const location = locationModuleRef.current;
+            const location = await getLocationModule();
             if (!location) return;
 
             const { status } = await location.requestForegroundPermissionsAsync();
@@ -105,13 +96,13 @@ export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
         start();
 
         const appStateSub = AppState.addEventListener("change", (state) => {
-            const location = locationModuleRef.current;
-            if (!location) return;
-            if (state === "active" && user.locationCheckInMode === "foreground") {
-                location.getCurrentPositionAsync({ accuracy: location.Accuracy.Balanced }).then(
-                    (loc) => tryCheckIn(loc.coords)
-                );
-            }
+            if (state !== "active" || user.locationCheckInMode !== "foreground") return;
+            void getLocationModule().then((location) => {
+                if (!location) return;
+                return location
+                    .getCurrentPositionAsync({ accuracy: location.Accuracy.Balanced })
+                    .then((loc) => tryCheckIn(loc.coords));
+            });
         });
 
         return () => {

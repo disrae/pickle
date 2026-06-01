@@ -64,6 +64,18 @@ const schema = defineSchema({
         .index("by_court", ["courtId"])
         .index("by_time", ["courtId", "plannedTime"]),
 
+    courtWallMessages: defineTable({
+        courtId: v.id("courts"),
+        userId: v.id("users"),
+        message: v.string(),
+        createdAt: v.number(),
+        expiresAt: v.number(),
+        editedAt: v.optional(v.number()),
+    })
+        .index("by_court", ["courtId"])
+        .index("by_court_created", ["courtId", "createdAt"])
+        .index("by_expiry", ["expiresAt"]),
+
     chats: defineTable({
         courtId: v.id("courts"),
         title: v.string(),

@@ -16,5 +16,11 @@ crons.interval(
     internal.challenges.autoConfirmStaleMatches
 );
 
+crons.interval(
+    "cleanup expired court wall messages",
+    { minutes: 15 },
+    internal.courtWall.cleanupExpired
+);
+
 export default crons;
 

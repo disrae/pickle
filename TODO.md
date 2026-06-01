@@ -101,7 +101,7 @@
 - [x] "I'm headed there — notify regulars" + push on planned visits.
 - [x] Ghost mode + arrive privately (Profile toggle + per-session eye icon on check-in).
 - [ ] Expand scheduling UX (calendar feel, reminders).
-- [ ] Refresh court chat → ephemeral court wall.
+- [x] Refresh court chat → ephemeral court wall.
 - [ ] Add stronger profile presentation for other users (skills snapshot + activity).
 - [ ] Rework notifications and badges for better clarity and less noise.
 
@@ -128,7 +128,7 @@
   - Ephemeral = zero moderation/history burden + always-current wall.
 - **Direct DMs (persistent):** thin 1:1 only, fired from profile / roster ("Message" CTA). The relationship glue ("you around Saturday?"). No group DMs initially. Do NOT make these disappear.
 - **Kill the silos:** fold/remove `trainingChats` and `builderChats` — likely aspirational/dead. Consolidate toward court wall + DMs (+ team chat later in Phase 6).
-- [ ] Build ephemeral court wall on Court tab.
+- [x] Build ephemeral court wall on Court tab.
 - [ ] Build persistent 1:1 DMs (entry from profile + roster).
 - [ ] Remove/migrate training + builder chat surfaces.
 

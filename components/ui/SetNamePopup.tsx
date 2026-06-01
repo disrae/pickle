@@ -3,6 +3,7 @@ import { Modal, Text, View } from "react-native";
 import { StyledButton } from "@/components/ui/StyledButton";
 import { StyledInput } from "@/components/ui/StyledInput";
 import { api } from "@/convex/_generated/api";
+import { useTheme } from "@/lib/theme-context";
 import { useMutation } from "convex/react";
 
 interface SetNamePopupProps {
@@ -18,6 +19,7 @@ export const SetNamePopup = ({
     currentName = "",
     isRequired = false 
 }: SetNamePopupProps) => {
+    const { activeTheme } = useTheme();
     const [name, setName] = useState(currentName);
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,7 +76,7 @@ export const SetNamePopup = ({
             visible={isVisible}
             onRequestClose={isRequired ? undefined : handleCancel}
         >
-            <View className="flex-1 items-center justify-center bg-black/70 px-6">
+            <View style={activeTheme} className="flex-1 items-center justify-center bg-black/70 px-6">
                 <View
                     className="w-full max-w-md rounded-3xl border border-border bg-popover p-6"
                     style={{

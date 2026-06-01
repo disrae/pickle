@@ -20,6 +20,7 @@ import type * as chats from "../chats.js";
 import type * as checkIns from "../checkIns.js";
 import type * as coach from "../coach.js";
 import type * as coachActions from "../coachActions.js";
+import type * as courtWall from "../courtWall.js";
 import type * as courts from "../courts.js";
 import type * as crons from "../crons.js";
 import type * as drillProgress from "../drillProgress.js";
@@ -65,6 +66,7 @@ declare const fullApi: ApiFromModules<{
   checkIns: typeof checkIns;
   coach: typeof coach;
   coachActions: typeof coachActions;
+  courtWall: typeof courtWall;
   courts: typeof courts;
   crons: typeof crons;
   drillProgress: typeof drillProgress;

@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Text, View } from "react-native";
 
 import { StyledButton } from "@/components/ui/StyledButton";
+import { useTheme } from "@/lib/theme-context";
 
 interface PopupProps {
     isVisible: boolean;
@@ -14,6 +15,8 @@ interface PopupProps {
 }
 
 export const Popup = ({ isVisible, onClose, title, message, buttonText = "OK", onConfirm, confirmText }: PopupProps) => {
+    const { activeTheme } = useTheme();
+
     return (
         <Modal
             animationType="fade"
@@ -21,7 +24,7 @@ export const Popup = ({ isVisible, onClose, title, message, buttonText = "OK", o
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <View className="flex-1 items-center justify-center bg-black/70 px-6">
+            <View style={activeTheme} className="flex-1 items-center justify-center bg-black/70 px-6">
                 <View
                     className="w-full max-w-md items-center rounded-3xl border border-border bg-popover p-6"
                     style={{

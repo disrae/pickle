@@ -3,13 +3,29 @@ export type LocationCheckInMode = "off" | "foreground" | "background";
 type ExpoLocation = typeof import("expo-location");
 
 let locationModule: ExpoLocation | null = null;
+let locationUnavailable = false;
 
-async function getLocationModule(): Promise<ExpoLocation | null> {
+function isValidLocationModule(mod: unknown): mod is ExpoLocation {
+    return (
+        typeof mod === "object" &&
+        mod !== null &&
+        typeof (mod as ExpoLocation).requestForegroundPermissionsAsync === "function"
+    );
+}
+
+export async function getLocationModule(): Promise<ExpoLocation | null> {
+    if (locationUnavailable) return null;
     if (locationModule) return locationModule;
     try {
-        locationModule = await import("expo-location");
+        const mod = await import("expo-location");
+        if (!isValidLocationModule(mod)) {
+            locationUnavailable = true;
+            return null;
+        }
+        locationModule = mod;
         return locationModule;
     } catch {
+        locationUnavailable = true;
         return null;
     }
 }
