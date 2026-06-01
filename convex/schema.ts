@@ -259,6 +259,116 @@ const schema = defineSchema({
         .index("by_user", ["userId"])
         .index("by_blocked_user", ["blockedUserId"])
         .index("by_user_and_blocked", ["userId", "blockedUserId"]),
+
+    // --- Phase 6: Teams & Tournament ---
+
+    teams: defineTable({
+        name: v.string(),
+        player1Id: v.id("users"),
+        player2Id: v.id("users"),
+        rating: v.number(),
+        matchesPlayed: v.number(),
+        wins: v.number(),
+        losses: v.number(),
+        createdAt: v.number(),
+    })
+        .index("by_player1", ["player1Id"])
+        .index("by_player2", ["player2Id"])
+        .index("by_rating", ["rating"]),
+
+    teamInvites: defineTable({
+        teamName: v.string(),
+        inviterId: v.id("users"),
+        inviteeId: v.id("users"),
+        status: v.union(v.literal("pending"), v.literal("accepted"), v.literal("declined")),
+        createdAt: v.number(),
+    })
+        .index("by_invitee", ["inviteeId"])
+        .index("by_inviter", ["inviterId"]),
+
+    individualRatings: defineTable({
+        userId: v.id("users"),
+        rating: v.number(),
+        matchesPlayed: v.number(),
+        wins: v.number(),
+        losses: v.number(),
+        updatedAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_rating", ["rating"]),
+
+    matches: defineTable({
+        format: v.union(v.literal("doubles"), v.literal("singles")),
+        courtId: v.id("courts"),
+        /** Doubles: registered team IDs (optional — ad-hoc matches won't have these) */
+        team1Id: v.optional(v.id("teams")),
+        team2Id: v.optional(v.id("teams")),
+        /** All participants. Doubles: 4 players. Singles: p1 + p3 only. */
+        p1Id: v.id("users"),
+        p2Id: v.optional(v.id("users")),
+        p3Id: v.id("users"),
+        p4Id: v.optional(v.id("users")),
+        /** Scores from team1/p1 side perspective */
+        score1: v.number(),
+        score2: v.number(),
+        reportedBy: v.id("users"),
+        reportedAt: v.number(),
+        confirmedBy: v.optional(v.id("users")),
+        confirmedAt: v.optional(v.number()),
+        status: v.union(v.literal("pending"), v.literal("confirmed"), v.literal("disputed")),
+        /** True once post-match coach debrief has been triggered for each side */
+        debriefTriggeredP1: v.optional(v.boolean()),
+        debriefTriggeredP3: v.optional(v.boolean()),
+        createdAt: v.number(),
+    })
+        .index("by_team1", ["team1Id"])
+        .index("by_team2", ["team2Id"])
+        .index("by_p1", ["p1Id"])
+        .index("by_p3", ["p3Id"])
+        .index("by_court", ["courtId"])
+        .index("by_status", ["status"]),
+
+    challenges: defineTable({
+        challengerId: v.id("users"),
+        challengerPartnerId: v.optional(v.id("users")),
+        challengerTeamId: v.optional(v.id("teams")),
+        challengedId: v.id("users"),
+        challengedPartnerId: v.optional(v.id("users")),
+        challengedTeamId: v.optional(v.id("teams")),
+        format: v.union(v.literal("doubles"), v.literal("singles")),
+        courtId: v.id("courts"),
+        status: v.union(
+            v.literal("pending"),
+            v.literal("accepted"),
+            v.literal("declined"),
+            v.literal("completed"),
+            v.literal("expired")
+        ),
+        matchId: v.optional(v.id("matches")),
+        createdAt: v.number(),
+        respondedAt: v.optional(v.number()),
+    })
+        .index("by_challenger", ["challengerId"])
+        .index("by_challenged", ["challengedId"])
+        .index("by_status", ["status"]),
+
+    scheduledMatches: defineTable({
+        challengeId: v.optional(v.id("challenges")),
+        courtId: v.id("courts"),
+        scheduledTime: v.number(),
+        p1Id: v.id("users"),
+        p2Id: v.optional(v.id("users")),
+        p3Id: v.id("users"),
+        p4Id: v.optional(v.id("users")),
+        team1Id: v.optional(v.id("teams")),
+        team2Id: v.optional(v.id("teams")),
+        format: v.union(v.literal("doubles"), v.literal("singles")),
+        matchId: v.optional(v.id("matches")),
+        createdAt: v.number(),
+    })
+        .index("by_p1", ["p1Id"])
+        .index("by_p3", ["p3Id"])
+        .index("by_court_time", ["courtId", "scheduledTime"]),
 });
 
 export default schema;

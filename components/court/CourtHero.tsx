@@ -1,5 +1,6 @@
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { StyledButton } from "@/components/ui/StyledButton";
+import type { Id } from "@/convex/_generated/dataModel";
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
@@ -12,24 +13,28 @@ interface CourtHeroProps {
     hereCount: number;
     comingCount: number;
     checkIns: CheckInRow[];
+    currentUserId?: Id<"users">;
     isCheckedIn: boolean;
     isCheckingIn: boolean;
     isCheckingOut: boolean;
     onCheckIn: (isPrivate?: boolean) => void;
     onCheckOut: () => void;
     onPlayerPress: (userId: string) => void;
+    onChallenge: (userId: Id<"users">) => void;
 }
 
 export function CourtHero({
     hereCount,
     comingCount,
     checkIns,
+    currentUserId,
     isCheckedIn,
     isCheckingIn,
     isCheckingOut,
     onCheckIn,
     onCheckOut,
     onPlayerPress,
+    onChallenge,
 }: CourtHeroProps) {
     return (
         <GlassContainer style={{ borderRadius: 28, padding: 24, marginBottom: 16 }}>
@@ -53,18 +58,54 @@ export function CourtHero({
             </View>
 
             {checkIns.length > 0 ? (
-                <View className="flex-row flex-wrap gap-2 mb-6">
-                    {checkIns.slice(0, 8).map((checkIn) => (
-                        <TouchableOpacity
-                            key={checkIn._id}
-                            onPress={() => onPlayerPress(checkIn.user._id)}
-                            className="bg-surface-2 px-3 py-2 rounded-full"
-                        >
-                            <Text className="text-foreground text-sm font-medium">
-                                {checkIn.user.name || checkIn.user.email?.split("@")[0]}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
+                <View className="gap-2 mb-6">
+                    {checkIns.slice(0, 8).map((checkIn) => {
+                        const isSelf = checkIn.user._id === currentUserId;
+                        const displayName =
+                            checkIn.user.name || checkIn.user.email?.split("@")[0] || "Player";
+                        return (
+                            <View
+                                key={checkIn._id}
+                                className="flex-row items-center bg-surface-2 rounded-2xl px-3 py-2"
+                            >
+                                <TouchableOpacity
+                                    onPress={() => onPlayerPress(checkIn.user._id)}
+                                    className="flex-1"
+                                    activeOpacity={0.7}
+                                >
+                                    <Text className="text-foreground text-sm font-medium">
+                                        {displayName}
+                                        {isSelf ? " (you)" : ""}
+                                    </Text>
+                                </TouchableOpacity>
+                                {!isSelf && (
+                                    <TouchableOpacity
+                                        onPress={() => onChallenge(checkIn.user._id as Id<"users">)}
+                                        activeOpacity={0.7}
+                                        style={{
+                                            marginLeft: 8,
+                                            paddingHorizontal: 10,
+                                            paddingVertical: 6,
+                                            borderRadius: 10,
+                                            backgroundColor: "rgba(245, 158, 11, 0.15)",
+                                            borderWidth: 1,
+                                            borderColor: "rgba(245, 158, 11, 0.3)",
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "#f59e0b",
+                                                fontWeight: "700",
+                                                fontSize: 12,
+                                            }}
+                                        >
+                                            Challenge
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                        );
+                    })}
                 </View>
             ) : (
                 <Text className="text-muted-foreground mb-6">

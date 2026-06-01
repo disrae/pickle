@@ -13,12 +13,11 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
 import { useHeaderHeight } from "@/lib/header-layout";
+import { requestLocationPermissionForMode } from "@/lib/location-permissions";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-type ExpoLocation = typeof import("expo-location");
 
 export default function ProfileScreen() {
     const router = useRouter();
@@ -46,7 +45,6 @@ export default function ProfileScreen() {
     const [popupConfirmText, setPopupConfirmText] = useState<string | undefined>(undefined);
     const [showNamePopup, setShowNamePopup] = useState(false);
     const [isUploadingImage, setIsUploadingImage] = useState(false);
-    const locationModuleRef = useRef<ExpoLocation | null>(null);
 
     const generateUploadUrl = useMutation(api.users.generateUploadUrl);
     const saveProfileImage = useMutation(api.users.saveProfileImage);
@@ -140,30 +138,6 @@ export default function ProfileScreen() {
             showPopup("Upload Failed", "There was an error uploading your profile picture. Please try again.");
         }
     };
-
-    const requestLocationPermissionForMode = async (
-        mode: "off" | "foreground" | "background"
-    ): Promise<boolean> => {
-        if (mode === "off") return true;
-        try {
-            if (!locationModuleRef.current) {
-                locationModuleRef.current = await import("expo-location");
-            }
-            const location = locationModuleRef.current;
-            if (!location) return false;
-            const { status } = await location.requestForegroundPermissionsAsync();
-            if (status !== "granted") return false;
-            if (mode === "background") {
-                const bg = await location.requestBackgroundPermissionsAsync();
-                if (bg.status !== "granted") return false;
-            }
-            return true;
-        } catch {
-            showPopup("Location unavailable", "Install and run a native build to enable auto check-in.");
-            return false;
-        }
-    };
-
 
     return (
         <Background>
@@ -277,7 +251,15 @@ export default function ProfileScreen() {
                             <TouchableOpacity
                                 key={mode}
                                 onPress={async () => {
-                                    const granted = await requestLocationPermissionForMode(mode);
+                                    const { granted, unavailable } =
+                                        await requestLocationPermissionForMode(mode);
+                                    if (unavailable) {
+                                        showPopup(
+                                            "Location unavailable",
+                                            "Install and run a native build to enable auto check-in."
+                                        );
+                                        return;
+                                    }
                                     if (!granted) return;
                                     await updateLocationCheckInMode({ mode });
                                 }}
@@ -300,7 +282,7 @@ export default function ProfileScreen() {
                         ))}
 
                         <TouchableOpacity
-                            onPress={() => router.push("/(authenticated)/(tabs)/builder")}
+                            onPress={() => router.push("/builder")}
                             className="flex-row items-center justify-between mt-4 pt-4 border-t border-slate-700"
                         >
                             <Text className="text-slate-200 font-semibold">Feature ideas (Builder)</Text>

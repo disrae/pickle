@@ -10,5 +10,11 @@ crons.interval(
     internal.checkIns.cleanupExpired
 );
 
+crons.interval(
+    "auto-confirm stale match scores",
+    { hours: 1 },
+    internal.challenges.autoConfirmStaleMatches
+);
+
 export default crons;
 

@@ -7,13 +7,13 @@ import { SkillRoadmapCard } from "@/components/ui/SkillRoadmapCard";
 import { TrainingFAB } from "@/components/ui/TrainingFAB";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useHeaderHeight } from "@/lib/header-layout";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Fuse from "fuse.js";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CATEGORIES = ["Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
@@ -25,25 +25,23 @@ export default function DrillsScreen() {
     const router = useRouter();
     const params = useLocalSearchParams<{ category?: string }>();
 
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(
-        params.category && CATEGORIES.includes(params.category) ? [params.category] : []
-    );
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedDrillId, setSelectedDrillId] = useState<Id<"drills"> | null>(null);
 
-    // Fetch all drills once
-    const allDrills = useQuery(api.drills.list, {});
+    useEffect(() => {
+        const category = params.category;
+        if (category && CATEGORIES.includes(category)) {
+            setSelectedCategories([category]);
+        }
+    }, [params.category]);
 
-    // const stats = useQuery(api.drillProgress.getUserStats);
+    const allDrills = useQuery(api.drills.list, {});
     const allProgress = useQuery(api.drillProgress.getAllUserProgress);
 
-    // Get current user
-    const user = useQuery(api.users.currentUser);
-
-    // Create progress lookup for drill cards
     const progressLookup: Record<string, any> = {};
     if (allProgress) {
         allProgress.forEach((p) => {
@@ -51,17 +49,15 @@ export default function DrillsScreen() {
         });
     }
 
-    // Create Fuse instance for fuzzy search
     const fuse = useMemo(() => {
         if (!allDrills) return null;
         return new Fuse(allDrills, {
-            keys: ['title', 'description'],
-            threshold: 0.4, // Lower = more strict matching
+            keys: ["title", "description"],
+            threshold: 0.4,
             includeScore: true,
         });
     }, [allDrills]);
 
-    // Calculate skill progress per category
     const skillProgress = useMemo(() => {
         if (!allDrills || !allProgress) {
             return {};
@@ -69,27 +65,23 @@ export default function DrillsScreen() {
 
         const progressByCategory: Record<string, { completed: number; total: number }> = {};
 
-        // Initialize all categories
-        CATEGORIES.forEach(category => {
+        CATEGORIES.forEach((category) => {
             progressByCategory[category] = { completed: 0, total: 0 };
         });
 
-        // Count drills and completions per category
-        allDrills.forEach(drill => {
+        allDrills.forEach((drill) => {
             if (progressByCategory[drill.category]) {
                 progressByCategory[drill.category].total++;
 
-                // Check if drill has any completed milestones
-                const drillProgress = allProgress.find(p => p.drillId === drill._id);
+                const drillProgress = allProgress.find((p) => p.drillId === drill._id);
                 if (drillProgress && drillProgress.completedMilestones.length > 0) {
-                    // Weight completion by milestone completion percentage
-                    const completionRate = drillProgress.completedMilestones.length / drill.milestones.length;
+                    const completionRate =
+                        drillProgress.completedMilestones.length / drill.milestones.length;
                     progressByCategory[drill.category].completed += completionRate;
                 }
             }
         });
 
-        // Convert to percentages
         const percentages: Record<string, number> = {};
         Object.entries(progressByCategory).forEach(([category, data]) => {
             percentages[category] = data.total > 0 ? (data.completed / data.total) * 100 : 0;
@@ -98,33 +90,27 @@ export default function DrillsScreen() {
         return percentages;
     }, [allDrills, allProgress]);
 
-    // Filter drills on client side
     const drills = useMemo(() => {
         if (!allDrills) return [];
 
         let filteredDrills = allDrills;
 
-        // Category filter
         if (selectedCategories.length > 0) {
-            filteredDrills = filteredDrills.filter(drill =>
+            filteredDrills = filteredDrills.filter((drill) =>
                 selectedCategories.includes(drill.category)
             );
         }
 
-        // Difficulty filter
         if (selectedDifficulties.length > 0) {
-            filteredDrills = filteredDrills.filter(drill =>
+            filteredDrills = filteredDrills.filter((drill) =>
                 selectedDifficulties.includes(drill.difficulty)
             );
         }
 
-        // Search filter with Fuse.js
         if (searchTerm && fuse) {
             const searchResults = fuse.search(searchTerm);
-            const searchDrillIds = new Set(searchResults.map(result => result.item._id));
-            filteredDrills = filteredDrills.filter(drill =>
-                searchDrillIds.has(drill._id)
-            );
+            const searchDrillIds = new Set(searchResults.map((result) => result.item._id));
+            filteredDrills = filteredDrills.filter((drill) => searchDrillIds.has(drill._id));
         }
 
         return filteredDrills;
@@ -136,25 +122,22 @@ export default function DrillsScreen() {
     };
 
     const toggleCategory = (category: string) => {
-        setSelectedCategories(prev => {
+        setSelectedCategories((prev) => {
             if (prev.includes(category)) {
-                return prev.filter(c => c !== category);
-            } else {
-                return [...prev, category];
+                return prev.filter((c) => c !== category);
             }
+            return [...prev, category];
         });
     };
 
     const toggleDifficulty = (difficulty: string) => {
-        setSelectedDifficulties(prev => {
+        setSelectedDifficulties((prev) => {
             if (prev.includes(difficulty)) {
-                return prev.filter(d => d !== difficulty);
-            } else {
-                return [...prev, difficulty];
+                return prev.filter((d) => d !== difficulty);
             }
+            return [...prev, difficulty];
         });
     };
-
 
     return (
         <Background>
@@ -167,14 +150,10 @@ export default function DrillsScreen() {
                     }}
                     showsVerticalScrollIndicator={false}
                 >
-                    {/* Skill Roadmap Card */}
                     <View className="px-4">
-                        <SkillRoadmapCard
-                            skillProgress={skillProgress}
-                        />
+                        <SkillRoadmapCard skillProgress={skillProgress} />
                     </View>
 
-                    {/* Category Filter - Full Width */}
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -186,13 +165,17 @@ export default function DrillsScreen() {
                                 key={category}
                                 onPress={() => toggleCategory(category)}
                                 className={`rounded-full px-5 py-2.5 mr-2 border ${selectedCategories.includes(category) ? "bg-lime-400 border-lime-300" : "bg-black/60 border-slate-600/50"}`}
-                                style={selectedCategories.includes(category) ? {
-                                    shadowColor: '#84cc16',
-                                    shadowOffset: { width: 0, height: 0 },
-                                    shadowOpacity: 0.6,
-                                    shadowRadius: 10,
-                                    elevation: 8,
-                                } : {}}
+                                style={
+                                    selectedCategories.includes(category)
+                                        ? {
+                                              shadowColor: "#84cc16",
+                                              shadowOffset: { width: 0, height: 0 },
+                                              shadowOpacity: 0.6,
+                                              shadowRadius: 10,
+                                              elevation: 8,
+                                          }
+                                        : {}
+                                }
                             >
                                 <Text
                                     className={`font-semibold ${selectedCategories.includes(category) ? "text-black" : "text-slate-200"}`}
@@ -203,7 +186,6 @@ export default function DrillsScreen() {
                         ))}
                     </ScrollView>
 
-                    {/* Difficulty Filter - Full Width */}
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -215,13 +197,17 @@ export default function DrillsScreen() {
                                 key={difficulty}
                                 onPress={() => toggleDifficulty(difficulty)}
                                 className={`rounded-full px-5 py-2.5 mr-2 border ${selectedDifficulties.includes(difficulty) ? "bg-lime-400 border-lime-300" : "bg-black/60 border-slate-600/50"}`}
-                                style={selectedDifficulties.includes(difficulty) ? {
-                                    shadowColor: '#84cc16',
-                                    shadowOffset: { width: 0, height: 0 },
-                                    shadowOpacity: 0.6,
-                                    shadowRadius: 10,
-                                    elevation: 8,
-                                } : {}}
+                                style={
+                                    selectedDifficulties.includes(difficulty)
+                                        ? {
+                                              shadowColor: "#84cc16",
+                                              shadowOffset: { width: 0, height: 0 },
+                                              shadowOpacity: 0.6,
+                                              shadowRadius: 10,
+                                              elevation: 8,
+                                          }
+                                        : {}
+                                }
                             >
                                 <Text
                                     className={`font-semibold ${selectedDifficulties.includes(difficulty) ? "text-black" : "text-slate-200"}`}
@@ -232,39 +218,7 @@ export default function DrillsScreen() {
                         ))}
                     </ScrollView>
 
-                    {/* Content with horizontal padding */}
                     <View className="px-4">
-                        {/* Progress Overview */}
-                        {/* <LiquidGlassCard>
-                        <Text className="text-lg font-bold text-slate-200 mb-4">
-                            This Week
-                        </Text>
-
-                        <View className="flex-row justify-around">
-                            <View className="items-center">
-                                <Text className="text-3xl font-bold text-lime-400">
-                                    {stats?.drillsCompleted || 0}
-                                </Text>
-                                <Text className="text-slate-300 text-sm mt-1">Drills</Text>
-                            </View>
-                            <View className="h-full w-px bg-slate-600" />
-                            <View className="items-center">
-                                <Text className="text-3xl font-bold text-lime-400">
-                                    {stats?.minutesPracticed || 0}
-                                </Text>
-                                <Text className="text-slate-300 text-sm mt-1">Minutes</Text>
-                            </View>
-                            <View className="h-full w-px bg-slate-600" />
-                            <View className="items-center">
-                                <Text className="text-3xl font-bold text-lime-400">
-                                    {stats?.sessionsThisWeek || 0}
-                                </Text>
-                                <Text className="text-slate-300 text-sm mt-1">Sessions</Text>
-                            </View>
-                        </View>
-                    </LiquidGlassCard> */}
-
-                        {/* Search Bar */}
                         <View className="bg-black/60 rounded-2xl px-4 py-3 mb-4 flex-row items-center border border-slate-600/50">
                             <Ionicons name="search" size={20} color="#cbd5e1" />
                             <TextInput
@@ -280,11 +234,6 @@ export default function DrillsScreen() {
                                 </TouchableOpacity>
                             )}
                         </View>
-
-                        {/* Drills Section */}
-                        {/* <Text className="text-xl tracking wide font-bold text-slate-800 mb-3">
-                            {searchTerm ? "Search Results" : "All Drills"}
-                        </Text> */}
 
                         {drills && drills.length > 0 ? (
                             drills.map((drill) => (
@@ -322,6 +271,8 @@ export default function DrillsScreen() {
             <Header
                 title="Drills"
                 titleSize="text-2xl"
+                leftButton="back"
+                onLeftPress={() => router.back()}
                 rightButton="chat"
                 onRightPress={() => router.push("/training/chats")}
             />

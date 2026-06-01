@@ -1,11 +1,14 @@
+import { ChallengeSheet } from "@/components/compete/ChallengeSheet";
 import { CoachPromptBanner } from "@/components/coach/CoachPromptBanner";
 import { CourtEmptyActions, CourtHero } from "@/components/court/CourtHero";
+import { LocationCheckInPrompt } from "@/components/court/LocationCheckInPrompt";
 import { Background } from "@/components/ui/Background";
 import { CourtSelectorPopup } from "@/components/ui/CourtSelectorPopup";
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
 import { TimePickerPopup } from "@/components/ui/TimePickerPopup";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useHeaderHeight } from "@/lib/header-layout";
 import { useLocationCheckIn } from "@/lib/use-location-check-in";
 import { PicklePaddle } from "@/assets/icons/picklepaddle";
@@ -29,6 +32,7 @@ export default function CourtsScreen() {
     const [isHeadedThere, setIsHeadedThere] = useState(false);
     const [isReportingLineup, setIsReportingLineup] = useState(false);
     const [isReportingCondition, setIsReportingCondition] = useState(false);
+    const [challengeOpponentId, setChallengeOpponentId] = useState<Id<"users"> | null>(null);
 
     const court = useQuery(api.courts.getDefault);
     const currentCheckIn = useQuery(api.checkIns.getCurrentUserCheckIn);
@@ -215,6 +219,7 @@ export default function CourtsScreen() {
                     </TouchableOpacity>
                 </View>
                 <CourtSelectorPopup isVisible={showCourtSelector} onClose={() => setShowCourtSelector(false)} />
+                <LocationCheckInPrompt />
             </Background>
         );
     }
@@ -234,12 +239,14 @@ export default function CourtsScreen() {
                     hereCount={hereCount}
                     comingCount={comingCount}
                     checkIns={checkIns ?? []}
+                    currentUserId={user?._id}
                     isCheckedIn={isCheckedIn}
                     isCheckingIn={isCheckingIn}
                     isCheckingOut={isCheckingOut}
                     onCheckIn={handleCheckIn}
                     onCheckOut={handleCheckOut}
                     onPlayerPress={(id) => router.push(`/profile/${id}`)}
+                    onChallenge={(id) => setChallengeOpponentId(id)}
                 />
 
                 {isEmptyCourt && (
@@ -344,6 +351,17 @@ export default function CourtsScreen() {
 
             <TimePickerPopup isVisible={showTimePicker} onClose={() => setShowTimePicker(false)} onSelectTime={handleSelectTime} />
             <CourtSelectorPopup isVisible={showCourtSelector} onClose={() => setShowCourtSelector(false)} currentCourtId={court?._id} />
+
+            {court && challengeOpponentId && (
+                <ChallengeSheet
+                    isVisible={!!challengeOpponentId}
+                    onClose={() => setChallengeOpponentId(null)}
+                    preselectedOpponentId={challengeOpponentId}
+                    courtId={court._id}
+                />
+            )}
+
+            <LocationCheckInPrompt />
         </Background>
     );
 }

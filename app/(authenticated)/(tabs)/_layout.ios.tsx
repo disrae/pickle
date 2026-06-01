@@ -91,8 +91,6 @@ function JsTabs() {
                     ),
                 }}
             />
-            <Tabs.Screen name="drills" options={{ href: null }} />
-            <Tabs.Screen name="builder" options={{ href: null }} />
         </Tabs>
     );
 }

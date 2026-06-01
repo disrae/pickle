@@ -4,6 +4,7 @@ import { api } from "@/convex/_generated/api";
 import { LoadingProvider } from '@/lib/loading-context';
 import { ThemeProvider, useTheme } from '@/lib/theme-context';
 import { UpdatesProvider, useUpdatesContext } from '@/lib/updates-context';
+import { useMobileWebViewportLock } from '@/lib/use-mobile-web-viewport-lock';
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient, useQuery } from "convex/react";
 import { Stack } from "expo-router";
@@ -52,6 +53,8 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 });
 
 export default function RootLayout() {
+  useMobileWebViewportLock();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider defaultTheme="dark">

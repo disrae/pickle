@@ -26,7 +26,7 @@ export default function CoachHubScreen() {
     const goToChat = () => router.push("/(authenticated)/(tabs)/coach/chat");
     const goToDrills = (category?: string) =>
         router.push({
-            pathname: "/(authenticated)/(tabs)/drills",
+            pathname: "/drills",
             params: category ? { category } : {},
         });
 

@@ -7,7 +7,6 @@ import { BuilderFAB } from "@/components/ui/TrainingFAB";
 import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -18,35 +17,23 @@ export default function BuilderScreen() {
     const { bottom } = useSafeAreaInsets();
     const headerHeight = useHeaderHeight();
     const router = useRouter();
-
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const features = useQuery(api.featureRequests.list);
+    useQuery(api.users.currentUser);
 
-    // Get current user
-    const user = useQuery(api.users.currentUser);
-
-
-
-    // Sort features by vote count (highest first)
     const sortedFeatures = features ? [...features].sort((a, b) => b.voteCount - a.voteCount) : [];
 
     return (
         <Background>
-            {/* <KeyboardAvoidingView
-                className="flex-1"
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={headerHeight}
-            > */}
             <ScrollView
                 className="flex-1 px-4"
                 contentContainerStyle={{
                     paddingTop: headerHeight,
-                    paddingBottom: Math.max(bottom, 32) + (isLiquidGlassAvailable() ? 80 : 20)
+                    paddingBottom: Math.max(bottom, 32) + 80,
                 }}
                 showsVerticalScrollIndicator={false}
             >
-                {/* Info Section */}
                 <GlassContainer
                     style={{
                         borderRadius: 16,
@@ -62,7 +49,6 @@ export default function BuilderScreen() {
                     </View>
                 </GlassContainer>
 
-                {/* Features List */}
                 {!features ? (
                     <View className="items-center justify-center py-12">
                         <ActivityIndicator size="large" color="#84cc16" />
@@ -86,14 +72,13 @@ export default function BuilderScreen() {
                         </View>
                     </GlassContainer>
                 )}
-
             </ScrollView>
-            {/* {isLiquidGlassAvailable() && <View className="h-10" />} */}
-            {/* </KeyboardAvoidingView> */}
 
             <Header
                 title="Builder"
                 titleSize="text-2xl"
+                leftButton="back"
+                onLeftPress={() => router.back()}
                 rightButton="chat"
                 onRightPress={() => router.push("/builder/chats")}
             />
@@ -107,4 +92,3 @@ export default function BuilderScreen() {
         </Background>
     );
 }
-

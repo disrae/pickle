@@ -1,3 +1,5 @@
+import { ChallengeSheet } from "@/components/compete/ChallengeSheet";
+import { NewTeamSheet } from "@/components/compete/NewTeamSheet";
 import { Background } from "@/components/ui/Background";
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
@@ -11,11 +13,45 @@ import { useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, Switch, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
 import { useHeaderHeight } from "@/lib/header-layout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CATEGORIES = ["Serving", "Dinking", "Drop Shot", "Reset", "Volley", "Footwork"];
+
+function opponentLabel(
+    match: {
+        format: "doubles" | "singles";
+        p1Id: Id<"users">;
+        p2Id?: Id<"users">;
+        player1?: { name?: string; email?: string } | null;
+        player3?: { name?: string; email?: string } | null;
+    },
+    userId: Id<"users">
+) {
+    const isP1Side = match.p1Id === userId || match.p2Id === userId;
+    const opp = isP1Side ? match.player3 : match.player1;
+    return opp?.name || opp?.email?.split("@")[0] || "Opponent";
+}
+
+function scoreLabel(
+    match: { p1Id: Id<"users">; p2Id?: Id<"users">; score1: number; score2: number },
+    userId: Id<"users">
+) {
+    const isP1Side = match.p1Id === userId || match.p2Id === userId;
+    const myScore = isP1Side ? match.score1 : match.score2;
+    const theirScore = isP1Side ? match.score2 : match.score1;
+    return `${myScore}–${theirScore}`;
+}
+
+function formatMatchDate(timestamp: number) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    if (date.toDateString() === now.toDateString()) {
+        return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    }
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
 
 export default function PlayerProfileScreen() {
     const router = useRouter();
@@ -27,15 +63,19 @@ export default function PlayerProfileScreen() {
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
     const [isRequestingPermissions, setIsRequestingPermissions] = useState(false);
+    const [showChallenge, setShowChallenge] = useState(false);
+    const [showNewTeam, setShowNewTeam] = useState(false);
 
     // Queries
     const currentUser = useQuery(api.users.currentUser);
     const profileUser = useQuery(api.users.getUserById, { userId });
     const profileImageUrl = useQuery(api.users.getUserProfileImageUrl, { userId });
+    const defaultCourt = useQuery(api.courts.getDefault);
     const userProgress = useQuery(api.drillProgress.getUserProgressByUserId, { userId });
     const allDrills = useQuery(api.drills.list, {});
     const notificationSettings = useQuery(api.userNotificationSettings.getNotificationSettings, { targetUserId: userId });
     const blockStatus = useQuery(api.blockedUsers.getUserBlockStatus, { targetUserId: userId });
+    const matches = useQuery(api.challenges.matchHistory, { userId });
 
     // Mutations
     const toggleCheckInNotif = useMutation(api.userNotificationSettings.toggleCheckInNotification);
@@ -166,6 +206,54 @@ export default function PlayerProfileScreen() {
                         </View>
                     </GlassContainer>
 
+                    {/* Challenge + Team CTAs (other user only) */}
+                    {currentUser?._id !== userId && (
+                        <View style={{ flexDirection: "row", gap: 10, marginBottom: 16 }}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => setShowChallenge(true)}
+                                style={{
+                                    flex: 1,
+                                    paddingVertical: 12,
+                                    borderRadius: 16,
+                                    backgroundColor: "rgba(245,158,11,0.15)",
+                                    borderWidth: 1,
+                                    borderColor: "rgba(245,158,11,0.35)",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: 6,
+                                }}
+                            >
+                                <Ionicons name="trophy" size={16} color="#f59e0b" />
+                                <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 14 }}>
+                                    Challenge
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => setShowNewTeam(true)}
+                                style={{
+                                    flex: 1,
+                                    paddingVertical: 12,
+                                    borderRadius: 16,
+                                    backgroundColor: "rgba(255,255,255,0.05)",
+                                    borderWidth: 1,
+                                    borderColor: "rgba(255,255,255,0.1)",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: 6,
+                                }}
+                            >
+                                <Ionicons name="people" size={16} color="#9ca3af" />
+                                <Text style={{ color: "#9ca3af", fontWeight: "700", fontSize: 14 }}>
+                                    Invite to Team
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+
                     {/* Skill Profile Section */}
                     <GlassContainer
                         style={{
@@ -183,6 +271,73 @@ export default function PlayerProfileScreen() {
 
                         <RadarChart skillProgress={skillProgress} size={280} />
                     </GlassContainer>
+
+                    {/* Match History */}
+                    {matches && matches.length > 0 && (
+                        <GlassContainer
+                            style={{
+                                borderRadius: 24,
+                                padding: 24,
+                                marginBottom: 16,
+                            }}
+                        >
+                            <View className="flex-row items-center justify-between mb-4">
+                                <View className="flex-row items-center">
+                                    <Ionicons name="trophy" size={20} color="#f59e0b" />
+                                    <Text className="text-xl font-bold text-slate-200 ml-2">
+                                        Match History
+                                    </Text>
+                                </View>
+                                <Text className="text-slate-400 text-sm">
+                                    {matches.filter((m) => m.won).length}W–
+                                    {matches.filter((m) => !m.won).length}L
+                                </Text>
+                            </View>
+
+                            {matches.slice(0, 10).map((match) => (
+                                <View
+                                    key={match._id}
+                                    className="flex-row items-center py-3 border-t border-slate-600/50"
+                                >
+                                    <View
+                                        style={{
+                                            width: 36,
+                                            height: 36,
+                                            borderRadius: 10,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            backgroundColor: match.won
+                                                ? "rgba(245, 158, 11, 0.15)"
+                                                : "rgba(255,255,255,0.05)",
+                                            marginRight: 12,
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: match.won ? "#f59e0b" : "#9ca3af",
+                                                fontWeight: "800",
+                                                fontSize: 12,
+                                            }}
+                                        >
+                                            {match.won ? "W" : "L"}
+                                        </Text>
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-slate-200 font-semibold">
+                                            vs {opponentLabel(match, userId)}
+                                        </Text>
+                                        <Text className="text-slate-400 text-xs mt-0.5">
+                                            {match.format === "doubles" ? "Doubles" : "Singles"} ·{" "}
+                                            {formatMatchDate(match.confirmedAt ?? match.reportedAt)}
+                                        </Text>
+                                    </View>
+                                    <Text className="text-slate-200 font-bold">
+                                        {scoreLabel(match, userId)}
+                                    </Text>
+                                </View>
+                            ))}
+                        </GlassContainer>
+                    )}
 
                     {/* Notifications Section */}
                     <GlassContainer
@@ -279,6 +434,22 @@ export default function PlayerProfileScreen() {
                 onClose={() => setPopupVisible(false)}
                 title="Permission Required"
                 message={popupMessage}
+            />
+
+            {defaultCourt && (
+                <ChallengeSheet
+                    isVisible={showChallenge}
+                    onClose={() => setShowChallenge(false)}
+                    preselectedOpponentId={userId}
+                    courtId={defaultCourt._id}
+                />
+            )}
+
+            <NewTeamSheet
+                isVisible={showNewTeam}
+                onClose={() => setShowNewTeam(false)}
+                courtId={defaultCourt?._id}
+                preselectedPartnerId={userId}
             />
         </Background>
     );

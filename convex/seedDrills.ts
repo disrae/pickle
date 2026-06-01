@@ -1,18 +1,28 @@
-import { v } from "convex/values";
 import { mutation } from "./_generated/server";
 
-// Seed official drills - call this once to populate initial drill data
+// Seed official drills - idempotent, safe to run multiple times
 export const seedOfficialDrills = mutation({
     args: {},
     handler: async (ctx) => {
-        // Get the first admin user (or create a system user)
-        const adminUser = await ctx.db
-            .query("users")
-            .filter((q) => q.eq(q.field("isAdmin"), true))
+        // Idempotency: skip if official drills already exist
+        const existing = await ctx.db
+            .query("drills")
+            .filter((q) => q.eq(q.field("isOfficial"), true))
             .first();
+        if (existing) {
+            return { success: true, count: 0, message: "Official drills already seeded" };
+        }
+
+        // Use admin user if available, otherwise fall back to any user
+        const adminUser =
+            (await ctx.db
+                .query("users")
+                .filter((q) => q.eq(q.field("isAdmin"), true))
+                .first()) ??
+            (await ctx.db.query("users").first());
 
         if (!adminUser) {
-            throw new Error("No admin user found to create official drills");
+            throw new Error("No users found — sign in once before seeding");
         }
 
         const now = Date.now();

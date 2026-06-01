@@ -137,18 +137,69 @@
 **Rolling tournament model (decided):**
 
 - **Enrollment:** auto-enroll everyone who plays onto a rolling ladder (standings never empty) + active hook is "challenge a player checked in at the court right now."
-- **Rating:** single individual rating per player (DUPR-style), updated on every reported match. Works across formats; no separate ladders to keep alive.
-- **Primary format: doubles** (matches how pickleball is actually played), singles supported. Rating moves for all participants based on match result.
-- **Teams = persistent named groups** the user forms/joins, distinct from ad-hoc doubles partners. Used for team play, team chat, and team-format events later. Do NOT conflate "team" with "doubles partner of the day."
+- **Two ladders:** Doubles (team vs team) + Singles (individual vs individual). Separate ratings for each.
+- **Team rating (doubles):** each 2-person team has its own score-weighted Elo (DUPR-style). Seeded from avg of members' individual ratings on creation. Marked "provisional" until 3 matches played.
+- **Individual rating (singles):** score-weighted Elo, also drives skills profile + partner recs.
+- **Teams = persistent named 2-person partnerships.** A player can be on unlimited teams (plays with different partners). Teams are browsable + challengeable at your court. Do NOT conflate with ad-hoc doubles partner of the day.
+- **No team required to play.** You can challenge/report any 4 players ad-hoc; ratings still update individually. Teams are opt-in identity layer on top.
+
+**Compete tab IA (decided):**
+
+```
+Compete
+├── Ladder (top control)
+│   ├── Doubles · Singles (inner pill toggle)
+│   │   Row: rank + avatars + name + rating + W/L + Challenge button
+│   │   Tap row → profile/[id] + Match History section + Challenge CTA
+│   └── Upcoming matches strip (1–3 cards at top, before ladder)
+└── Teams (top control)
+    ├── My Teams — your partnerships, W/L, avg rating, team chat entry
+    └── Browse — all teams at your home court, challengeable
+```
+
+- **Leaderboard scope:** home court by default, "All Courts" toggle. Per-court tournaments feel independent; global individual rating is just filtered by court — no separate ladders.
+- **First-time empty state:** unranked entry card ("Play a match to get ranked") + "Find a Partner / Create Team" CTA.
+
+**Challenge flow (decided):**
+
+- Entry points: Court roster tap OR Compete ladder/team row tap (both).
+- Bottom sheet: pick your partner (or play solo) + pick opponents + format (first to 11 etc.).
+- No team required — all 4 players can be picked ad-hoc on the spot.
+
+**Match reporting (decided):**
+
+- ~2h after challenge accepted → push notification + in-app prompt ("How'd it go?").
+- Simple score sheet: your score / their score → submit.
+- Ratings update only after opponent confirms (auto-confirm after 24h if no response).
+- Manual "Log a match" entry also available from Compete for untracked games.
+
+**Scheduling (decided):**
+
+- Scheduled match = distinct from planned court visit, but auto-creates a planned visit for all participants.
+- No dedicated calendar page (v1). Surfaces as: "Upcoming" horizontal strip at top of Compete Ladder + planned visit card on Court tab.
+
+**Post-match coach debrief (decided):**
+
+- After match confirmed, amber banner appears on Compete (and Court): "Debrief ready — your coach wants to hear about the game."
+- Tap → Coach tab opens with match context pre-loaded ("You beat The Dink Tanks 11–7. Tell me what clicked.").
+- Coach extracts qualitative insight (shots missed, what landed) → updates skills profile.
+- Triggers for both teams immediately on report/confirmation respectively.
 
 **Tasks:**
 
-- [ ] Schema: `teams`, team membership, `matches` (participants, scores, format), individual `ratings`/rating history.
-- [ ] Team creation and management (create team, invite players, roster view).
-- [ ] Team-scoped chat or team channel tied to roster.
-- [ ] Challenge flow: challenge checked-in player(s) -> play -> report score -> ratings update.
-- [ ] Rolling ladder + leaderboard UI (amber `competition` tokens throughout).
-- [ ] Match history on player profile + rating trend.
+- [ ] Schema: `teams`, `teamMemberships`, `matches` (participants, scores, format, courtId), `individualRatings`, `teamRatings`, `challenges`, `scheduledMatches`.
+- [ ] Convex mutations: create team + invite, accept invite, leave team.
+- [ ] Convex mutations: issue challenge, accept/decline challenge, report score, confirm score.
+- [ ] Rating update logic: score-weighted Elo for both individual (singles) and team (doubles). Run on score confirmation.
+- [ ] Compete tab: Ladder | Teams top control + Doubles · Singles inner toggle.
+- [ ] Ladder screen: upcoming strip + ranked list rows + home/all courts toggle.
+- [ ] Teams screen: My Teams list + Browse (court-scoped).
+- [ ] Challenge bottom sheet (from Court roster + from Compete).
+- [ ] Match report screen / score sheet.
+- [ ] Scheduled match creation + auto planned visit.
+- [ ] Post-match debrief banner → Coach tab with match context.
+- [ ] Match History section on `profile/[id]` + rating trend.
+- [ ] Team-scoped chat channel (reuse DM or court chat infrastructure).
 
 ### Phase 7: Quality and rollout
 

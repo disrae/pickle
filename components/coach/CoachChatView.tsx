@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
     ActivityIndicator,
+    Keyboard,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -42,9 +43,26 @@ export function CoachChatView({ headerHeight }: CoachChatViewProps) {
     const [input, setInput] = useState("");
     const [sending, setSending] = useState(false);
     const [confirming, setConfirming] = useState(false);
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [pending, setPending] = useState<DisplayMessage[]>([]);
     const scrollRef = useRef<ScrollView>(null);
     const messageCountAtSend = useRef(0);
+
+    useEffect(() => {
+        const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+        const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+        const showSub = Keyboard.addListener(showEvent, () => {
+            setKeyboardVisible(true);
+            requestAnimationFrame(() =>
+                scrollRef.current?.scrollToEnd({ animated: true })
+            );
+        });
+        const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, []);
 
     useEffect(() => {
         if (messages !== undefined && messages.length === 0) {
@@ -123,11 +141,13 @@ export function CoachChatView({ headerHeight }: CoachChatViewProps) {
         }
     };
 
+    const composerBottomPadding = keyboardVisible ? 12 : composerBottomInset;
+
     return (
         <KeyboardAvoidingView
             className="flex-1"
             behavior={Platform.OS === "ios" ? "padding" : undefined}
-            keyboardVerticalOffset={Platform.OS === "ios" ? headerHeight : 0}
+            keyboardVerticalOffset={0}
         >
             <ScrollView
                 ref={scrollRef}
@@ -189,7 +209,7 @@ export function CoachChatView({ headerHeight }: CoachChatViewProps) {
 
             <View
                 className="px-4 border-t border-border bg-background/95"
-                style={{ paddingTop: 12, paddingBottom: composerBottomInset }}
+                style={{ paddingTop: 12, paddingBottom: composerBottomPadding }}
             >
                 <View className="flex-row items-center gap-2">
                     <TextInput

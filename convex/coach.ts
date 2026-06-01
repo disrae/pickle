@@ -108,6 +108,55 @@ export const saveProposedProfile = internalMutation({
     },
 });
 
+/**
+ * Inject post-match debrief context into the coach conversation.
+ * Called when the user taps the debrief banner.
+ * Inserts a user message with match context so the coach responds in debrief mode.
+ */
+export const injectDebriefContext = mutation({
+    args: { matchId: v.id("matches") },
+    handler: async (ctx, { matchId }) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+
+        const match = await ctx.db.get(matchId);
+        if (!match) throw new Error("Match not found");
+
+        const isP1Side = match.p1Id === userId || match.p2Id === userId;
+        const myScore = isP1Side ? match.score1 : match.score2;
+        const oppScore = isP1Side ? match.score2 : match.score1;
+        const won = myScore > oppScore;
+
+        const [p1, p3] = await Promise.all([
+            ctx.db.get(match.p1Id),
+            ctx.db.get(match.p3Id),
+        ]);
+
+        const oppSide = isP1Side
+            ? p3?.name ?? "Opponent"
+            : p1?.name ?? "Opponent";
+
+        const contextMsg = `Post-match debrief: I just ${won ? "won" : "lost"} ${myScore}–${oppScore} against ${oppSide} in a ${match.format} match. Can you help me break it down?`;
+
+        const now = Date.now();
+        await ctx.db.insert("coachMessages", {
+            userId,
+            role: "user",
+            content: contextMsg,
+            createdAt: now,
+        });
+
+        // Mark debrief as triggered for this user's side
+        if (isP1Side) {
+            await ctx.db.patch(matchId, { debriefTriggeredP1: true });
+        } else {
+            await ctx.db.patch(matchId, { debriefTriggeredP3: true });
+        }
+
+        return contextMsg;
+    },
+});
+
 /** Dev only: wipe all coach chat + profiles so onboarding can be retested. */
 export const resetCoachDev = mutation({
     args: { confirm: v.string() },
