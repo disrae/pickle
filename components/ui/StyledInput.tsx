@@ -75,11 +75,12 @@ export function StyledInput({
                     onBlur={() => setFocused(false)}
                     placeholderTextColor={palette.placeholder}
                     underlineColorAndroid="transparent"
-                    className="flex-1 py-4 text-base"
+                    className="flex-1 py-4 text-base outline-none"
                     style={{
                         color: palette.text,
                         backgroundColor: "transparent",
                         ...(Platform.OS === "android" ? { paddingVertical: 12 } : {}),
+                        ...(Platform.OS === "web" ? { outlineStyle: "none" as const } : {}),
                     }}
                 />
                 {secureTextEntry ? (
