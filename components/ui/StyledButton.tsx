@@ -1,60 +1,72 @@
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
+
+type Variant = "brand" | "primary" | "secondary" | "outline" | "ghost" | "destructive" | "success";
+
+const containerByVariant: Record<Variant, string> = {
+    brand: "bg-brand active:bg-brand-strong",
+    primary: "bg-primary active:opacity-90",
+    secondary: "bg-secondary border border-border active:opacity-80",
+    outline: "border border-border active:bg-surface-2",
+    ghost: "active:bg-surface-2",
+    destructive: "bg-destructive active:opacity-90",
+    success: "bg-success active:opacity-90",
+};
+
+const textByVariant: Record<Variant, string> = {
+    brand: "text-brand-foreground",
+    primary: "text-primary-foreground",
+    secondary: "text-foreground",
+    outline: "text-foreground",
+    ghost: "text-foreground",
+    destructive: "text-destructive-foreground",
+    success: "text-success-foreground",
+};
+
+const spinnerByVariant: Record<Variant, string> = {
+    brand: "#151c0c",
+    primary: "#fafaf7",
+    secondary: "#12170f",
+    outline: "#12170f",
+    ghost: "#12170f",
+    destructive: "#fafafa",
+    success: "#fafafa",
+};
 
 export function StyledButton({
     onPress,
     title,
-    variant = "primary",
+    variant = "brand",
     fullWidth = true,
     className = "",
-    disabled = false
+    disabled = false,
+    loading = false,
 }: {
     onPress: () => void;
     title: string;
-    variant?: "primary" | "secondary" | "destructive" | "success";
+    variant?: Variant;
     fullWidth?: boolean;
     className?: string;
     disabled?: boolean;
+    loading?: boolean;
 }) {
-    let colorClass = "";
-    let textColor = "text-white";
-
-    switch (variant) {
-        case "primary":
-            colorClass = "bg-slate-600 active:bg-slate-700";
-            break;
-        case "secondary":
-            colorClass = "bg-slate-200 active:bg-slate-300";
-            textColor = "text-slate-800";
-            break;
-        case "destructive":
-            colorClass = "bg-red-600 active:bg-red-700";
-            break;
-        case "success":
-            colorClass = "bg-green-600 active:bg-green-700";
-            break;
-    }
-
-    const buttonClass = `rounded-xl py-4 ${fullWidth ? "w-full" : ""} ${colorClass} ${className}`;
+    const isDisabled = disabled || loading;
 
     return (
-        <TouchableOpacity
-            onPress={disabled ? undefined : onPress}
-            disabled={disabled}
-            className={buttonClass}
-            style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: disabled ? 0.05 : 0.1,
-                shadowRadius: 4,
-                elevation: disabled ? 1 : 3,
-                opacity: disabled ? 0.7 : 1,
-            }}
+        <Pressable
+            onPress={isDisabled ? undefined : onPress}
+            disabled={isDisabled}
+            className={`h-14 flex-row items-center justify-center rounded-2xl px-5 ${fullWidth ? "w-full" : ""} ${containerByVariant[variant]} ${isDisabled ? "opacity-50" : ""} ${className}`}
         >
-            <Text className={`${textColor} text-center text-base font-bold`}>
-                {title}
-            </Text>
-        </TouchableOpacity>
+            {loading ? (
+                <ActivityIndicator color={spinnerByVariant[variant]} />
+            ) : (
+                <View className="flex-row items-center justify-center gap-2">
+                    <Text className={`text-center text-base font-bold ${textByVariant[variant]}`}>
+                        {title}
+                    </Text>
+                </View>
+            )}
+        </Pressable>
     );
 }
-

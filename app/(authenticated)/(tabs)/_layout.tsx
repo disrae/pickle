@@ -11,12 +11,14 @@ export default function TabsLayout() {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarActiveTintColor: "#65a30d", // lime-700
-                tabBarInactiveTintColor: "#64748b", // slate-500
+                tabBarActiveTintColor: "#a3e635", // Volt
+                tabBarInactiveTintColor: "#6b7563",
                 tabBarStyle: {
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "#0c100a",
                     borderTopWidth: 1,
-                    borderTopColor: "#e2e8f0", // slate-200
+                    borderTopColor: "rgba(255,255,255,0.08)",
+                    paddingTop: 10,
+                    height: 88,
                 },
             }}
         >

@@ -10,7 +10,7 @@ export default function TabLayout() {
     const user = useQuery(api.users.currentUser);
     if (isLiquidGlassAvailable()) {
         return (
-            <NativeTabs tintColor="#65a30d">
+            <NativeTabs tintColor="#a3e635">
                 <NativeTabs.Trigger name="court"  >
                     <Label hidden>Court</Label>
                     <Icon sf="figure.pickleball" />
@@ -35,12 +35,12 @@ export default function TabLayout() {
                 screenOptions={{
                     headerShown: false,
                     tabBarShowLabel: false,
-                    tabBarActiveTintColor: "#65a30d", // lime-700
-                    tabBarInactiveTintColor: "#94a3b8", // slate-600
+                    tabBarActiveTintColor: "#a3e635", // Volt
+                    tabBarInactiveTintColor: "#6b7563",
                     tabBarStyle: {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#0c100a",
                         borderTopWidth: 1,
-                        borderTopColor: "#e2e8f0", // slate-200
+                        borderTopColor: "rgba(255,255,255,0.08)",
                         paddingTop: 10,
                     },
                 }}

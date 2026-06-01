@@ -185,11 +185,13 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
             className="mb-4"
         >
             <GlassContainer
+                glassEffectStyle="clear"
                 style={{
                     borderRadius: 16,
                     padding: 16,
                     borderWidth: 1,
-                    borderColor: "rgba(148, 163, 184, 0.3)",
+                    borderColor: "rgba(255,255,255,0.08)",
+                    backgroundColor: "rgba(8, 12, 7, 0.93)",
                 }}
             >
                 {/* Collapsed State */}

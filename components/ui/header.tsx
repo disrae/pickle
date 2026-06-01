@@ -59,14 +59,24 @@ export function Header({ title, titleSize = "text-2xl", rightButton, onRightPres
         <>
             <GuestModeBanner isVisible={isGuestMode} />
             <GlassContainer
+                glassEffectStyle="clear"
                 style={{
                     position: 'absolute',
                     top: bannerHeight,
                     left: 0,
                     right: 0,
                     paddingTop: top - 8,
-                    paddingBottom: 8,
+                    paddingBottom: 10,
                     paddingHorizontal: 16,
+                    backgroundColor: "rgba(8, 12, 7, 0.95)",
+                    borderWidth: 0,
+                    borderColor: "transparent",
+                    borderBottomWidth: 0,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 8 },
+                    shadowOpacity: 0.28,
+                    shadowRadius: 14,
+                    elevation: 8,
                 }}
             >
                 <View className="flex-row items-center justify-between">

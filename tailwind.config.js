@@ -1,5 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 
+// Every semantic color reads from a CSS variable defined in `lib/theme.ts`,
+// so light/dark theming + opacity modifiers (e.g. `bg-brand/20`) work everywhere.
+const withVar = (name) => `rgb(var(${name}) / <alpha-value>)`;
+
 module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
@@ -7,76 +11,89 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: "#000000",
-          foreground: "#FFFFFF",
-        },
-        secondary: {
-          DEFAULT: "#1E40AF", // blue-700 - deeper tennis court blue
-          foreground: "#FFFFFF",
-        },
+        // Surfaces
         background: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#000000",
+          DEFAULT: withVar("--color-background"),
+          foreground: withVar("--color-foreground"),
         },
-        foreground: {
-          DEFAULT: "#000000",
-          muted: "#737373",
-        },
-        muted: {
-          DEFAULT: "#737373",
-          foreground: "#FFFFFF",
-        },
-        destructive: {
-          DEFAULT: "#EF4444", // red-500
-          foreground: "#FFFFFF",
-        },
-        success: {
-          DEFAULT: "#22C55E", // green-500
-          foreground: "#FFFFFF",
-        },
-        warning: {
-          DEFAULT: "#EAB308", // yellow-500
-          foreground: "#FFFFFF",
-        },
-        info: {
-          DEFAULT: "#3B82F6", // blue-500
-          foreground: "#FFFFFF",
+        surface: {
+          DEFAULT: withVar("--color-surface"),
+          2: withVar("--color-surface-2"),
         },
         card: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#000000",
+          DEFAULT: withVar("--color-card"),
+          foreground: withVar("--color-card-foreground"),
         },
         popover: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#000000",
+          DEFAULT: withVar("--color-popover"),
+          foreground: withVar("--color-popover-foreground"),
+        },
+
+        // Text
+        foreground: {
+          DEFAULT: withVar("--color-foreground"),
+          muted: withVar("--color-muted-foreground"),
+        },
+
+        // Brand (Volt)
+        brand: {
+          DEFAULT: withVar("--color-brand"),
+          foreground: withVar("--color-brand-foreground"),
+          strong: withVar("--color-brand-strong"),
+          subtle: withVar("--color-brand-subtle"),
+        },
+
+        // Competition (Amber) — ladder / tournament / ranking
+        competition: {
+          DEFAULT: withVar("--color-competition"),
+          foreground: withVar("--color-competition-foreground"),
+        },
+
+        // Primary (high-contrast ink)
+        primary: {
+          DEFAULT: withVar("--color-primary"),
+          foreground: withVar("--color-primary-foreground"),
+        },
+
+        // Neutral surfaces
+        secondary: {
+          DEFAULT: withVar("--color-secondary"),
+          foreground: withVar("--color-secondary-foreground"),
         },
         accent: {
-          DEFAULT: "#F5F5F5",
-          foreground: "#000000",
+          DEFAULT: withVar("--color-accent"),
+          foreground: withVar("--color-accent-foreground"),
         },
-        border: {
-          DEFAULT: "#E5E7EB",
-          foreground: "#000000",
+        muted: {
+          DEFAULT: withVar("--color-muted"),
+          foreground: withVar("--color-muted-foreground"),
         },
-        input: {
-          DEFAULT: "#E5E7EB",
-          foreground: "#000000",
+
+        // Status
+        destructive: {
+          DEFAULT: withVar("--color-destructive"),
+          foreground: withVar("--color-destructive-foreground"),
         },
-        placeholder: {
-          "on-white": "#475569", // slate-600 - for white backgrounds (bg-white)
-          "on-light": "#64748b", // slate-500 - for light gray backgrounds (bg-slate-50, bg-gray-50)
-          "on-dark": "#94a3b8", // slate-400 - for dark backgrounds (bg-black, bg-slate-800)
+        success: {
+          DEFAULT: withVar("--color-success"),
+          foreground: withVar("--color-success-foreground"),
         },
-        toggle: {
-          active: "#2D2D2D",
-          "active-foreground": "#FFFFFF",
-          border: "#E5E7EB",
+        warning: {
+          DEFAULT: withVar("--color-warning"),
+          foreground: withVar("--color-warning-foreground"),
         },
-        "court-red": {
-          DEFAULT: "#B91C1C", // Tennis court clay red
-          foreground: "#FFFFFF",
+        info: {
+          DEFAULT: withVar("--color-info"),
+          foreground: withVar("--color-info-foreground"),
         },
+
+        // Lines & focus
+        border: withVar("--color-border"),
+        input: withVar("--color-input"),
+        ring: withVar("--color-ring"),
+      },
+      borderRadius: {
+        "4xl": "28px",
       },
     },
   },

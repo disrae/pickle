@@ -1,5 +1,6 @@
-import React from "react";
-import { Text, TextInput, View } from "react-native";
+import { useTheme } from "@/lib/theme-context";
+import React, { useState } from "react";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 export function StyledInput({
     label,
@@ -10,9 +11,9 @@ export function StyledInput({
     keyboardType = "default",
     autoComplete,
     textContentType,
-    autoFocus
+    autoFocus,
 }: {
-    label: string;
+    label?: string;
     placeholder: string;
     secureTextEntry?: boolean;
     value?: string;
@@ -22,22 +23,43 @@ export function StyledInput({
     textContentType?: "emailAddress" | "password" | "username" | "name";
     autoFocus?: boolean;
 }) {
+    const { theme } = useTheme();
+    const [focused, setFocused] = useState(false);
+    const [hidden, setHidden] = useState(!!secureTextEntry);
+
+    const placeholderColor = theme === "dark" ? "#7c8a6f" : "#8a917e";
+
     return (
         <View className="w-full">
-            <Text className="text-sm font-semibold text-slate-700 mb-2">{label}</Text>
-            <TextInput
-                placeholder={placeholder}
-                secureTextEntry={secureTextEntry}
-                value={value}
-                onChangeText={onChangeText}
-                keyboardType={keyboardType}
-                autoComplete={autoComplete}
-                textContentType={textContentType}
-                autoFocus={autoFocus}
-                className="bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5"
-                placeholderTextColor="#475569"
-            />
+            {label ? (
+                <Text className="mb-2 text-sm font-semibold text-foreground">{label}</Text>
+            ) : null}
+            <View
+                className={`flex-row items-center rounded-2xl border bg-surface px-4 ${focused ? "border-brand" : "border-border"}`}
+            >
+                <TextInput
+                    placeholder={placeholder}
+                    secureTextEntry={hidden}
+                    value={value}
+                    onChangeText={onChangeText}
+                    keyboardType={keyboardType}
+                    autoComplete={autoComplete}
+                    textContentType={textContentType}
+                    autoFocus={autoFocus}
+                    autoCapitalize="none"
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    className="flex-1 py-4 text-base text-foreground"
+                    placeholderTextColor={placeholderColor}
+                />
+                {secureTextEntry ? (
+                    <Pressable onPress={() => setHidden((h) => !h)} hitSlop={10} className="pl-3">
+                        <Text className="text-sm font-semibold text-foreground-muted">
+                            {hidden ? "Show" : "Hide"}
+                        </Text>
+                    </Pressable>
+                ) : null}
+            </View>
         </View>
     );
 }
-

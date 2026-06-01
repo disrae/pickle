@@ -4,21 +4,39 @@
 
 - [x] Simplified login to password-based auth only.
 - [x] Wiped database to reset state during auth transition.
+- [x] Established design-token single source of truth (`lib/theme.ts` -> `tailwind.config.js`).
+- [x] Redesigned login screen as the first brand "hero" proof.
+- [x] Upgraded `StyledButton` (added `brand` variant + loading) and `StyledInput` (theme-aware, show/hide).
+- [x] Replaced the old lime "green holes" background with a dark premium gradient + glow backdrop.
+- [x] Rebuilt global glass surfaces (`GlassContainer`) to remove milky/light overlays across cards.
+- [x] Updated header shell to a darker high-contrast surface and removed the unwanted light border.
+- [x] Updated tab bar styling to match the new dark Volt brand direction.
+- [x] Tuned skill profile card surface to match the new dark card treatment.
+
+## Brand: "Court-Ready" (decided)
+
+- **Volt** = signature pickleball lime-green; primary CTAs / highlights / brand moments.
+- **Ink** = green-tinted near-black; text + structure + dark surfaces.
+- **Amber (`competition`)** = reserved ONLY for ladder / tournament / ranking, so competition always reads as distinct.
+- **Neutrals**: warm paper (light) / green-charcoal (dark). Both modes are first-class.
+- **Shape/feel**: generous rounded cards (`rounded-[28px]`/`2xl`), soft depth, lots of breathing room, clean gradients instead of the old busy dot pattern.
+- **Tokens**: use semantic classes only (`bg-background`, `text-foreground`, `bg-brand`, `bg-surface`, `border-border`, `bg-competition`). Avoid raw `slate-*`/`lime-*` going forward.
 
 ## Next up: Massive UI overhaul
 
 ### Phase 1: Foundation (design system)
 
-- [ ] Define updated visual direction (colors, typography, spacing, radius, shadows).
-- [ ] Create reusable primitives (`Button`, `Input`, `Card`, `Badge`, `Avatar`, `Modal`).
-- [ ] Standardize layout patterns (screen padding, section headers, empty states, loading states).
-- [ ] Define interaction polish (haptics, transitions, pressed/disabled states).
-- [ ] Add a small style guide screen for quick visual QA.
+- [x] Define color tokens (Volt / Ink / Amber / neutrals) wired through CSS vars.
+- [x] Wire `tailwind.config.js` to consume the variables (theme-aware + opacity modifiers).
+- [ ] Define typography scale + add a custom display font (e.g. Space Grotesk / Clash).
+- [ ] Finish reusable primitives: `Card`, `Badge`, `Avatar`, `Chip`, `SectionHeader`, `EmptyState`.
+- [ ] Standardize layout patterns (screen padding, headers, empty/loading states).
+- [ ] Add a style-guide preview screen for fast visual QA of tokens + primitives.
 
 ### Phase 2: Navigation and app shell refresh
 
-- [ ] Redesign tab bar and top headers for a cleaner information hierarchy.
-- [ ] Update background, glass, and container treatments for consistent depth.
+- [x] Redesign tab bar and top headers for a cleaner information hierarchy.
+- [x] Update background, glass, and container treatments for consistent depth.
 - [ ] Improve safe-area handling and responsive behavior across iOS/Android/Web.
 - [ ] Unify icon usage and sizing across all major screens.
 
@@ -26,7 +44,7 @@
 
 - [ ] Rename/reframe skills area as "Coach's Corner".
 - [ ] Redesign drills list, drill cards, and drill detail hierarchy.
-- [ ] Improve skills graph readability and profile storytelling.
+- [~] Improve skills graph readability and profile storytelling. (in progress: card surface + contrast pass done)
 - [ ] Add clearer progress states (beginner/intermediate/advanced, milestones, next best drill).
 - [ ] Improve creation flows for drills/features with cleaner forms.
 

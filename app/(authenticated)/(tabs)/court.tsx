@@ -202,7 +202,7 @@ export default function CourtsScreen() {
         return (
             <Background>
                 <View className="flex-1 items-center justify-center px-8">
-                    <ActivityIndicator size="large" color="#65a30d" />
+                    <ActivityIndicator size="large" color="#a3e635" />
                 </View>
             </Background>
         );
@@ -213,9 +213,12 @@ export default function CourtsScreen() {
             <Background>
                 <View className="flex-1 items-center justify-center px-8">
 
-                    <Ionicons name="location-outline" size={92} color="#000000B3" />
-                    <Text className="text-black/80 text-2xl tracking-wide font-bold mt-6 text-center">
+                    <Ionicons name="location-outline" size={92} color="#a3e635" />
+                    <Text className="text-white text-2xl tracking-wide font-bold mt-6 text-center">
                         No Court Selected
+                    </Text>
+                    <Text className="text-white/60 text-base mt-2 text-center">
+                        Pick your home court to see who&apos;s playing.
                     </Text>
 
                     <View className="h-10" />
@@ -223,10 +226,10 @@ export default function CourtsScreen() {
                     <Button
                         onPress={() => setShowCourtSelector(true)}
                         size="lg"
-                        className="bg-secondary"
+                        className="bg-brand"
                     >
-                        <Ionicons name="add-circle-outline" size={24} color="white" />
-                        <Text className="text-white text-lg font-semibold ml-2">
+                        <Ionicons name="add-circle-outline" size={24} color="#151c0c" />
+                        <Text className="text-brand-foreground text-lg font-bold ml-2">
                             Select Court
                         </Text>
                     </Button>

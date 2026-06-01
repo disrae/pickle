@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Text, View, ActivityIndicator } from "react-native";
+import { Modal, Text, View } from "react-native";
 import { StyledButton } from "@/components/ui/StyledButton";
 import { StyledInput } from "@/components/ui/StyledInput";
 import { api } from "@/convex/_generated/api";
@@ -125,14 +125,12 @@ export const SetNamePopup = ({
                         )}
                         <StyledButton
                             variant="primary"
-                            title={isSubmitting ? "" : "Save"}
+                            title="Save"
                             onPress={handleSave}
                             fullWidth={isRequired}
                             className={!isRequired ? "flex-1" : ""}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting && <ActivityIndicator color="white" />}
-                        </StyledButton>
+                            loading={isSubmitting}
+                        />
                     </View>
                 </View>
             </View>
