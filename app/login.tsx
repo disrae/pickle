@@ -17,7 +17,8 @@ export default function Index() {
     const router = useRouter();
     const user = useQuery(api.users.currentUser);
     const [email, setEmail] = useState("");
-    const [emailSent, setEmailSent] = useState(false);
+    const [password, setPassword] = useState("");
+    const [passwordFlow, setPasswordFlow] = useState<"signIn" | "signUp">("signIn");
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState("");
     const [popupMessage, setPopupMessage] = useState("");
@@ -43,23 +44,48 @@ export default function Index() {
         return null;
     }
 
-    const handleSendLoginLink = async () => {
+    const showErrorPopup = (error: unknown) => {
+        const rawMessage =
+            error instanceof Error ? error.message : "Something went wrong while signing you in.";
+        const normalizedMessage = rawMessage.toLowerCase();
+        let friendlyMessage = "We couldn't complete that request. Please try again.";
+
+        if (normalizedMessage.includes("invalid password")) {
+            friendlyMessage = "That password doesn't look right. Please try again.";
+        } else if (normalizedMessage.includes("not found")) {
+            friendlyMessage = "We couldn't find an account with that email yet.";
+        } else if (normalizedMessage.includes("already")) {
+            friendlyMessage = "That email is already in use. Try signing in instead.";
+        } else if (normalizedMessage.includes("8 characters")) {
+            friendlyMessage = "Password must be at least 8 characters.";
+        } else if (normalizedMessage.includes("email")) {
+            friendlyMessage = "Please enter a valid email address.";
+        }
+
+        setPopupTitle("Sign in issue");
+        setPopupMessage(friendlyMessage);
+        setShowPopup(true);
+    };
+
+    const handlePasswordAuth = async () => {
         Keyboard.dismiss();
 
-        if (!email.trim()) return;
+        if (!email.trim() || !password.trim()) {
+            setPopupTitle("Missing info");
+            setPopupMessage("Enter both email and password to continue.");
+            setShowPopup(true);
+            return;
+        }
 
         try {
-            await signIn("resend-otp", {
+            await signIn("password", {
                 email: email.trim().toLowerCase(),
+                password,
+                flow: passwordFlow,
             });
-            setEmailSent(true);
-            // Navigate to verification screen
-            // router.push("/auth/verify");
         } catch (error) {
-            console.error("Sign in error:", error);
-            setPopupTitle("Error");
-            setPopupMessage("Failed to send email. Please try again.");
-            setShowPopup(true);
+            console.error("Password auth error:", error);
+            showErrorPopup(error);
         }
     };
 
@@ -109,18 +135,39 @@ export default function Index() {
 
                                 <View className="h-8" />
 
-                                <StyledButton
-                                    onPress={handleSendLoginLink}
-                                    title={emailSent ? "Email Sent ✓" : "Send login link"}
-                                    variant={emailSent ? "success" : "primary"}
-                                    disabled={emailSent}
+                                <View className="flex-row bg-slate-100 rounded-xl p-1 mb-4">
+                                    <Pressable
+                                        onPress={() => setPasswordFlow("signIn")}
+                                        className={`flex-1 py-2 rounded-lg ${passwordFlow === "signIn" ? "bg-white" : ""}`}
+                                    >
+                                        <Text className={`text-center font-semibold ${passwordFlow === "signIn" ? "text-slate-800" : "text-slate-500"}`}>
+                                            Sign In
+                                        </Text>
+                                    </Pressable>
+                                    <Pressable
+                                        onPress={() => setPasswordFlow("signUp")}
+                                        className={`flex-1 py-2 rounded-lg ${passwordFlow === "signUp" ? "bg-white" : ""}`}
+                                    >
+                                        <Text className={`text-center font-semibold ${passwordFlow === "signUp" ? "text-slate-800" : "text-slate-500"}`}>
+                                            Sign Up
+                                        </Text>
+                                    </Pressable>
+                                </View>
+                                <StyledInput
+                                    label="Password"
+                                    placeholder={passwordFlow === "signUp" ? "Create a password (min 8 chars)" : "Enter your password"}
+                                    secureTextEntry
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    autoComplete="password"
+                                    textContentType="password"
                                 />
-
-                                {emailSent && (
-                                    <Text className="text-slate-600 text-center mt-4 text-sm">
-                                        Check your email for a login link. It could be in your spam folder.
-                                    </Text>
-                                )}
+                                <View className="h-8" />
+                                <StyledButton
+                                    onPress={handlePasswordAuth}
+                                    title={passwordFlow === "signUp" ? "Create account" : "Sign in"}
+                                    variant="primary"
+                                />
 
                                 <View className="h-4" />
 
@@ -141,13 +188,6 @@ export default function Index() {
                                 <Text className="text-slate-500 text-center mt-3 text-xs">
                                     Guest mode is read-only. Sign in to unlock all features.
                                 </Text>
-
-                                {/* Test verification */}
-                                {/* <View className="h-8" />
-                <StyledButton
-                  onPress={() => router.push("/auth/verify?token=55688520&email=danny.israel@gmail.com")}
-                  title="Test verification"
-                /> */}
 
                             </View>
                         </View>

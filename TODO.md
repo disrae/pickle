@@ -1,0 +1,58 @@
+# WePickle TODO
+
+## Recently completed
+
+- [x] Simplified login to password-based auth only.
+- [x] Wiped database to reset state during auth transition.
+
+## Next up: Massive UI overhaul
+
+### Phase 1: Foundation (design system)
+
+- [ ] Define updated visual direction (colors, typography, spacing, radius, shadows).
+- [ ] Create reusable primitives (`Button`, `Input`, `Card`, `Badge`, `Avatar`, `Modal`).
+- [ ] Standardize layout patterns (screen padding, section headers, empty states, loading states).
+- [ ] Define interaction polish (haptics, transitions, pressed/disabled states).
+- [ ] Add a small style guide screen for quick visual QA.
+
+### Phase 2: Navigation and app shell refresh
+
+- [ ] Redesign tab bar and top headers for a cleaner information hierarchy.
+- [ ] Update background, glass, and container treatments for consistent depth.
+- [ ] Improve safe-area handling and responsive behavior across iOS/Android/Web.
+- [ ] Unify icon usage and sizing across all major screens.
+
+### Phase 3: Skills + drills -> Coach's Corner
+
+- [ ] Rename/reframe skills area as "Coach's Corner".
+- [ ] Redesign drills list, drill cards, and drill detail hierarchy.
+- [ ] Improve skills graph readability and profile storytelling.
+- [ ] Add clearer progress states (beginner/intermediate/advanced, milestones, next best drill).
+- [ ] Improve creation flows for drills/features with cleaner forms.
+
+### Phase 4: Community-first surfaces
+
+- [ ] Refresh court chats and training/builder chat screens with modern message UI.
+- [ ] Add stronger profile presentation for other users (skills snapshot + activity).
+- [ ] Design placeholders for future scheduling and team features.
+- [ ] Rework notifications and badges for better clarity and less noise.
+
+### Phase 5: Quality and rollout
+
+- [ ] Run visual QA pass on all authenticated tabs + key detail screens.
+- [ ] Verify accessibility basics (color contrast, touch targets, text scaling).
+- [ ] Remove dead UI patterns/components replaced by new system.
+- [ ] Create follow-up polish backlog from testing feedback.
+
+## Backlog (post-overhaul)
+
+- [ ] Agent chat that interviews users to build skills profile.
+- [ ] Inter-user chat + scheduling features.
+- [ ] Team creation and team management UX.
+- [ ] Continuous ladder ranking system UI + supporting flows.
+
+## Working rhythm
+
+- [ ] Tackle one phase per session.
+- [ ] Keep each PR scoped to one vertical slice or one design-system chunk.
+- [ ] Validate on iOS + Android before merging major UI batches.

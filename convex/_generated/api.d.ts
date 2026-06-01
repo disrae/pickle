@@ -9,6 +9,7 @@
  */
 
 import type * as adminHelpers from "../adminHelpers.js";
+import type * as adminReset from "../adminReset.js";
 import type * as auth from "../auth.js";
 import type * as blockedUsers from "../blockedUsers.js";
 import type * as builderChatMessages from "../builderChatMessages.js";
@@ -22,8 +23,6 @@ import type * as drillProgress from "../drillProgress.js";
 import type * as drills from "../drills.js";
 import type * as featureRequests from "../featureRequests.js";
 import type * as http from "../http.js";
-import type * as otp_ResendOTP from "../otp/ResendOTP.js";
-import type * as otp_email from "../otp/email.js";
 import type * as plannedVisits from "../plannedVisits.js";
 import type * as seedDrills from "../seedDrills.js";
 import type * as seedFeatures from "../seedFeatures.js";
@@ -48,6 +47,7 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   adminHelpers: typeof adminHelpers;
+  adminReset: typeof adminReset;
   auth: typeof auth;
   blockedUsers: typeof blockedUsers;
   builderChatMessages: typeof builderChatMessages;
@@ -61,8 +61,6 @@ declare const fullApi: ApiFromModules<{
   drills: typeof drills;
   featureRequests: typeof featureRequests;
   http: typeof http;
-  "otp/ResendOTP": typeof otp_ResendOTP;
-  "otp/email": typeof otp_email;
   plannedVisits: typeof plannedVisits;
   seedDrills: typeof seedDrills;
   seedFeatures: typeof seedFeatures;
