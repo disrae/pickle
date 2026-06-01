@@ -1,4 +1,4 @@
-import { PicklePaddle } from "@/assets/icons/picklepaddle";
+import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
 import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
@@ -34,9 +34,15 @@ export default function TabLayout() {
             <Tabs
                 screenOptions={{
                     headerShown: false,
-                    tabBarShowLabel: false,
+                    tabBarShowLabel: true,
                     tabBarActiveTintColor: "#a3e635", // Volt
                     tabBarInactiveTintColor: "#6b7563",
+                    tabBarLabelStyle: {
+                        fontSize: 11,
+                        fontWeight: "600",
+                        letterSpacing: 0.2,
+                        marginTop: 2,
+                    },
                     tabBarStyle: {
                         backgroundColor: "#0c100a",
                         borderTopWidth: 1,
@@ -55,29 +61,34 @@ export default function TabLayout() {
                     name="court"
                     options={{
                         title: "Court",
-                        tabBarIcon: ({ color, size }) => <PicklePaddle width={size * 1.2} height={size * 1.2} tintColor={color} />,
+                        tabBarIcon: ({ focused, size }) => <CourtTabIcon focused={focused} size={size * 1.1} />,
                     }}
                 />
                 <Tabs.Screen
                     name="drills"
                     options={{
                         title: "Drills",
-                        tabBarIcon: ({ color, size }) => <Ionicons name="barbell-outline" color={color} size={size * 1.2} />,
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <Ionicons name={focused ? "barbell" : "barbell-outline"} color={color} size={size * 1.1} />
+                        ),
                     }}
                 />
                 <Tabs.Screen
                     name="builder"
                     options={{
                         title: "Builder",
-                        tabBarIcon: ({ color, size }) => <Ionicons name="construct-outline" color={color} size={size * 1.2} />,
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <Ionicons name={focused ? "construct" : "construct-outline"} color={color} size={size * 1.1} />
+                        ),
                     }}
                 />
                 <Tabs.Screen
                     name="profile"
                     options={{
                         title: "Profile",
-                        tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size * 1.2}
-                        />,
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <Ionicons name={focused ? "person" : "person-outline"} color={color} size={size * 1.1} />
+                        ),
                         href: user ? "/profile" : null,
                     }}
                 />
