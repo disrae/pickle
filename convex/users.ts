@@ -28,6 +28,26 @@ export const updateSelectedCourt = mutation({
     },
 });
 
+export const updateAppearAtCourt = mutation({
+    args: { appearAtCourt: v.boolean() },
+    handler: async (ctx, { appearAtCourt }) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+        await ctx.db.patch(userId, { appearAtCourt });
+    },
+});
+
+export const updateLocationCheckInMode = mutation({
+    args: {
+        mode: v.union(v.literal("foreground"), v.literal("background"), v.literal("off")),
+    },
+    handler: async (ctx, { mode }) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+        await ctx.db.patch(userId, { locationCheckInMode: mode });
+    },
+});
+
 export const updateName = mutation({
     args: {
         name: v.string(),

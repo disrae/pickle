@@ -16,6 +16,13 @@ const schema = defineSchema({
         isAdmin: v.optional(v.boolean()),
         selectedCourtId: v.optional(v.id("courts")),
         expoPushToken: v.optional(v.string()),
+        /** Ghost mode — when false, user never appears on court roster */
+        appearAtCourt: v.optional(v.boolean()),
+        /** foreground = while app open; background = geofence in pocket; off = manual only */
+        locationCheckInMode: v.optional(
+            v.union(v.literal("foreground"), v.literal("background"), v.literal("off"))
+        ),
+        coachOnboardingComplete: v.optional(v.boolean()),
     })
         .index("email", ["email"])
         .index("phone", ["phone"]),
@@ -40,6 +47,8 @@ const schema = defineSchema({
         courtId: v.id("courts"),
         checkedInAt: v.number(),
         expiresAt: v.number(),
+        /** Per-session private arrival — hidden from roster but still checked in */
+        isPrivate: v.optional(v.boolean()),
     })
         .index("by_user", ["userId"])
         .index("by_court", ["courtId"])
@@ -220,6 +229,27 @@ const schema = defineSchema({
         .index("by_user", ["userId"])
         .index("by_subscribed_to", ["subscribedToUserId"])
         .index("by_user_and_subscribed", ["userId", "subscribedToUserId"]),
+
+    skillsProfiles: defineTable({
+        userId: v.id("users"),
+        overallLevel: v.optional(v.number()),
+        serving: v.optional(v.number()),
+        dinking: v.optional(v.number()),
+        dropShot: v.optional(v.number()),
+        reset: v.optional(v.number()),
+        volley: v.optional(v.number()),
+        footwork: v.optional(v.number()),
+        confirmedAt: v.optional(v.number()),
+        proposedAt: v.optional(v.number()),
+        updatedAt: v.number(),
+    }).index("by_user", ["userId"]),
+
+    coachMessages: defineTable({
+        userId: v.id("users"),
+        role: v.union(v.literal("user"), v.literal("assistant"), v.literal("system")),
+        content: v.string(),
+        createdAt: v.number(),
+    }).index("by_user_created", ["userId", "createdAt"]),
 
     blockedUsers: defineTable({
         userId: v.id("users"),

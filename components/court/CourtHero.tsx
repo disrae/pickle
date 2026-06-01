@@ -1,0 +1,145 @@
+import { GlassContainer } from "@/components/ui/GlassContainer";
+import { StyledButton } from "@/components/ui/StyledButton";
+import { Ionicons } from "@expo/vector-icons";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+
+type CheckInRow = {
+    _id: string;
+    user: { _id: string; name?: string; email?: string };
+};
+
+interface CourtHeroProps {
+    hereCount: number;
+    comingCount: number;
+    checkIns: CheckInRow[];
+    isCheckedIn: boolean;
+    isCheckingIn: boolean;
+    isCheckingOut: boolean;
+    onCheckIn: (isPrivate?: boolean) => void;
+    onCheckOut: () => void;
+    onPlayerPress: (userId: string) => void;
+}
+
+export function CourtHero({
+    hereCount,
+    comingCount,
+    checkIns,
+    isCheckedIn,
+    isCheckingIn,
+    isCheckingOut,
+    onCheckIn,
+    onCheckOut,
+    onPlayerPress,
+}: CourtHeroProps) {
+    return (
+        <GlassContainer style={{ borderRadius: 28, padding: 24, marginBottom: 16 }}>
+            <View className="flex-row items-end justify-between mb-6">
+                <View>
+                    <Text className="text-muted-foreground text-sm font-semibold uppercase tracking-wider">
+                        Right now
+                    </Text>
+                    <View className="flex-row items-baseline gap-2 mt-1">
+                        <Text className="text-foreground text-5xl font-bold">{hereCount}</Text>
+                        <Text className="text-muted-foreground text-lg">here</Text>
+                        {comingCount > 0 && (
+                            <>
+                                <Text className="text-muted-foreground text-lg mx-1">·</Text>
+                                <Text className="text-brand text-2xl font-bold">{comingCount}</Text>
+                                <Text className="text-muted-foreground text-lg">coming</Text>
+                            </>
+                        )}
+                    </View>
+                </View>
+            </View>
+
+            {checkIns.length > 0 ? (
+                <View className="flex-row flex-wrap gap-2 mb-6">
+                    {checkIns.slice(0, 8).map((checkIn) => (
+                        <TouchableOpacity
+                            key={checkIn._id}
+                            onPress={() => onPlayerPress(checkIn.user._id)}
+                            className="bg-surface-2 px-3 py-2 rounded-full"
+                        >
+                            <Text className="text-foreground text-sm font-medium">
+                                {checkIn.user.name || checkIn.user.email?.split("@")[0]}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            ) : (
+                <Text className="text-muted-foreground mb-6">
+                    Nobody checked in yet — be the first or see who&apos;s coming below.
+                </Text>
+            )}
+
+            <View className="flex-row gap-3">
+                {isCheckedIn ? (
+                    <StyledButton
+                        variant="outline"
+                        title="Check out"
+                        fullWidth={false}
+                        className="flex-1"
+                        onPress={onCheckOut}
+                        loading={isCheckingOut}
+                    />
+                ) : (
+                    <>
+                        <StyledButton
+                            variant="brand"
+                            title="I'm here"
+                            fullWidth={false}
+                            className="flex-1"
+                            onPress={() => onCheckIn(false)}
+                            loading={isCheckingIn}
+                        />
+                        <TouchableOpacity
+                            onPress={() => onCheckIn(true)}
+                            disabled={isCheckingIn}
+                            className="px-4 py-3 rounded-2xl border border-border items-center justify-center"
+                        >
+                            {isCheckingIn ? (
+                                <ActivityIndicator size="small" color="#a3e635" />
+                            ) : (
+                                <Ionicons name="eye-off-outline" size={22} color="#6b7563" />
+                            )}
+                        </TouchableOpacity>
+                    </>
+                )}
+            </View>
+            {!isCheckedIn && (
+                <Text className="text-muted-foreground text-xs mt-2 text-center">
+                    Eye icon = arrive privately (hidden from roster)
+                </Text>
+            )}
+        </GlassContainer>
+    );
+}
+
+interface CourtEmptyActionsProps {
+    onHeadedThere: () => void;
+    onPlanVisit: () => void;
+    isLoading: boolean;
+}
+
+export function CourtEmptyActions({
+    onHeadedThere,
+    onPlanVisit,
+    isLoading,
+}: CourtEmptyActionsProps) {
+    return (
+        <GlassContainer style={{ borderRadius: 28, padding: 24, marginBottom: 16 }}>
+            <Text className="text-foreground text-xl font-bold mb-2">Court&apos;s quiet</Text>
+            <Text className="text-muted-foreground mb-5">
+                Start the loop — let regulars know you&apos;re headed there.
+            </Text>
+            <StyledButton
+                variant="brand"
+                title="I'm headed there — notify regulars"
+                onPress={onHeadedThere}
+                loading={isLoading}
+                className="mb-3"
+            />
+            <StyledButton variant="outline" title="Plan a specific time" onPress={onPlanVisit} />
+        </GlassContainer>
+    );
+}

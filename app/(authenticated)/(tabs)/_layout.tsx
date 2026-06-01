@@ -13,7 +13,7 @@ export default function TabsLayout() {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: true,
-                tabBarActiveTintColor: "#a3e635", // Volt
+                tabBarActiveTintColor: "#a3e635",
                 tabBarInactiveTintColor: "#6b7563",
                 tabBarLabelStyle: {
                     fontSize: 11,
@@ -32,9 +32,7 @@ export default function TabsLayout() {
         >
             <Tabs.Screen
                 name="index"
-                options={{
-                    href: null,
-                }}
+                options={{ href: null }}
             />
             <Tabs.Screen
                 name="court"
@@ -46,20 +44,20 @@ export default function TabsLayout() {
                 }}
             />
             <Tabs.Screen
-                name="drills"
+                name="coach"
                 options={{
-                    title: "Drills",
+                    title: "Coach",
                     tabBarIcon: ({ focused, color, size }) => (
-                        <Ionicons name={focused ? "barbell" : "barbell-outline"} color={color} size={size} />
+                        <Ionicons name={focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"} color={color} size={size} />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="builder"
+                name="compete"
                 options={{
-                    title: "Builder",
+                    title: "Compete",
                     tabBarIcon: ({ focused, color, size }) => (
-                        <Ionicons name={focused ? "construct" : "construct-outline"} color={color} size={size} />
+                        <Ionicons name={focused ? "trophy" : "trophy-outline"} color={focused ? "#f59e0b" : color} size={size} />
                     ),
                 }}
             />
@@ -72,6 +70,8 @@ export default function TabsLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen name="drills" options={{ href: null }} />
+            <Tabs.Screen name="builder" options={{ href: null }} />
         </Tabs>
     );
 }

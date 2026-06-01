@@ -4,9 +4,19 @@ import { internalMutation, mutation, query } from "./_generated/server";
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 
+function isVisibleOnRoster(
+    checkIn: { isPrivate?: boolean },
+    user: { appearAtCourt?: boolean } | null
+) {
+    if (checkIn.isPrivate) return false;
+    if (user?.appearAtCourt === false) return false;
+    return true;
+}
+
 export const checkIn = mutation({
     args: {
         courtId: v.id("courts"),
+        isPrivate: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx);
@@ -14,7 +24,6 @@ export const checkIn = mutation({
             throw new Error("Not authenticated");
         }
 
-        // Check if user is already checked in
         const existing = await ctx.db
             .query("checkIns")
             .withIndex("by_user", (q) => q.eq("userId", userId))
@@ -30,6 +39,7 @@ export const checkIn = mutation({
             courtId: args.courtId,
             checkedInAt: now,
             expiresAt: now + TWO_HOURS_MS,
+            isPrivate: args.isPrivate ?? false,
         });
 
         return checkInId;
@@ -76,7 +86,7 @@ export const getCurrentCheckIns = query({
         for (const checkIn of checkIns) {
             if (checkIn.expiresAt > now) {
                 const user = await ctx.db.get(checkIn.userId);
-                if (user) {
+                if (user && isVisibleOnRoster(checkIn, user)) {
                     // Check for blocking relationship
                     const [blockedByMe, blockedByThem] = await Promise.all([
                         ctx.db
@@ -135,6 +145,34 @@ export const getCurrentUserCheckIn = query({
         }
 
         return checkIn;
+    },
+});
+
+export const getCourtPresenceSummary = query({
+    args: { courtId: v.id("courts") },
+    handler: async (ctx, args) => {
+        const checkIns = await ctx.db
+            .query("checkIns")
+            .withIndex("by_court", (q) => q.eq("courtId", args.courtId))
+            .collect();
+
+        const now = Date.now();
+        let hereNow = 0;
+        for (const checkIn of checkIns) {
+            if (checkIn.expiresAt <= now) continue;
+            const user = await ctx.db.get(checkIn.userId);
+            if (user && isVisibleOnRoster(checkIn, user)) {
+                hereNow++;
+            }
+        }
+
+        const visits = await ctx.db
+            .query("plannedVisits")
+            .withIndex("by_time", (q) => q.eq("courtId", args.courtId))
+            .filter((q) => q.gte(q.field("plannedTime"), now))
+            .collect();
+
+        return { hereNow, comingSoon: visits.length };
     },
 });
 

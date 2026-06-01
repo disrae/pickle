@@ -13,9 +13,11 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useRef, useState } from "react";
+import { ActivityIndicator, ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+type ExpoLocation = typeof import("expo-location");
 
 export default function ProfileScreen() {
     const router = useRouter();
@@ -42,10 +44,16 @@ export default function ProfileScreen() {
     const [popupConfirmText, setPopupConfirmText] = useState<string | undefined>(undefined);
     const [showNamePopup, setShowNamePopup] = useState(false);
     const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const locationModuleRef = useRef<ExpoLocation | null>(null);
 
     const generateUploadUrl = useMutation(api.users.generateUploadUrl);
     const saveProfileImage = useMutation(api.users.saveProfileImage);
     const deleteAccount = useMutation(api.users.deleteAccount);
+    const updateAppearAtCourt = useMutation(api.users.updateAppearAtCourt);
+    const updateLocationCheckInMode = useMutation(api.users.updateLocationCheckInMode);
+
+    const appearAtCourt = user?.appearAtCourt !== false;
+    const locationMode = user?.locationCheckInMode ?? "off";
 
     // Get app version from Constants
     const appVersion = Constants.expoConfig?.version || "1.0.0";
@@ -131,6 +139,29 @@ export default function ProfileScreen() {
         }
     };
 
+    const requestLocationPermissionForMode = async (
+        mode: "off" | "foreground" | "background"
+    ): Promise<boolean> => {
+        if (mode === "off") return true;
+        try {
+            if (!locationModuleRef.current) {
+                locationModuleRef.current = await import("expo-location");
+            }
+            const location = locationModuleRef.current;
+            if (!location) return false;
+            const { status } = await location.requestForegroundPermissionsAsync();
+            if (status !== "granted") return false;
+            if (mode === "background") {
+                const bg = await location.requestBackgroundPermissionsAsync();
+                if (bg.status !== "granted") return false;
+            }
+            return true;
+        } catch {
+            showPopup("Location unavailable", "Install and run a native build to enable auto check-in.");
+            return false;
+        }
+    };
+
     const headerHeight = top + 60;
 
     return (
@@ -213,6 +244,67 @@ export default function ProfileScreen() {
                                 </View>
                             </View>
                         </View>
+                    </GlassContainer>
+
+                    {/* Court & presence */}
+                    <GlassContainer style={{ borderRadius: 24, padding: 24, marginBottom: 16 }}>
+                        <Text className="text-xl font-bold text-slate-200 mb-4">Court & presence</Text>
+
+                        <View className="flex-row items-center justify-between py-3 border-b border-slate-700">
+                            <View className="flex-1 pr-4">
+                                <Text className="text-slate-200 font-semibold">Appear at the court</Text>
+                                <Text className="text-slate-400 text-sm mt-1">
+                                    Others can see you&apos;re here. Turn off for ghost mode.
+                                </Text>
+                            </View>
+                            <Switch
+                                value={appearAtCourt}
+                                onValueChange={(v) => updateAppearAtCourt({ appearAtCourt: v })}
+                                trackColor={{ false: "#475569", true: "#65a30d" }}
+                                thumbColor="#fff"
+                            />
+                        </View>
+
+                        <Text className="text-slate-400 text-sm mt-4 mb-2">Auto check-in</Text>
+                        {(
+                            [
+                                ["off", "Manual only"],
+                                ["foreground", "Only when the app is open"],
+                                ["background", "Even when it's in my pocket"],
+                            ] as const
+                        ).map(([mode, label]) => (
+                            <TouchableOpacity
+                                key={mode}
+                                onPress={async () => {
+                                    const granted = await requestLocationPermissionForMode(mode);
+                                    if (!granted) return;
+                                    await updateLocationCheckInMode({ mode });
+                                }}
+                                className={`py-3 px-4 rounded-xl mb-2 border ${
+                                    locationMode === mode
+                                        ? "border-lime-400 bg-lime-500/10"
+                                        : "border-slate-600 bg-slate-700/30"
+                                }`}
+                            >
+                                <Text
+                                    className={
+                                        locationMode === mode
+                                            ? "text-lime-400 font-semibold"
+                                            : "text-slate-300"
+                                    }
+                                >
+                                    {label}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+
+                        <TouchableOpacity
+                            onPress={() => router.push("/(authenticated)/(tabs)/builder")}
+                            className="flex-row items-center justify-between mt-4 pt-4 border-t border-slate-700"
+                        >
+                            <Text className="text-slate-200 font-semibold">Feature ideas (Builder)</Text>
+                            <Ionicons name="chevron-forward" size={20} color="#64748b" />
+                        </TouchableOpacity>
                     </GlassContainer>
 
                     {/* Account Actions */}

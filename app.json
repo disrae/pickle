@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "wepickle",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
@@ -15,7 +15,9 @@
         "ITSAppUsesNonExemptEncryption": false,
         "SupportURL": "https://wepickle.win/support",
         "NSPhotoLibraryUsageDescription": "The app accesses your photos so you acan select a profile image which may be used as your avatar in the app. Specifically, in the chats.",
-        "NSUserNotificationsUsageDescription": "WePickle uses notifications to keep you updated on chat messages, training reminders, and court check-ins from your pickleball community."
+        "NSUserNotificationsUsageDescription": "WePickle uses notifications to keep you updated on chat messages, training reminders, and court check-ins from your pickleball community.",
+        "NSLocationWhenInUseUsageDescription": "WePickle uses your location to auto check you in at the court so friends can see you're there.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "WePickle can check you in at the court even when the app is in your pocket, so friends know you're playing."
       },
       "icon": {
         "dark": "./assets/icons/ios-dark.png",
@@ -72,6 +74,13 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to set your profile image which may be used as your avatar in the app. Specifically, in the chats."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "WePickle can check you in at the court even when the app is in your pocket, so friends know you're playing.",
+          "locationWhenInUsePermission": "WePickle uses your location to auto check you in at the court so friends can see you're there."
         }
       ]
     ],

@@ -8,17 +8,17 @@ export default function TabLayout() {
     if (isLiquidGlassAvailable()) {
         return (
             <NativeTabs tintColor="#a3e635">
-                <NativeTabs.Trigger name="court"  >
+                <NativeTabs.Trigger name="court">
                     <Label hidden>Court</Label>
                     <Icon sf="figure.pickleball.circle.fill" />
                 </NativeTabs.Trigger>
-                <NativeTabs.Trigger name="drills" >
-                    <Label hidden>Drills</Label>
-                    <Icon sf="dumbbell.fill" />
+                <NativeTabs.Trigger name="coach">
+                    <Label hidden>Coach</Label>
+                    <Icon sf="bubble.left.and.bubble.right.fill" />
                 </NativeTabs.Trigger>
-                <NativeTabs.Trigger name="builder" >
-                    <Label hidden>Builder</Label>
-                    <Icon sf="hammer.fill" />
+                <NativeTabs.Trigger name="compete">
+                    <Label hidden>Compete</Label>
+                    <Icon sf="trophy.fill" />
                 </NativeTabs.Trigger>
                 <NativeTabs.Trigger name="profile">
                     <Label hidden>Profile</Label>
@@ -26,71 +26,68 @@ export default function TabLayout() {
                 </NativeTabs.Trigger>
             </NativeTabs>
         );
-    } else {
-        return (
-            <Tabs
-                screenOptions={{
-                    headerShown: false,
-                    tabBarShowLabel: true,
-                    tabBarActiveTintColor: "#a3e635", // Volt
-                    tabBarInactiveTintColor: "#6b7563",
-                    tabBarLabelStyle: {
-                        fontSize: 11,
-                        fontWeight: "600",
-                        letterSpacing: 0.2,
-                        marginTop: 2,
-                    },
-                    tabBarStyle: {
-                        backgroundColor: "#0c100a",
-                        borderTopWidth: 1,
-                        borderTopColor: "rgba(255,255,255,0.08)",
-                        paddingTop: 10,
-                    },
-                }}
-            >
-                <Tabs.Screen
-                    name="index"
-                    options={{
-                        href: null,
-                    }}
-                />
-                <Tabs.Screen
-                    name="court"
-                    options={{
-                        title: "Court",
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <CourtTabIcon focused={focused} color={color} size={size * 1.1} />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
-                    name="drills"
-                    options={{
-                        title: "Drills",
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <Ionicons name={focused ? "barbell" : "barbell-outline"} color={color} size={size * 1.1} />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
-                    name="builder"
-                    options={{
-                        title: "Builder",
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <Ionicons name={focused ? "construct" : "construct-outline"} color={color} size={size * 1.1} />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
-                    name="profile"
-                    options={{
-                        title: "Profile",
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <Ionicons name={focused ? "person" : "person-outline"} color={color} size={size * 1.1} />
-                        ),
-                    }}
-                />
-            </Tabs>
-        );
     }
+
+    return (
+        <Tabs
+            screenOptions={{
+                headerShown: false,
+                tabBarShowLabel: true,
+                tabBarActiveTintColor: "#a3e635",
+                tabBarInactiveTintColor: "#6b7563",
+                tabBarLabelStyle: {
+                    fontSize: 11,
+                    fontWeight: "600",
+                    letterSpacing: 0.2,
+                    marginTop: 2,
+                },
+                tabBarStyle: {
+                    backgroundColor: "#0c100a",
+                    borderTopWidth: 1,
+                    borderTopColor: "rgba(255,255,255, 0.08)",
+                    paddingTop: 10,
+                },
+            }}
+        >
+            <Tabs.Screen name="index" options={{ href: null }} />
+            <Tabs.Screen
+                name="court"
+                options={{
+                    title: "Court",
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <CourtTabIcon focused={focused} color={color} size={size * 1.1} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="coach"
+                options={{
+                    title: "Coach",
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Ionicons name={focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"} color={color} size={size * 1.1} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="compete"
+                options={{
+                    title: "Compete",
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Ionicons name={focused ? "trophy" : "trophy-outline"} color={focused ? "#f59e0b" : color} size={size * 1.1} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title: "Profile",
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Ionicons name={focused ? "person" : "person-outline"} color={color} size={size * 1.1} />
+                    ),
+                }}
+            />
+            <Tabs.Screen name="drills" options={{ href: null }} />
+            <Tabs.Screen name="builder" options={{ href: null }} />
+        </Tabs>
+    );
 }

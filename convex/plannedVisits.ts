@@ -1,11 +1,30 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { sendExpoPush } from "./pushNotifications";
+
+async function notifyCourtUsers(
+    ctx: { db: any },
+    courtId: string,
+    excludeUserId: string,
+    title: string,
+    body: string,
+    data?: Record<string, unknown>
+) {
+    const users = await ctx.db.query("users").collect();
+    for (const user of users) {
+        if (user._id === excludeUserId) continue;
+        if (user.selectedCourtId !== courtId) continue;
+        if (!user.expoPushToken) continue;
+        await sendExpoPush(user.expoPushToken, title, body, data);
+    }
+}
 
 export const create = mutation({
     args: {
         courtId: v.id("courts"),
         plannedTime: v.number(),
+        notifyRegulars: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx);
@@ -13,12 +32,10 @@ export const create = mutation({
             throw new Error("Not authenticated");
         }
 
-        // Don't allow planning for past times
         if (args.plannedTime < Date.now()) {
             throw new Error("Cannot plan for past times");
         }
 
-        // Check if user already has a plan for this exact time
         const existing = await ctx.db
             .query("plannedVisits")
             .withIndex("by_time", (q) =>
@@ -37,6 +54,116 @@ export const create = mutation({
             plannedTime: args.plannedTime,
             createdAt: Date.now(),
         });
+
+        const user = await ctx.db.get(userId);
+        const court = await ctx.db.get(args.courtId);
+        const userName = user?.name || user?.email || "Someone";
+        const courtName = court?.name || "the court";
+
+        const time = new Date(args.plannedTime);
+        const timeStr = time.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+        });
+
+        // Notify subscribers to this user's plans
+        const settings = await ctx.db
+            .query("userNotificationSettings")
+            .withIndex("by_subscribed_to", (q) => q.eq("subscribedToUserId", userId))
+            .filter((q) => q.eq(q.field("notifyOnPlannedVisit"), true))
+            .collect();
+
+        for (const setting of settings) {
+            const subscriber = await ctx.db.get(setting.userId);
+            if (subscriber?.expoPushToken) {
+                await sendExpoPush(
+                    subscriber.expoPushToken,
+                    `${userName} is planning to play`,
+                    `${userName} is heading to ${courtName} at ${timeStr}`,
+                    { type: "planned_visit", courtId: args.courtId }
+                );
+            }
+        }
+
+        if (args.notifyRegulars) {
+            await notifyCourtUsers(
+                ctx,
+                args.courtId,
+                userId,
+                `${userName} is headed to ${courtName}`,
+                `Planning to play at ${timeStr}. Who's in?`,
+                { type: "headed_to_court", courtId: args.courtId }
+            );
+        }
+
+        return visitId;
+    },
+});
+
+/** Quick "I'm headed there" — plans for ~1 hour from now and pings court regulars */
+export const headedToCourt = mutation({
+    args: {
+        courtId: v.id("courts"),
+        plannedTime: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+
+        const plannedTime = args.plannedTime ?? Date.now() + 60 * 60 * 1000;
+
+        const existing = await ctx.db
+            .query("plannedVisits")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .filter((q) =>
+                q.and(
+                    q.eq(q.field("courtId"), args.courtId),
+                    q.gte(q.field("plannedTime"), Date.now())
+                )
+            )
+            .first();
+
+        if (existing) {
+            const user = await ctx.db.get(userId);
+            const court = await ctx.db.get(args.courtId);
+            const userName = user?.name || user?.email || "Someone";
+            const courtName = court?.name || "the court";
+
+            await notifyCourtUsers(
+                ctx,
+                args.courtId,
+                userId,
+                `${userName} is headed to ${courtName}`,
+                "Who else is in?",
+                { type: "headed_to_court", courtId: args.courtId }
+            );
+            return existing._id;
+        }
+
+        const visitId = await ctx.db.insert("plannedVisits", {
+            userId,
+            courtId: args.courtId,
+            plannedTime,
+            createdAt: Date.now(),
+        });
+
+        const user = await ctx.db.get(userId);
+        const court = await ctx.db.get(args.courtId);
+        const userName = user?.name || user?.email || "Someone";
+        const courtName = court?.name || "the court";
+        const timeStr = new Date(plannedTime).toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+        });
+
+        await notifyCourtUsers(
+            ctx,
+            args.courtId,
+            userId,
+            `${userName} is headed to ${courtName}`,
+            `Planning to play around ${timeStr}. Who's in?`,
+            { type: "headed_to_court", courtId: args.courtId }
+        );
 
         return visitId;
     },
