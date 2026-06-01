@@ -9,7 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Fuse from "fuse.js";
 import { useMemo, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -21,8 +21,11 @@ const DIFFICULTIES = ["Beginner", "Intermediate", "Advanced", "Expert"];
 export default function DrillsScreen() {
     const { top, bottom } = useSafeAreaInsets();
     const router = useRouter();
+    const params = useLocalSearchParams<{ category?: string }>();
 
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(
+        params.category && CATEGORIES.includes(params.category) ? [params.category] : []
+    );
     const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [showCreateModal, setShowCreateModal] = useState(false);

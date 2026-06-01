@@ -55,35 +55,47 @@ export const seedInitialCourt = mutation({
     handler: async (ctx) => {
         const results = [];
 
-        // Define the courts to seed
+        // Vancouver Park Board public tennis / pickleball courts
         const courtsToSeed = [
             {
                 name: "Queen Elizabeth Park",
-                location: { lat: 49.237805, lng: 123.111925 }
+                location: { lat: 49.2372, lng: -123.1119 },
+                notes:
+                    "4600 Cambie St — 17 public tennis courts (south end, west of pitch & putt). Dedicated outdoor pickleball courts; free, first-come first-served. Park hours typically 6am–10pm.",
             },
             {
                 name: "Jericho Beach",
-                location: { lat: 49.273685, lng: -123.199509 }
-            }
+                location: { lat: 49.2737, lng: -123.1995 },
+                notes:
+                    "3941 Point Grey Rd / Discovery St — 4 public hard tennis courts (pickleball lines on some). Free, no lights. Jericho Beach Park, English Bay.",
+            },
         ];
 
         for (const courtData of courtsToSeed) {
-            // Check if court already exists
             const existing = await ctx.db
                 .query("courts")
                 .filter((q) => q.eq(q.field("name"), courtData.name))
                 .first();
 
             if (existing) {
-                results.push({ message: `${courtData.name} court already exists`, courtId: existing._id });
+                await ctx.db.patch(existing._id, {
+                    location: courtData.location,
+                    notes: courtData.notes,
+                });
+                results.push({
+                    message: `${courtData.name} court updated`,
+                    courtId: existing._id,
+                });
             } else {
-                // Create the court
                 const courtId = await ctx.db.insert("courts", {
                     name: courtData.name,
                     location: courtData.location,
-                    notes: undefined,
+                    notes: courtData.notes,
                 });
-                results.push({ message: `${courtData.name} court created`, courtId });
+                results.push({
+                    message: `${courtData.name} court created`,
+                    courtId,
+                });
             }
         }
 

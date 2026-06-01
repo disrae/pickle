@@ -6,22 +6,39 @@ import { GlassContainer } from "./GlassContainer";
 interface HeaderProps {
     title: string;
     titleSize?: "text-2xl" | "text-3xl" | "text-4xl";
+    leftButton?: "back";
+    onLeftPress?: () => void;
     rightButton?: "chat" | "back";
     onRightPress?: () => void;
     onTitlePress?: () => void;
 }
 
-export function Header({ title, titleSize = "text-2xl", rightButton, onRightPress, onTitlePress }: HeaderProps) {
+export function Header({
+    title,
+    titleSize = "text-2xl",
+    leftButton,
+    onLeftPress,
+    rightButton,
+    onRightPress,
+    onTitlePress,
+}: HeaderProps) {
     const { top } = useSafeAreaInsets();
+
+    const LeftButton = () => {
+        if (leftButton !== "back" || !onLeftPress) return null;
+
+        return (
+            <TouchableOpacity onPress={onLeftPress} className="p-2 -ml-2 mr-1">
+                <Ionicons name="arrow-back" size={28} color="white" />
+            </TouchableOpacity>
+        );
+    };
 
     const RightButton = () => {
         if (!rightButton || !onRightPress) return null;
 
         return (
-            <TouchableOpacity
-                onPress={onRightPress}
-                className="p-2"
-            >
+            <TouchableOpacity onPress={onRightPress} className="p-2">
                 <Ionicons
                     name={rightButton === "chat" ? "chatbubbles" : "arrow-back"}
                     size={28}
@@ -72,7 +89,10 @@ export function Header({ title, titleSize = "text-2xl", rightButton, onRightPres
             }}
         >
             <View className="flex-row items-center justify-between">
-                <TitleContent />
+                <View className="flex-row items-center flex-1 min-w-0">
+                    <LeftButton />
+                    <TitleContent />
+                </View>
                 <RightButton />
             </View>
         </GlassContainer>

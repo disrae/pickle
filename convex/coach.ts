@@ -32,8 +32,7 @@ export const startInterview = mutation({
         await ctx.db.insert("coachMessages", {
             userId,
             role: "assistant",
-            content:
-                "Hey! I'm your WePickle coach. I'll ask a few quick questions to figure out where you're at — takes about 2 minutes. Ready? How long have you been playing pickleball?",
+            content: "Hey, how long have you been playing?",
             createdAt: Date.now(),
         });
     },
@@ -106,5 +105,32 @@ export const saveProposedProfile = internalMutation({
                 updatedAt: now,
             });
         }
+    },
+});
+
+/** Dev only: wipe all coach chat + profiles so onboarding can be retested. */
+export const resetCoachDev = mutation({
+    args: { confirm: v.string() },
+    handler: async (ctx, { confirm }) => {
+        if (confirm !== "RESET_COACH") {
+            throw new Error('Pass confirm: "RESET_COACH"');
+        }
+
+        let deleted = 0;
+        for (const row of await ctx.db.query("coachMessages").collect()) {
+            await ctx.db.delete(row._id);
+            deleted++;
+        }
+        for (const row of await ctx.db.query("skillsProfiles").collect()) {
+            await ctx.db.delete(row._id);
+            deleted++;
+        }
+        for (const user of await ctx.db.query("users").collect()) {
+            if (user.coachOnboardingComplete !== undefined) {
+                await ctx.db.patch(user._id, { coachOnboardingComplete: undefined });
+                deleted++;
+            }
+        }
+        return { deleted };
     },
 });

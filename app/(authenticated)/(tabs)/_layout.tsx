@@ -1,16 +1,28 @@
 import { AppTabBar } from "@/components/ui/AppTabBar";
 import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
 import { WebTabBar } from "@/components/ui/WebTabBar";
+import {
+    TabBarVisibilityProvider,
+    useTabBarVisibility,
+} from "@/lib/tab-bar-visibility";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 
 const isWeb = Platform.OS === "web";
 
-export default function TabsLayout() {
+function TabsLayoutInner() {
+    const { hidden } = useTabBarVisibility();
+
     return (
         <Tabs
-            tabBar={isWeb ? (props) => <WebTabBar {...props} /> : (props) => <AppTabBar {...props} />}
+            tabBar={
+                hidden
+                    ? () => null
+                    : isWeb
+                      ? (props) => <WebTabBar {...props} />
+                      : (props) => <AppTabBar {...props} />
+            }
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
@@ -66,5 +78,13 @@ export default function TabsLayout() {
             <Tabs.Screen name="drills" options={{ href: null }} />
             <Tabs.Screen name="builder" options={{ href: null }} />
         </Tabs>
+    );
+}
+
+export default function TabsLayout() {
+    return (
+        <TabBarVisibilityProvider>
+            <TabsLayoutInner />
+        </TabBarVisibilityProvider>
     );
 }

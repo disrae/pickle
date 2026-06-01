@@ -1,4 +1,5 @@
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { getMainTabEntries } from "@/lib/main-tab-routes";
 import React, { useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 
@@ -41,13 +42,7 @@ export function WebTabBar({ state, descriptors, navigation }: BottomTabBarProps)
                     boxShadow: "0 12px 32px rgba(0,0,0,0.45)",
                 }}
             >
-                {state.routes.map((route, index) => {
-                    const { options } = descriptors[route.key];
-
-                    // expo-router hides routes (href: null) via display: "none".
-                    const itemStyle = options.tabBarItemStyle as { display?: string } | undefined;
-                    if (itemStyle?.display === "none") return null;
-
+                {getMainTabEntries(state, descriptors).map(({ route, routeIndex, options }) => {
                     const label =
                         typeof options.tabBarLabel === "string"
                             ? options.tabBarLabel
@@ -55,7 +50,7 @@ export function WebTabBar({ state, descriptors, navigation }: BottomTabBarProps)
                               ? options.title
                               : route.name;
 
-                    const isFocused = state.index === index;
+                    const isFocused = state.index === routeIndex;
 
                     const onPress = () => {
                         const event = navigation.emit({

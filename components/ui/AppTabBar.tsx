@@ -1,4 +1,5 @@
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { getMainTabEntries } from "@/lib/main-tab-routes";
 import { TAB_BAR_CONTENT_HEIGHT, TAB_BAR_TOP_PADDING } from "@/lib/tab-bar-layout";
 import { Platform, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -32,11 +33,7 @@ export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps)
                     height: TAB_BAR_CONTENT_HEIGHT,
                 }}
             >
-                {state.routes.map((route, index) => {
-                    const { options } = descriptors[route.key];
-                    const itemStyle = options.tabBarItemStyle as { display?: string } | undefined;
-                    if (itemStyle?.display === "none") return null;
-
+                {getMainTabEntries(state, descriptors).map(({ route, routeIndex, options }) => {
                     const label =
                         typeof options.tabBarLabel === "string"
                             ? options.tabBarLabel
@@ -44,7 +41,7 @@ export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps)
                               ? options.title
                               : route.name;
 
-                    const isFocused = state.index === index;
+                    const isFocused = state.index === routeIndex;
                     const color = isFocused ? ACTIVE : INACTIVE;
 
                     const onPress = () => {

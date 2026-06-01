@@ -14,7 +14,7 @@ export function CoachPromptBanner() {
 
     const handlePress = async () => {
         await startInterview({});
-        router.push("/(authenticated)/(tabs)/coach");
+        router.replace("/(authenticated)/(tabs)/coach/chat");
     };
 
     return (
@@ -23,10 +23,10 @@ export function CoachPromptBanner() {
                 <Text className="text-3xl">🎾</Text>
                 <View className="flex-1">
                     <Text className="text-foreground text-lg font-bold">
-                        Your coach wants to chat
+                        Meet your coach
                     </Text>
                     <Text className="text-muted-foreground text-sm mt-1">
-                        2-min interview to build your skills profile
+                        Build your skills profile
                     </Text>
                 </View>
             </View>
