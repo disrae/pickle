@@ -27,8 +27,8 @@ export function PicklePaddle({
         <Svg width={width} height={height} viewBox="0 0 24 24" fill="none" style={style}>
             <Path
                 d={PADDLE_PATH}
-                fill={filled ? tintColor : 'none'}
-                stroke={filled ? 'none' : tintColor}
+                fill={filled ? tintColor : "transparent"}
+                stroke={tintColor}
                 strokeWidth={filled ? 0 : strokeWidth}
                 strokeLinejoin="round"
                 strokeLinecap="round"

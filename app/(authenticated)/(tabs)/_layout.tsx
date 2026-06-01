@@ -1,3 +1,4 @@
+import { AppTabBar } from "@/components/ui/AppTabBar";
 import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
 import { WebTabBar } from "@/components/ui/WebTabBar";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,31 +10,15 @@ const isWeb = Platform.OS === "web";
 export default function TabsLayout() {
     return (
         <Tabs
-            tabBar={isWeb ? (props) => <WebTabBar {...props} /> : undefined}
+            tabBar={isWeb ? (props) => <WebTabBar {...props} /> : (props) => <AppTabBar {...props} />}
             screenOptions={{
                 headerShown: false,
-                tabBarShowLabel: true,
+                tabBarShowLabel: false,
                 tabBarActiveTintColor: "#a3e635",
-                tabBarInactiveTintColor: "#6b7563",
-                tabBarLabelStyle: {
-                    fontSize: 11,
-                    fontWeight: "600",
-                    letterSpacing: 0.2,
-                    marginTop: 2,
-                },
-                tabBarStyle: {
-                    backgroundColor: "#0c100a",
-                    borderTopWidth: 1,
-                    borderTopColor: "rgba(255,255,255,0.08)",
-                    height: 88,
-                    paddingTop: 10,
-                },
+                tabBarInactiveTintColor: "#8a9482",
             }}
         >
-            <Tabs.Screen
-                name="index"
-                options={{ href: null }}
-            />
+            <Tabs.Screen name="index" options={{ href: null }} />
             <Tabs.Screen
                 name="court"
                 options={{
@@ -48,7 +33,11 @@ export default function TabsLayout() {
                 options={{
                     title: "Coach",
                     tabBarIcon: ({ focused, color, size }) => (
-                        <Ionicons name={focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"} color={color} size={size} />
+                        <Ionicons
+                            name={focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"}
+                            color={color}
+                            size={size}
+                        />
                     ),
                 }}
             />
@@ -57,7 +46,11 @@ export default function TabsLayout() {
                 options={{
                     title: "Compete",
                     tabBarIcon: ({ focused, color, size }) => (
-                        <Ionicons name={focused ? "trophy" : "trophy-outline"} color={focused ? "#f59e0b" : color} size={size} />
+                        <Ionicons
+                            name={focused ? "trophy" : "trophy-outline"}
+                            color={focused ? "#f59e0b" : color}
+                            size={size}
+                        />
                     ),
                 }}
             />

@@ -1,8 +1,9 @@
+import { AppTabBar } from "@/components/ui/AppTabBar";
 import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
 import { Ionicons } from "@expo/vector-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
-import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
+import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 
 export default function TabLayout() {
     if (isLiquidGlassAvailable()) {
@@ -30,23 +31,12 @@ export default function TabLayout() {
 
     return (
         <Tabs
+            tabBar={(props) => <AppTabBar {...props} />}
             screenOptions={{
                 headerShown: false,
-                tabBarShowLabel: true,
+                tabBarShowLabel: false,
                 tabBarActiveTintColor: "#a3e635",
-                tabBarInactiveTintColor: "#6b7563",
-                tabBarLabelStyle: {
-                    fontSize: 11,
-                    fontWeight: "600",
-                    letterSpacing: 0.2,
-                    marginTop: 2,
-                },
-                tabBarStyle: {
-                    backgroundColor: "#0c100a",
-                    borderTopWidth: 1,
-                    borderTopColor: "rgba(255,255,255, 0.08)",
-                    paddingTop: 10,
-                },
+                tabBarInactiveTintColor: "#8a9482",
             }}
         >
             <Tabs.Screen name="index" options={{ href: null }} />

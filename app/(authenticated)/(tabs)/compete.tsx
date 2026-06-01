@@ -1,12 +1,14 @@
 import { Background } from "@/components/ui/Background";
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
+import { useTabBarHeight } from "@/lib/tab-bar-layout";
 import { Ionicons } from "@expo/vector-icons";
-import { Platform, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CompeteScreen() {
-    const { top, bottom } = useSafeAreaInsets();
+    const { top } = useSafeAreaInsets();
+    const tabBarHeight = useTabBarHeight();
     const headerHeight = top + 60;
 
     return (
@@ -15,7 +17,7 @@ export default function CompeteScreen() {
                 className="flex-1 px-4"
                 contentContainerStyle={{
                     paddingTop: headerHeight,
-                    paddingBottom: Platform.OS === "web" ? 100 : bottom + 88,
+                    paddingBottom: tabBarHeight + 16,
                     flexGrow: 1,
                     justifyContent: "center",
                 }}

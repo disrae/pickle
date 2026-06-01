@@ -1,5 +1,4 @@
-import React from "react";
-import { PicklePaddle } from "@/assets/icons/picklepaddle";
+import { MinimalPaddleTabIcon } from "@/components/ui/MinimalPaddleTabIcon";
 
 interface CourtTabIconProps {
     focused: boolean;
@@ -7,19 +6,14 @@ interface CourtTabIconProps {
     size?: number;
 }
 
-/**
- * Court tab icon — a clean pickleball-paddle silhouette.
- * Solid when active, outlined when inactive. Uses SVG so it tints
- * reliably across iOS, Android, and web.
- */
+const BRAND_VOLT = "#a3e635";
+
 export function CourtTabIcon({ focused, color = "#8a9482", size = 26 }: CourtTabIconProps) {
     return (
-        <PicklePaddle
-            width={size}
-            height={size}
-            tintColor={color}
+        <MinimalPaddleTabIcon
+            size={size}
+            color={focused ? BRAND_VOLT : color}
             filled={focused}
-            strokeWidth={2}
         />
     );
 }

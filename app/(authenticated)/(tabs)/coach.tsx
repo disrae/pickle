@@ -3,6 +3,7 @@ import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
 import { StyledButton } from "@/components/ui/StyledButton";
 import { api } from "@/convex/_generated/api";
+import { useTabBarHeight } from "@/lib/tab-bar-layout";
 import { Ionicons } from "@expo/vector-icons";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
@@ -21,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CoachScreen() {
     const { top, bottom } = useSafeAreaInsets();
+    const tabBarHeight = useTabBarHeight();
     const router = useRouter();
     const messages = useQuery(api.coach.getMessages);
     const profile = useQuery(api.skillsProfiles.getForCurrentUser);
@@ -145,7 +147,7 @@ export default function CoachScreen() {
                 {!user?.coachOnboardingComplete && (
                     <View
                         className="absolute left-0 right-0 px-4 border-t border-border bg-background/95"
-                        style={{ bottom: bottom + (Platform.OS === "web" ? 80 : 88), paddingTop: 12, paddingBottom: 12 }}
+                        style={{ bottom: tabBarHeight, paddingTop: 12, paddingBottom: 12 }}
                     >
                         <View className="flex-row items-center gap-2">
                             <TextInput
