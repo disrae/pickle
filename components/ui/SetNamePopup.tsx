@@ -74,21 +74,21 @@ export const SetNamePopup = ({
             visible={isVisible}
             onRequestClose={isRequired ? undefined : handleCancel}
         >
-            <View className="flex-1 justify-center items-center bg-black/50">
+            <View className="flex-1 items-center justify-center bg-black/70 px-6">
                 <View
-                    className="bg-white/95 p-6 rounded-3xl w-4/5 max-w-md"
+                    className="w-full max-w-md rounded-3xl border border-border bg-popover p-6"
                     style={{
                         shadowColor: "#000",
                         shadowOffset: { width: 0, height: 8 },
-                        shadowOpacity: 0.15,
+                        shadowOpacity: 0.3,
                         shadowRadius: 16,
                         elevation: 8,
                     }}
                 >
-                    <Text className="text-2xl font-bold text-slate-800 mb-2 text-center">
+                    <Text className="mb-2 text-center text-2xl font-bold text-foreground">
                         {isRequired ? "Welcome!" : "Change Name"}
                     </Text>
-                    <Text className="text-slate-600 text-center mb-6">
+                    <Text className="mb-6 text-center text-foreground-muted">
                         {isRequired 
                             ? "Please set your display name to continue" 
                             : "Update your display name"}
@@ -106,14 +106,14 @@ export const SetNamePopup = ({
                     />
 
                     {error ? (
-                        <Text className="text-red-500 text-sm mt-2 text-center">
+                        <Text className="mt-2 text-center text-sm text-destructive">
                             {error}
                         </Text>
                     ) : null}
 
                     <View className="h-6" />
 
-                    <View className={`w-full ${!isRequired ? "flex-row space-x-4" : ""}`}>
+                    <View className={`w-full ${!isRequired ? "flex-row gap-3" : ""}`}>
                         {!isRequired && (
                             <StyledButton
                                 variant="secondary"
@@ -124,7 +124,7 @@ export const SetNamePopup = ({
                             />
                         )}
                         <StyledButton
-                            variant="primary"
+                            variant="brand"
                             title="Save"
                             onPress={handleSave}
                             fullWidth={isRequired}
@@ -137,4 +137,3 @@ export const SetNamePopup = ({
         </Modal>
     );
 };
-

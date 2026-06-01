@@ -62,10 +62,9 @@ export default function ProfileScreen() {
         showPopup(
             "Sign Out",
             "Are you sure you want to sign out?",
-            () => {
-                signOut();
-                router.dismissAll();
-                router.replace('/login');
+            async () => {
+                await signOut();
+                router.replace("/login");
             },
             "Sign Out"
         );
@@ -78,6 +77,7 @@ export default function ProfileScreen() {
             async () => {
                 await deleteAccount();
                 await signOut();
+                router.replace("/login");
             },
             "Delete Account"
         );

@@ -65,7 +65,7 @@ export function Header({ title, titleSize = "text-2xl", rightButton, onRightPres
                     top: bannerHeight,
                     left: 0,
                     right: 0,
-                    paddingTop: top - 8,
+                    paddingTop: Platform.OS === "web" ? 16 : top - 8,
                     paddingBottom: 10,
                     paddingHorizontal: 16,
                     backgroundColor: "rgba(8, 12, 7, 0.95)",

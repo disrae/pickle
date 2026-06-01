@@ -21,9 +21,9 @@ export const Popup = ({ isVisible, onClose, title, message, buttonText = "OK", o
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <View className="flex-1 justify-center items-center bg-black/70">
+            <View className="flex-1 items-center justify-center bg-black/70 px-6">
                 <View
-                    className="bg-slate-800/95 border border-slate-700 p-6 rounded-3xl w-4/5 max-w-md items-center"
+                    className="w-full max-w-md items-center rounded-3xl border border-border bg-popover p-6"
                     style={{
                         shadowColor: "#000",
                         shadowOffset: { width: 0, height: 8 },
@@ -33,12 +33,12 @@ export const Popup = ({ isVisible, onClose, title, message, buttonText = "OK", o
                     }}
                 >
                     {title && (
-                        <Text className="text-2xl font-bold text-slate-200 mb-2 text-center">
+                        <Text className="mb-2 text-center text-2xl font-bold text-foreground">
                             {title}
                         </Text>
                     )}
-                    <Text className="text-slate-300 text-center mb-6">{message}</Text>
-                    <View className={`w-full ${onConfirm ? "flex-row space-x-4" : ""}`}>
+                    <Text className="mb-6 text-center text-foreground-muted">{message}</Text>
+                    <View className={`w-full ${onConfirm ? "flex-row gap-3" : ""}`}>
                         {onConfirm ? (
                             <>
                                 <StyledButton

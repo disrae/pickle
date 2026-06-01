@@ -25,11 +25,7 @@ export function GuestModeBanner({ isVisible }: GuestModeBannerProps) {
                     </Text>
                 </View>
                 <TouchableOpacity
-                    onPress={() => {
-                        // Dismiss all stacks and navigate to root
-                        router.dismissAll();
-                        router.replace('/login');
-                    }}
+                    onPress={() => router.replace("/login")}
                     className="bg-amber-900 px-3 py-2 rounded-lg ml-3"
                     activeOpacity={0.8}
                 >

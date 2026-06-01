@@ -1,4 +1,3 @@
-import { PicklePaddle } from "@/assets/icons/picklepaddle";
 import { Popup } from "@/components/ui/Popup";
 import { StyledButton } from "@/components/ui/StyledButton";
 import { StyledInput } from "@/components/ui/StyledInput";
@@ -7,6 +6,7 @@ import { useLoading } from "@/lib/loading-context";
 import { useTheme } from "@/lib/theme-context";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex/react";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -16,13 +16,17 @@ import {
     Platform,
     Pressable,
     ScrollView,
+    StyleSheet,
     Text,
+    useWindowDimensions,
     View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 
-export default function Index() {
+export default function LoginScreen() {
     const { top, bottom } = useSafeAreaInsets();
+    const { width, height } = useWindowDimensions();
     const { theme } = useTheme();
     const { signIn } = useAuthActions();
     const router = useRouter();
@@ -111,131 +115,160 @@ export default function Index() {
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            className="flex-1 bg-background"
-        >
+        <View style={{ flex: 1, backgroundColor: heroGradient[2] }}>
             <LinearGradient
                 colors={heroGradient}
                 locations={[0, 0.55, 1]}
-                className="absolute left-0 right-0 top-0"
-                style={{ height: 420 }}
+                pointerEvents="none"
+                style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}
             />
-            <ScrollView
-                keyboardShouldPersistTaps="handled"
-                contentContainerStyle={{
-                    flexGrow: 1,
-                    paddingTop: top + 56,
-                    paddingBottom: bottom + 24,
-                    paddingHorizontal: 24,
-                }}
+            {theme === "dark" && (
+                <Svg width={width} height={height} style={StyleSheet.absoluteFill} pointerEvents="none">
+                    <Defs>
+                        <RadialGradient
+                            id="loginGlowTopRight"
+                            cx={width * 0.85}
+                            cy={height * 0.04}
+                            r={Math.max(width, height) * 0.55}
+                            gradientUnits="userSpaceOnUse"
+                        >
+                            <Stop offset="0%" stopColor="#a3e635" stopOpacity={0.34} />
+                            <Stop offset="45%" stopColor="#84cc16" stopOpacity={0.12} />
+                            <Stop offset="100%" stopColor="#84cc16" stopOpacity={0} />
+                        </RadialGradient>
+                        <RadialGradient
+                            id="loginGlowBottomLeft"
+                            cx={width * 0.1}
+                            cy={height * 0.92}
+                            r={Math.max(width, height) * 0.55}
+                            gradientUnits="userSpaceOnUse"
+                        >
+                            <Stop offset="0%" stopColor="#65a30d" stopOpacity={0.3} />
+                            <Stop offset="50%" stopColor="#3f6212" stopOpacity={0.12} />
+                            <Stop offset="100%" stopColor="#3f6212" stopOpacity={0} />
+                        </RadialGradient>
+                    </Defs>
+                    <Rect x="0" y="0" width={width} height={height} fill="url(#loginGlowTopRight)" />
+                    <Rect x="0" y="0" width={width} height={height} fill="url(#loginGlowBottomLeft)" />
+                </Svg>
+            )}
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
             >
-                <View className="w-full max-w-md self-center">
-                    {/* Brand mark */}
-                    <View className="items-center">
+                <ScrollView
+                    style={{ flex: 1 }}
+                    contentInsetAdjustmentBehavior="never"
+                    automaticallyAdjustContentInsets={false}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingTop: top + 16,
+                        paddingBottom: bottom + 24,
+                        paddingHorizontal: 24,
+                    }}
+                >
+                    <View style={{ width: "100%", maxWidth: 448, alignSelf: "center" }}>
+                        <View className="items-center">
+                            <Image
+                                source={
+                                    theme === "dark"
+                                        ? require("@/assets/icons/splash-icon-dark.png")
+                                        : require("@/assets/icons/splash-icon-light.png")
+                                }
+                                style={{ width: 80, height: 80 }}
+                                contentFit="contain"
+                            />
+                            <Text className="mt-5 text-4xl font-extrabold tracking-tight text-foreground">
+                                WePickle
+                            </Text>
+                            <Text className="mt-2 text-base text-foreground-muted">
+                                Your court. Your crew. Your game.
+                            </Text>
+                        </View>
+
                         <View
-                            className="h-20 w-20 items-center justify-center rounded-[28px] bg-brand"
+                            className="mt-9 w-full rounded-[28px] border border-border bg-surface p-6"
                             style={{
-                                shadowColor: "#84cc16",
-                                shadowOffset: { width: 0, height: 10 },
-                                shadowOpacity: 0.35,
-                                shadowRadius: 20,
-                                elevation: 10,
+                                shadowColor: "#000",
+                                shadowOffset: { width: 0, height: 12 },
+                                shadowOpacity: theme === "dark" ? 0.4 : 0.1,
+                                shadowRadius: 24,
+                                elevation: 8,
                             }}
                         >
-                            <PicklePaddle width={42} height={42} tintColor="#151c0c" />
-                        </View>
-                        <Text className="mt-5 text-4xl font-extrabold tracking-tight text-foreground">
-                            WePickle
-                        </Text>
-                        <Text className="mt-2 text-base text-foreground-muted">
-                            Your court. Your crew. Your game.
-                        </Text>
-                    </View>
-
-                    {/* Auth card */}
-                    <View
-                        className="mt-9 w-full rounded-[28px] border border-border bg-surface p-6"
-                        style={{
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 12 },
-                            shadowOpacity: theme === "dark" ? 0.4 : 0.1,
-                            shadowRadius: 24,
-                            elevation: 8,
-                        }}
-                    >
-                        {/* Sign in / Sign up segmented control */}
-                        <View className="mb-6 flex-row rounded-2xl bg-surface-2 p-1">
-                            {(["signIn", "signUp"] as const).map((flow) => {
-                                const active = passwordFlow === flow;
-                                return (
-                                    <Pressable
-                                        key={flow}
-                                        onPress={() => setPasswordFlow(flow)}
-                                        className={`flex-1 rounded-xl py-2.5 ${active ? "bg-brand" : ""}`}
-                                    >
-                                        <Text
-                                            className={`text-center font-bold ${active ? "text-brand-foreground" : "text-foreground-muted"}`}
+                            <View className="mb-6 flex-row rounded-2xl bg-surface-2 p-1">
+                                {(["signIn", "signUp"] as const).map((flow) => {
+                                    const active = passwordFlow === flow;
+                                    return (
+                                        <Pressable
+                                            key={flow}
+                                            onPress={() => setPasswordFlow(flow)}
+                                            className={`flex-1 rounded-xl py-2.5 ${active ? "bg-brand" : ""}`}
                                         >
-                                            {flow === "signIn" ? "Sign In" : "Sign Up"}
-                                        </Text>
-                                    </Pressable>
-                                );
-                            })}
-                        </View>
+                                            <Text
+                                                className={`text-center font-bold ${active ? "text-brand-foreground" : "text-foreground-muted"}`}
+                                            >
+                                                {flow === "signIn" ? "Sign In" : "Sign Up"}
+                                            </Text>
+                                        </Pressable>
+                                    );
+                                })}
+                            </View>
 
-                        <View className="gap-4">
-                            <StyledInput
-                                label="Email"
-                                placeholder="you@example.com"
-                                value={email}
-                                onChangeText={setEmail}
-                                keyboardType="email-address"
-                                autoComplete="email"
-                                textContentType="emailAddress"
+                            <View className="gap-4">
+                                <StyledInput
+                                    label="Email"
+                                    placeholder="you@example.com"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    keyboardType="email-address"
+                                    autoComplete="email"
+                                    textContentType="emailAddress"
+                                />
+                                <StyledInput
+                                    label="Password"
+                                    placeholder={
+                                        passwordFlow === "signUp"
+                                            ? "Create a password (min 8 chars)"
+                                            : "Enter your password"
+                                    }
+                                    secureTextEntry
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    autoComplete="password"
+                                    textContentType="password"
+                                />
+                            </View>
+
+                            <View className="h-6" />
+
+                            <StyledButton
+                                onPress={handlePasswordAuth}
+                                title={passwordFlow === "signUp" ? "Create account" : "Sign in"}
+                                variant="brand"
+                                loading={submitting}
                             />
-                            <StyledInput
-                                label="Password"
-                                placeholder={
-                                    passwordFlow === "signUp"
-                                        ? "Create a password (min 8 chars)"
-                                        : "Enter your password"
-                                }
-                                secureTextEntry
-                                value={password}
-                                onChangeText={setPassword}
-                                autoComplete="password"
-                                textContentType="password"
+
+                            <View className="my-5 flex-row items-center">
+                                <View className="h-px flex-1 bg-border" />
+                                <Text className="px-4 text-sm text-foreground-muted">or</Text>
+                                <View className="h-px flex-1 bg-border" />
+                            </View>
+
+                            <StyledButton
+                                onPress={handleContinueAsGuest}
+                                title="Continue as Guest"
+                                variant="secondary"
                             />
+
+                            <Text className="mt-3 text-center text-xs text-foreground-muted">
+                                Guest mode is read-only. Sign in to unlock all features.
+                            </Text>
                         </View>
-
-                        <View className="h-6" />
-
-                        <StyledButton
-                            onPress={handlePasswordAuth}
-                            title={passwordFlow === "signUp" ? "Create account" : "Sign in"}
-                            variant="brand"
-                            loading={submitting}
-                        />
-
-                        <View className="my-5 flex-row items-center">
-                            <View className="h-px flex-1 bg-border" />
-                            <Text className="px-4 text-sm text-foreground-muted">or</Text>
-                            <View className="h-px flex-1 bg-border" />
-                        </View>
-
-                        <StyledButton
-                            onPress={handleContinueAsGuest}
-                            title="Continue as Guest"
-                            variant="secondary"
-                        />
-
-                        <Text className="mt-3 text-center text-xs text-foreground-muted">
-                            Guest mode is read-only. Sign in to unlock all features.
-                        </Text>
                     </View>
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
 
             <Popup
                 isVisible={showPopup}
@@ -243,6 +276,6 @@ export default function Index() {
                 title={popupTitle}
                 message={popupMessage}
             />
-        </KeyboardAvoidingView>
+        </View>
     );
 }

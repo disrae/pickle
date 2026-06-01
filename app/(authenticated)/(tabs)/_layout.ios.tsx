@@ -13,7 +13,7 @@ export default function TabLayout() {
             <NativeTabs tintColor="#a3e635">
                 <NativeTabs.Trigger name="court"  >
                     <Label hidden>Court</Label>
-                    <Icon sf="figure.pickleball" />
+                    <Icon sf="figure.pickleball.circle.fill" />
                 </NativeTabs.Trigger>
                 <NativeTabs.Trigger name="drills" >
                     <Label hidden>Drills</Label>
@@ -61,7 +61,9 @@ export default function TabLayout() {
                     name="court"
                     options={{
                         title: "Court",
-                        tabBarIcon: ({ focused, size }) => <CourtTabIcon focused={focused} size={size * 1.1} />,
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <CourtTabIcon focused={focused} color={color} size={size * 1.1} />
+                        ),
                     }}
                 />
                 <Tabs.Screen

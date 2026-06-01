@@ -1,21 +1,25 @@
-import { Image } from "expo-image";
 import React from "react";
-
-const ACTIVE = require("@/assets/icons/tab/court-active.webp");
-const INACTIVE = require("@/assets/icons/tab/court-inactive.webp");
+import { PicklePaddle } from "@/assets/icons/picklepaddle";
 
 interface CourtTabIconProps {
     focused: boolean;
+    color?: string;
     size?: number;
 }
 
-export function CourtTabIcon({ focused, size = 26 }: CourtTabIconProps) {
+/**
+ * Court tab icon — a clean pickleball-paddle silhouette.
+ * Solid when active, outlined when inactive. Uses SVG so it tints
+ * reliably across iOS, Android, and web.
+ */
+export function CourtTabIcon({ focused, color = "#8a9482", size = 26 }: CourtTabIconProps) {
     return (
-        <Image
-            source={focused ? ACTIVE : INACTIVE}
-            style={{ width: size, height: size }}
-            contentFit="contain"
-            transition={120}
+        <PicklePaddle
+            width={size}
+            height={size}
+            tintColor={color}
+            filled={focused}
+            strokeWidth={2}
         />
     );
 }

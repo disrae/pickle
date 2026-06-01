@@ -43,7 +43,9 @@ export default function TabsLayout() {
                 name="court"
                 options={{
                     title: "Court",
-                    tabBarIcon: ({ focused, size }) => <CourtTabIcon focused={focused} size={size} />,
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <CourtTabIcon focused={focused} color={color} size={size} />
+                    ),
                 }}
             />
             <Tabs.Screen

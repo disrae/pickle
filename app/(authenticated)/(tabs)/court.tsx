@@ -195,7 +195,7 @@ export default function CourtsScreen() {
         .map(Number)
         .sort((a, b) => a - b);
 
-    const headerHeight = 100;
+    const headerHeight = Platform.OS === "web" ? top + 60 : top + 30;
     const isCheckedIn = !!currentCheckIn;
 
     if (court === undefined) {
@@ -249,7 +249,7 @@ export default function CourtsScreen() {
             <View className="flex-1">
                 <ScrollView
                     className="flex-1 px-4"
-                    contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: Math.max(bottom, (isLiquidGlassAvailable() ? 80 : 32)) }}
+                    contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: Platform.OS === "web" ? 100 : Math.max(bottom, (isLiquidGlassAvailable() ? 80 : 32)) }}
                 >
                     {/* Content wrapper to keep cards at the start */}
                     <View className="flex-1 justify-start">
@@ -262,9 +262,6 @@ export default function CourtsScreen() {
                                 </View>
                             </View>
                         )}
-
-                        {isLiquidGlassAvailable() && <View className='h-6' />}
-                        {Platform.OS === 'web' && <View className='h-6' />}
 
                         {/* Lineup and Condition Section */}
                         <GlassContainer
