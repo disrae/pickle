@@ -161,7 +161,6 @@ export default function TrainingChatsListScreen() {
                 titleSize="text-2xl"
                 rightButton="back"
                 onRightPress={() => router.back()}
-                user={user}
             />
 
             <ChatFAB onPress={() => setShowNewChatModal(true)} />

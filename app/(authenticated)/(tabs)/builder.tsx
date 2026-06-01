@@ -95,7 +95,6 @@ export default function BuilderScreen() {
                 titleSize="text-2xl"
                 rightButton="chat"
                 onRightPress={() => router.push("/builder/chats")}
-                user={user}
             />
 
             <BuilderFAB onPress={() => setShowCreateModal(true)} />

@@ -373,7 +373,7 @@ export default function ProfileScreen() {
 
             </View>
 
-            <Header title="Profile" user={user} />
+            <Header title="Profile" />
 
             <Popup
                 isVisible={popupVisible}

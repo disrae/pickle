@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GlassContainer } from "./GlassContainer";
-import { GuestModeBanner } from "./GuestModeBanner";
 
 interface HeaderProps {
     title: string;
@@ -10,15 +9,10 @@ interface HeaderProps {
     rightButton?: "chat" | "back";
     onRightPress?: () => void;
     onTitlePress?: () => void;
-    user?: any; // User object from Convex query
 }
 
-export function Header({ title, titleSize = "text-2xl", rightButton, onRightPress, onTitlePress, user }: HeaderProps) {
+export function Header({ title, titleSize = "text-2xl", rightButton, onRightPress, onTitlePress }: HeaderProps) {
     const { top } = useSafeAreaInsets();
-    const isGuestMode = user === null;
-    const bannerHeight = isGuestMode
-        ? top + (Platform.OS === "web" ? 52 : 0)
-        : 0;
 
     const RightButton = () => {
         if (!rightButton || !onRightPress) return null;
@@ -56,34 +50,31 @@ export function Header({ title, titleSize = "text-2xl", rightButton, onRightPres
     };
 
     return (
-        <>
-            <GuestModeBanner isVisible={isGuestMode} />
-            <GlassContainer
-                glassEffectStyle="clear"
-                style={{
-                    position: 'absolute',
-                    top: bannerHeight,
-                    left: 0,
-                    right: 0,
-                    paddingTop: Platform.OS === "web" ? 16 : top - 8,
-                    paddingBottom: 10,
-                    paddingHorizontal: 16,
-                    backgroundColor: "rgba(8, 12, 7, 0.95)",
-                    borderWidth: 0,
-                    borderColor: "transparent",
-                    borderBottomWidth: 0,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 8 },
-                    shadowOpacity: 0.28,
-                    shadowRadius: 14,
-                    elevation: 8,
-                }}
-            >
-                <View className="flex-row items-center justify-between">
-                    <TitleContent />
-                    <RightButton />
-                </View>
-            </GlassContainer>
-        </>
+        <GlassContainer
+            glassEffectStyle="clear"
+            style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                paddingTop: Platform.OS === "web" ? 16 : top - 8,
+                paddingBottom: 10,
+                paddingHorizontal: 16,
+                backgroundColor: "rgba(8, 12, 7, 0.95)",
+                borderWidth: 0,
+                borderColor: "transparent",
+                borderBottomWidth: 0,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.28,
+                shadowRadius: 14,
+                elevation: 8,
+            }}
+        >
+            <View className="flex-row items-center justify-between">
+                <TitleContent />
+                <RightButton />
+            </View>
+        </GlassContainer>
     );
 }

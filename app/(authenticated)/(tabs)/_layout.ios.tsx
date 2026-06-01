@@ -1,13 +1,10 @@
 import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
-import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "convex/react";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
 export default function TabLayout() {
-    const user = useQuery(api.users.currentUser);
     if (isLiquidGlassAvailable()) {
         return (
             <NativeTabs tintColor="#a3e635">
@@ -23,7 +20,7 @@ export default function TabLayout() {
                     <Label hidden>Builder</Label>
                     <Icon sf="hammer.fill" />
                 </NativeTabs.Trigger>
-                <NativeTabs.Trigger name="profile" hidden={!user}>
+                <NativeTabs.Trigger name="profile">
                     <Label hidden>Profile</Label>
                     <Icon sf="person.fill" />
                 </NativeTabs.Trigger>
@@ -91,7 +88,6 @@ export default function TabLayout() {
                         tabBarIcon: ({ focused, color, size }) => (
                             <Ionicons name={focused ? "person" : "person-outline"} color={color} size={size * 1.1} />
                         ),
-                        href: user ? "/profile" : null,
                     }}
                 />
             </Tabs>

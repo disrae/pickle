@@ -1,15 +1,12 @@
 import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
 import { WebTabBar } from "@/components/ui/WebTabBar";
-import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "convex/react";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 
 const isWeb = Platform.OS === "web";
 
 export default function TabsLayout() {
-    const user = useQuery(api.users.currentUser);
     return (
         <Tabs
             tabBar={isWeb ? (props) => <WebTabBar {...props} /> : undefined}
@@ -73,7 +70,6 @@ export default function TabsLayout() {
                     tabBarIcon: ({ focused, color, size }) => (
                         <Ionicons name={focused ? "person" : "person-outline"} color={color} size={size} />
                     ),
-                    href: user ? "/profile" : null,
                 }}
             />
         </Tabs>

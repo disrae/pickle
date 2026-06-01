@@ -1,10 +1,18 @@
 import { SetNamePopup } from "@/components/ui/SetNamePopup";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 
 export default function AuthenticatedLayout() {
     const user = useQuery(api.users.currentUser);
+
+    if (user === undefined) {
+        return null;
+    }
+
+    if (user === null) {
+        return <Redirect href="/login" />;
+    }
 
     // Check if user needs to set their name
     const needsName = user && !user.name?.trim();

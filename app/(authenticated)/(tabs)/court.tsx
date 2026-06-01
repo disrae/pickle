@@ -554,7 +554,6 @@ export default function CourtsScreen() {
                 rightButton="chat"
                 onRightPress={() => router.push(`/chats/${court?._id || ""}`)}
                 onTitlePress={() => setShowCourtSelector(true)}
-                user={user}
             />
 
             <TimePickerPopup

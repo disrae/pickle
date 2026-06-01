@@ -8,7 +8,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Redirect, useRouter } from "expo-router";
+import { Redirect } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
     Keyboard,
@@ -29,7 +29,6 @@ export default function LoginScreen() {
     const { width, height } = useWindowDimensions();
     const { theme } = useTheme();
     const { signIn } = useAuthActions();
-    const router = useRouter();
     const user = useQuery(api.users.currentUser);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -108,10 +107,6 @@ export default function LoginScreen() {
         } finally {
             setSubmitting(false);
         }
-    };
-
-    const handleContinueAsGuest = () => {
-        router.push("/(authenticated)/(tabs)/court");
     };
 
     return (
@@ -249,22 +244,6 @@ export default function LoginScreen() {
                                 variant="brand"
                                 loading={submitting}
                             />
-
-                            <View className="my-5 flex-row items-center">
-                                <View className="h-px flex-1 bg-border" />
-                                <Text className="px-4 text-sm text-foreground-muted">or</Text>
-                                <View className="h-px flex-1 bg-border" />
-                            </View>
-
-                            <StyledButton
-                                onPress={handleContinueAsGuest}
-                                title="Continue as Guest"
-                                variant="secondary"
-                            />
-
-                            <Text className="mt-3 text-center text-xs text-foreground-muted">
-                                Guest mode is read-only. Sign in to unlock all features.
-                            </Text>
                         </View>
                     </View>
                 </ScrollView>

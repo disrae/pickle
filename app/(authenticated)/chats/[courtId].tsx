@@ -186,7 +186,6 @@ export default function ChatListScreen() {
                 titleSize="text-2xl"
                 rightButton="back"
                 onRightPress={() => router.back()}
-                user={user}
             />
 
             <ChatFAB onPress={() => setShowNewChatModal(true)} />

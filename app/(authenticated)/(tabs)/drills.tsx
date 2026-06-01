@@ -320,7 +320,6 @@ export default function DrillsScreen() {
                 titleSize="text-2xl"
                 rightButton="chat"
                 onRightPress={() => router.push("/training/chats")}
-                user={user}
             />
 
             <TrainingFAB onPress={() => setShowCreateModal(true)} />
