@@ -19,7 +19,7 @@ import { vars } from "nativewind";
 export const themes = {
     light: vars({
         // Surfaces
-        "--color-background": "250 250 247", // warm paper
+        "--color-background": "242 245 236", // soft sage paper for stronger card contrast
         "--color-surface": "255 255 255",
         "--color-surface-2": "243 244 239",
         "--color-card": "255 255 255",
@@ -29,7 +29,7 @@ export const themes = {
 
         // Text
         "--color-foreground": "18 23 15", // ink
-        "--color-muted-foreground": "92 100 84",
+        "--color-muted-foreground": "59 66 51", // stronger secondary for outdoor readability
 
         // Brand (deep sport-green)
         "--color-brand": "63 125 32", // #3F7D20 — CTA fills, AA on white
@@ -64,8 +64,8 @@ export const themes = {
         "--color-info-foreground": "250 250 250",
 
         // Lines & focus
-        "--color-border": "226 228 219",
-        "--color-input": "226 228 219",
+        "--color-border": "193 200 182", // visible separation on light paper
+        "--color-input": "193 200 182",
         "--color-ring": "63 125 32",
     }),
 

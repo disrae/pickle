@@ -1,7 +1,7 @@
 import { GlassContainer } from "@/components/ui/GlassContainer";
+import { IconTile } from "@/components/ui/IconTile";
 import { StyledButton } from "@/components/ui/StyledButton";
 import { api } from "@/convex/_generated/api";
-import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { Text, View } from "react-native";
@@ -19,22 +19,23 @@ export function CoachPromptBanner() {
     };
 
     return (
-        <GlassContainer style={{ borderRadius: 24, padding: 20, marginBottom: 16 }}>
-            <View className="flex-row items-center gap-3">
-                <View className="w-12 h-12 rounded-2xl bg-brand items-center justify-center">
-                    <Ionicons name="tennisball" size={26} color="#f7fbf0" />
-                </View>
+        <GlassContainer style={{ padding: 20, marginBottom: 14 }}>
+            <View className="flex-row items-center gap-3.5">
+                <IconTile name="sparkles" tone="brand" />
                 <View className="flex-1">
-                    <Text className="text-foreground text-lg font-bold">
-                        Meet your coach
-                    </Text>
-                    <Text className="text-muted-foreground text-sm mt-1">
-                        Build your skills profile
+                    <View className="flex-row items-center gap-2">
+                        <Text className="text-foreground text-lg font-bold">Meet your coach</Text>
+                        <View className="px-2 py-0.5 rounded-full bg-brand-subtle">
+                            <Text className="text-brand-strong text-[10px] font-bold uppercase tracking-wide">New</Text>
+                        </View>
+                    </View>
+                    <Text className="text-muted-foreground text-base mt-1">
+                        A quick chat to build your skills profile and a personalized plan.
                     </Text>
                 </View>
             </View>
             <View className="mt-4">
-                <StyledButton variant="brand" title="Let's go" onPress={handlePress} />
+                <StyledButton variant="brand" title="Build my profile" onPress={handlePress} />
             </View>
         </GlassContainer>
     );

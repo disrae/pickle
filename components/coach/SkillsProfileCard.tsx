@@ -33,7 +33,7 @@ export function SkillsProfileCard({
                         <Text className="text-brand text-2xl font-bold leading-6">
                             {profile.overallLevel.toFixed(1)}
                         </Text>
-                        <Text className="text-muted-foreground text-xs">overall</Text>
+                        <Text className="text-muted-foreground text-sm">overall</Text>
                     </View>
                 )}
             </View>
@@ -46,17 +46,20 @@ export function SkillsProfileCard({
 
             <View className="mt-2">
                 {skillRows.map((r) => (
-                    <View key={r.label} className="flex-row items-center py-2">
-                        <Text className="text-foreground font-semibold w-24">{r.label}</Text>
-                        <View className="flex-1 h-2 bg-surface-2 rounded-full overflow-hidden mr-3">
+                    <View key={r.label} className="flex-row items-center py-2.5">
+                        <Text className="text-foreground font-semibold text-base w-24">{r.label}</Text>
+                        <View
+                            className="flex-1 h-3 rounded-full overflow-hidden mr-3"
+                            style={{ backgroundColor: "rgba(18,23,15,0.12)" }}
+                        >
                             <View
-                                className="h-full bg-brand rounded-full"
+                                className="h-full rounded-full bg-brand-strong"
                                 style={{
                                     width: `${Math.min(100, (r.value / MAX_SKILL_LEVEL) * 100)}%`,
                                 }}
                             />
                         </View>
-                        <Text className="text-foreground text-sm w-9 text-right">
+                        <Text className="text-foreground text-base font-semibold w-10 text-right">
                             {r.value.toFixed(1)}
                         </Text>
                     </View>

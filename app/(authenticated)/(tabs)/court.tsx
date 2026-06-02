@@ -6,20 +6,40 @@ import { Background } from "@/components/ui/Background";
 import { CourtSelectorPopup } from "@/components/ui/CourtSelectorPopup";
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
+import { IconTile } from "@/components/ui/IconTile";
 import { Popup } from "@/components/ui/Popup";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TimePickerPopup } from "@/components/ui/TimePickerPopup";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useHeaderHeight } from "@/lib/header-layout";
 import { useLocationCheckIn } from "@/lib/use-location-check-in";
-import { PicklePaddle } from "@/assets/icons/picklepaddle";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const tap = () => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+};
+
+function BusyMeter({ pct, color }: { pct: number; color: string }) {
+    const w = useSharedValue(0);
+    useEffect(() => {
+        w.value = withTiming(pct, { duration: 600 });
+    }, [pct, w]);
+    const style = useAnimatedStyle(() => ({ width: `${w.value}%` }));
+    return (
+        <View className="h-2 rounded-full mt-4 overflow-hidden" style={{ backgroundColor: "rgba(18,23,15,0.06)" }}>
+            <Animated.View style={[{ height: "100%", borderRadius: 999, backgroundColor: color }, style]} />
+        </View>
+    );
+}
 
 export default function CourtsScreen() {
     const { bottom } = useSafeAreaInsets();
@@ -194,6 +214,19 @@ export default function CourtsScreen() {
     const comingCount = presence?.comingSoon ?? plannedVisits?.length ?? 0;
     const isEmptyCourt = hereCount === 0;
 
+    const lineupSlots = court?.lineupSlots ?? 10;
+    const lineupCount = court?.currentLineupCount ?? 0;
+    const hasLineupReport = !!isLineupValid && court?.currentLineupCount !== undefined;
+    const lineupStatus =
+        lineupCount <= 0
+            ? { label: "Courts open", sub: "No wait right now", color: "#3F7D20", tint: "#E8F3DC", ink: "#2E5C16" }
+            : lineupCount <= 2
+                ? { label: "Short wait", sub: `${lineupCount} ${lineupCount === 1 ? "group" : "groups"} waiting`, color: "#3F7D20", tint: "#E8F3DC", ink: "#2E5C16" }
+                : lineupCount <= 4
+                    ? { label: "Moderate wait", sub: `${lineupCount} groups waiting`, color: "#B45309", tint: "rgba(245,158,11,0.15)", ink: "#B45309" }
+                    : { label: "Long wait", sub: `${lineupCount} groups waiting`, color: "#B45309", tint: "rgba(245,158,11,0.15)", ink: "#B45309" };
+    const lineupFillPct = Math.min(lineupCount / 6, 1) * 100;
+
     if (court === undefined) {
         return (
             <Background>
@@ -237,114 +270,162 @@ export default function CourtsScreen() {
             >
                 <CoachPromptBanner />
 
-                <CourtHero
-                    hereCount={hereCount}
-                    comingCount={comingCount}
-                    checkIns={checkIns ?? []}
-                    currentUserId={user?._id}
-                    isCheckedIn={isCheckedIn}
-                    isCheckingIn={isCheckingIn}
-                    isCheckingOut={isCheckingOut}
-                    onCheckIn={handleCheckIn}
-                    onCheckOut={handleCheckOut}
-                    onPlayerPress={(id) => router.push(`/profile/${id}`)}
-                    onChallenge={(id) => setChallengeOpponentId(id)}
-                />
+                <Animated.View entering={FadeInDown.duration(450).springify().damping(18)}>
+                    <CourtHero
+                        hereCount={hereCount}
+                        comingCount={comingCount}
+                        checkIns={checkIns ?? []}
+                        currentUserId={user?._id}
+                        isCheckedIn={isCheckedIn}
+                        isCheckingIn={isCheckingIn}
+                        isCheckingOut={isCheckingOut}
+                        onCheckIn={handleCheckIn}
+                        onCheckOut={handleCheckOut}
+                        onPlayerPress={(id) => router.push(`/profile/${id}`)}
+                        onChallenge={(id) => setChallengeOpponentId(id)}
+                    />
+                </Animated.View>
 
                 {isEmptyCourt && (
-                    <CourtEmptyActions
-                        onHeadedThere={handleHeadedThere}
-                        onPlanVisit={() => setShowTimePicker(true)}
-                        isLoading={isHeadedThere}
-                    />
+                    <Animated.View entering={FadeInDown.delay(80).duration(450).springify().damping(18)}>
+                        <CourtEmptyActions
+                            onHeadedThere={handleHeadedThere}
+                            onPlanVisit={() => setShowTimePicker(true)}
+                            isLoading={isHeadedThere}
+                        />
+                    </Animated.View>
                 )}
 
-                {/* Lineup — secondary */}
-                <GlassContainer style={{ borderRadius: 24, padding: 20, marginBottom: 16 }}>
-                    <View className="flex-row items-center mb-3">
-                        <Text className="text-muted-foreground text-xs font-semibold uppercase">Lineup</Text>
-                        <TouchableOpacity
-                            onPress={() => setShowLineupInfo(true)}
-                            hitSlop={10}
-                            className="ml-1.5"
-                        >
-                            <Ionicons name="information-circle-outline" size={15} color="#9aa392" />
-                        </TouchableOpacity>
-                    </View>
-                    <View className="flex-row flex-wrap gap-2.5">
-                        {Array.from({ length: 8 }, (_, i) => {
-                            const n = i + 1;
-                            const filled = isLineupValid && court?.currentLineupCount !== undefined && n <= court.currentLineupCount;
-                            const selected = isLineupValid && court?.currentLineupCount === n;
-                            const paddle = (
-                                <PicklePaddle
-                                    width={26}
-                                    height={26}
-                                    filled={filled}
-                                    tintColor={filled ? "#3F7D20" : "#b5bbad"}
-                                    strokeWidth={1.6}
-                                />
-                            );
-                            return isCheckedIn ? (
-                                <TouchableOpacity
-                                    key={i}
-                                    onPress={() => handleReportLineup(selected ? 0 : n)}
-                                    disabled={isReportingLineup}
-                                    className={`p-1.5 rounded-xl ${selected ? "bg-brand/10" : ""}`}
+                {/* Court status — live wait */}
+                <Animated.View entering={FadeInDown.delay(120).duration(450).springify().damping(18)}>
+                <GlassContainer style={{ padding: 20, marginBottom: 14 }}>
+                    <SectionHeader
+                        label="Court status"
+                        onInfo={() => setShowLineupInfo(true)}
+                        right={
+                            hasLineupReport && lineupReporter && court?.lineupReportedAt ? (
+                                <Text className="text-muted-foreground text-sm">
+                                    {lineupReporter.name?.split(" ")[0] ?? "Someone"} · {formatReportTime(court.lineupReportedAt)}
+                                </Text>
+                            ) : undefined
+                        }
+                    />
+
+                    {hasLineupReport ? (
+                        <>
+                            <View className="flex-row items-center justify-between">
+                                <View className="flex-1 pr-3">
+                                    <Text className="text-foreground text-2xl font-display-bold">{lineupStatus.label}</Text>
+                                    <Text className="text-muted-foreground text-base mt-0.5">{lineupStatus.sub}</Text>
+                                </View>
+                                <View
+                                    className="w-14 h-14 rounded-2xl items-center justify-center"
+                                    style={{ backgroundColor: lineupStatus.tint }}
                                 >
-                                    {paddle}
-                                </TouchableOpacity>
-                            ) : (
-                                <View key={i} className="p-1.5">{paddle}</View>
-                            );
-                        })}
-                    </View>
-                    {isLineupValid && court?.currentLineupCount && lineupReporter && (
-                        <Text className="text-muted-foreground text-sm mt-2">
-                            {court.currentLineupCount} court(s) — {lineupReporter.name} {court.lineupReportedAt && formatReportTime(court.lineupReportedAt)}
-                        </Text>
+                                    <Text className="font-display-bold text-2xl" style={{ color: lineupStatus.ink }}>
+                                        {lineupCount}
+                                    </Text>
+                                </View>
+                            </View>
+                            <BusyMeter pct={lineupFillPct} color={lineupStatus.color} />
+                        </>
+                    ) : (
+                        <View className="flex-row items-center">
+                            <IconTile name="time-outline" tone="neutral" />
+                            <View className="flex-1 ml-3">
+                                <Text className="text-foreground text-lg font-bold">No recent report</Text>
+                                <Text className="text-muted-foreground text-base mt-0.5">
+                                    {isCheckedIn ? "Set the wait so others know what to expect." : "Check in to share the wait."}
+                                </Text>
+                            </View>
+                        </View>
                     )}
+
+                    {isCheckedIn && (
+                        <View className="flex-row items-center justify-between mt-5 pt-4 border-t border-border">
+                            <Text className="text-foreground text-base font-semibold">Groups in line</Text>
+                            <View className="flex-row items-center gap-3">
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        tap();
+                                        handleReportLineup(Math.max(0, lineupCount - 1));
+                                    }}
+                                    disabled={isReportingLineup || lineupCount <= 0}
+                                    className={`w-9 h-9 rounded-full items-center justify-center bg-surface-2 ${lineupCount <= 0 ? "opacity-40" : ""}`}
+                                >
+                                    <Ionicons name="remove" size={20} color="#12170f" />
+                                </TouchableOpacity>
+                                <Text className="font-display-bold text-xl text-foreground w-7 text-center">{lineupCount}</Text>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        tap();
+                                        handleReportLineup(Math.min(lineupSlots, lineupCount + 1));
+                                    }}
+                                    disabled={isReportingLineup || lineupCount >= lineupSlots}
+                                    className={`w-9 h-9 rounded-full items-center justify-center bg-brand ${lineupCount >= lineupSlots ? "opacity-40" : ""}`}
+                                >
+                                    <Ionicons name="add" size={20} color="#f7fbf0" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
+
                     {isCourtDry && conditionReporter && court?.courtReportedDryAt && (
-                        <Text className="text-muted-foreground text-sm mt-2">
-                            Reported dry — {conditionReporter.name} {formatReportTime(court.courtReportedDryAt)}
-                        </Text>
+                        <View className="flex-row items-center mt-4 px-3 py-2 rounded-xl" style={{ backgroundColor: "rgba(245,158,11,0.12)" }}>
+                            <Ionicons name="water-outline" size={16} color="#B45309" />
+                            <Text className="text-base ml-2" style={{ color: "#8C3D08" }}>
+                                Reported dry — {conditionReporter.name} {formatReportTime(court.courtReportedDryAt)}
+                            </Text>
+                        </View>
                     )}
                     {isCheckedIn && !isCourtDry && (
-                        <TouchableOpacity onPress={handleReportCourtDry} disabled={isReportingCondition} className="mt-3">
-                            <Text className="text-destructive text-sm">Report court dry</Text>
+                        <TouchableOpacity onPress={handleReportCourtDry} disabled={isReportingCondition} className="mt-4 flex-row items-center">
+                            <Ionicons name="water-outline" size={16} color="#5b6650" />
+                            <Text className="text-muted-foreground text-base ml-1.5">Report court dry</Text>
                         </TouchableOpacity>
                     )}
                 </GlassContainer>
+                </Animated.View>
 
                 {/* Who's coming */}
-                <GlassContainer style={{ borderRadius: 24, padding: 24, marginBottom: 16 }}>
-                    <View className="flex-row items-center justify-between mb-4">
-                        <Text className="text-xl font-bold text-foreground">Who&apos;s coming</Text>
-                        <TouchableOpacity onPress={() => setShowTimePicker(true)} className="flex-row items-center px-3 py-1.5 rounded-lg border border-brand">
-                            <Ionicons name="add-circle-outline" size={18} color="#3F7D20" />
-                            <Text className="text-brand text-sm font-semibold ml-1">Plan</Text>
-                        </TouchableOpacity>
-                    </View>
+                <Animated.View entering={FadeInDown.delay(180).duration(450).springify().damping(18)}>
+                <GlassContainer style={{ padding: 20, marginBottom: 14 }}>
+                    <SectionHeader
+                        label="Who's coming"
+                        right={
+                            <TouchableOpacity onPress={() => setShowTimePicker(true)} className="flex-row items-center px-3 py-1.5 rounded-full bg-brand-subtle">
+                                <Ionicons name="add" size={16} color="#2E5C16" />
+                                <Text className="text-brand-strong text-sm font-bold ml-1">Plan</Text>
+                            </TouchableOpacity>
+                        }
+                    />
                     {sortedTimeSlots.length > 0 ? (
                         sortedTimeSlots.map((timeSlot) => (
-                            <View key={timeSlot} className="mb-4">
-                                <Text className="text-brand text-sm font-semibold mb-2">{formatPlannedTime(timeSlot)}</Text>
+                            <View key={timeSlot} className="mb-3">
+                                <Text className="text-muted-foreground text-sm font-semibold mb-2">
+                                    {formatPlannedTime(timeSlot)}
+                                </Text>
                                 {groupedVisits[timeSlot].map((visit) => {
                                     const isUserPlan = visit.userId === user?._id;
+                                    const visitName = isUserPlan ? "You" : visit.user.name || visit.user.email || "Player";
+                                    const initials = visitName.trim().slice(0, 1).toUpperCase();
                                     return (
-                                        <View key={visit._id} className="flex-row items-center py-2 pl-2">
+                                        <View key={visit._id} className="flex-row items-center py-1.5">
                                             <TouchableOpacity
                                                 onPress={() => !isUserPlan && router.push(`/profile/${visit.user._id}`)}
                                                 disabled={isUserPlan}
-                                                className="flex-1"
+                                                className="flex-1 flex-row items-center"
                                             >
-                                                <Text className={`text-foreground ${isUserPlan ? "font-semibold" : ""}`}>
-                                                    {isUserPlan ? "You" : visit.user.name || visit.user.email}
+                                                <View className="w-8 h-8 rounded-full bg-brand-subtle items-center justify-center mr-3">
+                                                    <Text className="text-brand-strong font-display-medium text-xs">{initials}</Text>
+                                                </View>
+                                                <Text className={`text-foreground text-base ${isUserPlan ? "font-semibold" : ""}`}>
+                                                    {visitName}
                                                 </Text>
                                             </TouchableOpacity>
                                             {isUserPlan && (
-                                                <TouchableOpacity onPress={() => handleDeletePlan(visit._id)}>
-                                                    <Ionicons name="close-circle" size={22} color="#ef4444" />
+                                                <TouchableOpacity onPress={() => handleDeletePlan(visit._id)} hitSlop={8}>
+                                                    <Ionicons name="close-circle" size={20} color="#6f7a62" />
                                                 </TouchableOpacity>
                                             )}
                                         </View>
@@ -353,18 +434,25 @@ export default function CourtsScreen() {
                             </View>
                         ))
                     ) : (
-                        <Text className="text-muted-foreground text-center py-4">No upcoming plans</Text>
+                        <Text className="text-muted-foreground text-center py-4">No upcoming plans yet</Text>
                     )}
                 </GlassContainer>
+                </Animated.View>
 
+                <Animated.View entering={FadeInDown.delay(240).duration(450).springify().damping(18)}>
                 <TouchableOpacity onPress={() => router.push("/players")} activeOpacity={0.7}>
-                    <GlassContainer style={{ borderRadius: 24, padding: 20, marginBottom: 16 }}>
-                        <View className="flex-row items-center justify-center">
-                            <Ionicons name="people" size={24} color="#3F7D20" />
-                            <Text className="text-lg font-bold text-foreground ml-3">Browse players</Text>
+                    <GlassContainer style={{ padding: 16, marginBottom: 14 }}>
+                        <View className="flex-row items-center">
+                            <IconTile name="people" tone="brand" />
+                            <View className="flex-1 ml-3">
+                                <Text className="text-base font-bold text-foreground">Browse players</Text>
+                                <Text className="text-muted-foreground text-base mt-0.5">Find regulars and rivals near you</Text>
+                            </View>
+                            <Ionicons name="chevron-forward" size={20} color="#6f7a62" />
                         </View>
                     </GlassContainer>
                 </TouchableOpacity>
+                </Animated.View>
             </ScrollView>
 
             <Header
@@ -380,8 +468,8 @@ export default function CourtsScreen() {
             <Popup
                 isVisible={showLineupInfo}
                 onClose={() => setShowLineupInfo(false)}
-                title="What's the lineup?"
-                message="The lineup is how many games are waiting to play. Tap a paddle to report how many groups are in line right now — it helps everyone see how busy the court is before heading over."
+                title="How the wait works"
+                message="Public courts run first-come, first-served. When it's busy, groups stack up waiting for the next open court. This shows how many groups are in line right now so you can gauge the wait before heading over. Anyone checked in can keep it current."
             />
 
             {court && challengeOpponentId && (

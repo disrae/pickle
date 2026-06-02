@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { LayoutAnimation, Platform, Text, TouchableOpacity, UIManager, View } from "react-native";
-import Svg, { Circle, Line, Polygon, Text as SvgText } from "react-native-svg";
 import { GlassContainer } from "./GlassContainer";
+import { RadarChart } from "./RadarChart";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -123,10 +123,18 @@ const RULES_CONTENT = {
 };
 
 interface SkillRoadmapCardProps {
-    skillProgress: Record<string, number>; // category name -> progress 0-100
+    /** Drill library completion % per category (0–100) */
+    skillProgress: Record<string, number>;
+    /** When true, radar is hidden (coach profile card shown above with rated levels) */
+    hideRadar?: boolean;
+    title?: string;
 }
 
-export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
+export function SkillRoadmapCard({
+    skillProgress,
+    hideRadar = false,
+    title = "Your skill profile",
+}: SkillRoadmapCardProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [expandedSkills, setExpandedSkills] = useState<Set<string>>(new Set());
     const [showStrategy, setShowStrategy] = useState(false);
@@ -201,11 +209,13 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                             <View className="flex-row items-center mb-1">
                                 <Ionicons name="stats-chart" size={20} color="#3F7D20" />
                                 <Text className="text-lg font-bold text-foreground ml-2">
-                                    Your Skill Profile
+                                    {title}
                                 </Text>
                             </View>
-                            <Text className="text-foreground-muted text-sm tracking-wide">
-                                {overallProgress.toFixed(0)}% Overall Progress • Tap to explore
+                            <Text className="text-muted-foreground text-base">
+                                {hideRadar
+                                    ? `${overallProgress.toFixed(0)}% drills completed · Tap for guides`
+                                    : `${overallProgress.toFixed(0)}% drill progress · Tap to explore`}
                             </Text>
                         </View>
                         <Ionicons name="chevron-down" size={24} color="#5c6454" />
@@ -218,14 +228,13 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                             <View className="flex-row items-center">
                                 <Ionicons name="stats-chart" size={20} color="#3F7D20" />
                                 <Text className="text-lg font-bold text-foreground ml-2">
-                                    Your Skill Profile
+                                    {title}
                                 </Text>
                             </View>
                             <Ionicons name="chevron-up" size={24} color="#5c6454" />
                         </View>
 
-                        {/* Radar Chart */}
-                        <RadarChart skillProgress={skillProgress} />
+                        {!hideRadar && <RadarChart skillProgress={skillProgress} />}
 
                         {/* Skill Sections */}
                         <View className="mt-6">
@@ -243,15 +252,25 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                             <Text className="text-foreground font-semibold text-base">
                                                 {skill.name}
                                             </Text>
-                                            <View className="ml-3 flex-1 h-2 bg-surface-2 rounded-full overflow-hidden">
+                                            <View className="ml-3 flex-1">
+                                                {hideRadar && (
+                                                    <Text className="text-muted-foreground text-xs mb-1">
+                                                        Drills completed
+                                                    </Text>
+                                                )}
                                                 <View
-                                                    className="h-full bg-brand rounded-full"
-                                                    style={{
-                                                        width: `${skillProgress[skill.name] || 0}%`,
-                                                    }}
-                                                />
+                                                    className="h-3 rounded-full overflow-hidden"
+                                                    style={{ backgroundColor: "rgba(18,23,15,0.12)" }}
+                                                >
+                                                    <View
+                                                        className="h-full bg-brand-strong rounded-full"
+                                                        style={{
+                                                            width: `${skillProgress[skill.name] || 0}%`,
+                                                        }}
+                                                    />
+                                                </View>
                                             </View>
-                                            <Text className="ml-2 text-foreground-muted text-sm w-10 text-right">
+                                            <Text className="ml-2 text-foreground text-base font-semibold w-10 text-right">
                                                 {(skillProgress[skill.name] || 0).toFixed(0)}%
                                             </Text>
                                         </View>
@@ -409,100 +428,6 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                 )}
             </GlassContainer>
         </TouchableOpacity>
-    );
-}
-
-// Radar Chart Component
-interface RadarChartProps {
-    skillProgress: Record<string, number>;
-}
-
-function RadarChart({ skillProgress }: RadarChartProps) {
-    const size = 320;
-    const center = size / 2;
-    const maxRadius = size / 2 - 60; // Leave room for labels
-    const numSkills = SKILL_CATEGORIES.length;
-
-    // Calculate points for the skill polygon
-    const skillPoints = useMemo(() => {
-        return SKILL_CATEGORIES.map((skill, index) => {
-            const angle = (Math.PI * 2 * index) / numSkills - Math.PI / 2; // Start from top
-            const progress = skillProgress[skill.name] || 0;
-            const radius = (progress / 100) * maxRadius;
-            return {
-                x: center + radius * Math.cos(angle),
-                y: center + radius * Math.sin(angle),
-                labelX: center + (maxRadius + 15) * Math.cos(angle),
-                labelY: center + (maxRadius + 35) * Math.sin(angle),
-                skill: skill.name,
-            };
-        });
-    }, [skillProgress, numSkills, maxRadius, center]);
-
-    // Create polygon points string
-    const polygonPoints = skillPoints.map(p => `${p.x},${p.y}`).join(" ");
-
-    return (
-        <View className="items-center justify-center">
-            <Svg width={size} height={size}>
-                {/* Background circles (grid) */}
-                {[0.25, 0.5, 0.75, 1].map((scale, i) => (
-                    <Circle
-                        key={i}
-                        cx={center}
-                        cy={center}
-                        r={maxRadius * scale}
-                        fill="none"
-                        stroke="rgba(18,23,15,0.1)"
-                        strokeWidth="1"
-                    />
-                ))}
-
-                {/* Axes lines */}
-                {skillPoints.map((point, index) => (
-                    <Line
-                        key={`axis-${index}`}
-                        x1={center}
-                        y1={center}
-                        x2={center + maxRadius * Math.cos((Math.PI * 2 * index) / numSkills - Math.PI / 2)}
-                        y2={center + maxRadius * Math.sin((Math.PI * 2 * index) / numSkills - Math.PI / 2)}
-                        stroke="rgba(18,23,15,0.15)"
-                        strokeWidth="1"
-                    />
-                ))}
-
-                {/* Skill progress polygon */}
-                <Polygon
-                    points={polygonPoints}
-                    fill="rgba(63, 125, 32, 0.3)"
-                    stroke="rgba(63, 125, 32, 0.8)"
-                    strokeWidth="2"
-                />
-
-                {/* Skill labels */}
-                {skillPoints.map((point, index) => {
-                    // Adjust text anchor based on position
-                    let textAnchor: "start" | "middle" | "end" = "middle";
-                    if (point.labelX < center - 10) textAnchor = "end";
-                    else if (point.labelX > center + 10) textAnchor = "start";
-
-                    return (
-                        <SvgText
-                            key={`label-${index}`}
-                            x={point.labelX}
-                            y={point.labelY}
-                            fontSize="12"
-                            fontWeight="600"
-                            fill="#5c6454"
-                            textAnchor={textAnchor}
-                            alignmentBaseline="middle"
-                        >
-                            {point.skill}
-                        </SvgText>
-                    );
-                })}
-            </Svg>
-        </View>
     );
 }
 

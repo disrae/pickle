@@ -1,7 +1,9 @@
 import { Background } from "@/components/ui/Background";
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
+import { IconTile } from "@/components/ui/IconTile";
 import { Popup } from "@/components/ui/Popup";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { SetNamePopup } from "@/components/ui/SetNamePopup";
 import { api } from "@/convex/_generated/api";
 import { useUpdatesContext } from "@/lib/updates-context";
@@ -149,9 +151,8 @@ export default function ProfileScreen() {
                     {/* Profile Card */}
                     <GlassContainer
                         style={{
-                            borderRadius: 24,
                             padding: 24,
-                            marginBottom: 16,
+                            marginBottom: 14,
                         }}
                     >
                         <View className="items-center mb-6">
@@ -213,7 +214,7 @@ export default function ProfileScreen() {
                                 </View>
                                 <View className="flex-row items-center mt-2 px-3 py-1 rounded-lg bg-surface-2">
                                     <Ionicons name="lock-closed" size={12} color="#5c6454" />
-                                    <Text className="text-foreground-muted text-xs ml-1">
+                                    <Text className="text-foreground-muted text-sm ml-1">
                                         Your email is private and only visible to you
                                     </Text>
                                 </View>
@@ -222,13 +223,13 @@ export default function ProfileScreen() {
                     </GlassContainer>
 
                     {/* Court & presence */}
-                    <GlassContainer style={{ borderRadius: 24, padding: 24, marginBottom: 16 }}>
-                        <Text className="text-xl font-bold text-foreground mb-4">Court & presence</Text>
+                    <GlassContainer style={{ padding: 24, marginBottom: 14 }}>
+                        <SectionHeader label="Court & presence" />
 
                         <View className="flex-row items-center justify-between py-3 border-b border-border">
                             <View className="flex-1 pr-4">
-                                <Text className="text-foreground font-semibold">Appear at the court</Text>
-                                <Text className="text-foreground-muted text-sm mt-1">
+                                <Text className="text-foreground text-base font-semibold">Appear at the court</Text>
+                                <Text className="text-foreground-muted text-base mt-1">
                                     Others can see you&apos;re here. Turn off for ghost mode.
                                 </Text>
                             </View>
@@ -240,7 +241,7 @@ export default function ProfileScreen() {
                             />
                         </View>
 
-                        <Text className="text-foreground-muted text-sm mt-4 mb-2">Auto check-in</Text>
+                        <Text className="text-foreground-muted text-base mt-4 mb-2">Auto check-in</Text>
                         {(
                             [
                                 ["off", "Manual only"],
@@ -293,14 +294,11 @@ export default function ProfileScreen() {
                     {/* Account Actions */}
                     <GlassContainer
                         style={{
-                            borderRadius: 24,
                             padding: 24,
-                            marginBottom: 16,
+                            marginBottom: 14,
                         }}
                     >
-                        <Text className="text-xl font-bold text-foreground mb-4">
-                            Account
-                        </Text>
+                        <SectionHeader label="Account" />
 
                         {/* Sign Out Button */}
                         <TouchableOpacity
@@ -308,8 +306,8 @@ export default function ProfileScreen() {
                             className="flex-row items-center justify-between p-4 rounded-xl bg-surface-2 border border-border mb-3"
                         >
                             <View className="flex-row items-center">
-                                <View className="bg-surface-2 rounded-full p-2 mr-3">
-                                    <Ionicons name="log-out-outline" size={20} color="#5c6454" />
+                                <View className="mr-3">
+                                    <IconTile name="log-out-outline" tone="neutral" size={36} />
                                 </View>
                                 <Text className="text-foreground font-semibold text-lg">
                                     Sign Out
@@ -324,7 +322,7 @@ export default function ProfileScreen() {
                             className="flex-row items-center justify-between p-4 rounded-xl bg-red-50 border border-red-200"
                         >
                             <View className="flex-row items-center">
-                                <View className="bg-red-100 rounded-full p-2 mr-3">
+                                <View className="bg-red-100 rounded-xl p-2 mr-3">
                                     <Ionicons name="trash-outline" size={20} color="#dc2626" />
                                 </View>
                                 <View>
@@ -343,14 +341,11 @@ export default function ProfileScreen() {
                     {/* App Info & Updates */}
                     <GlassContainer
                         style={{
-                            borderRadius: 24,
                             padding: 24,
-                            marginBottom: 16,
+                            marginBottom: 14,
                         }}
                     >
-                        <Text className="text-xl font-bold text-foreground mb-4">
-                            App Info
-                        </Text>
+                        <SectionHeader label="App info" />
 
                         {/* Version Info */}
                         <View className="space-y-2 mb-4">

@@ -2,6 +2,8 @@ import { CoachNote } from "@/components/coach/CoachNote";
 import { SkillsProfileCard } from "@/components/coach/SkillsProfileCard";
 import { Background } from "@/components/ui/Background";
 import { GlassContainer } from "@/components/ui/GlassContainer";
+import { IconTile } from "@/components/ui/IconTile";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Header } from "@/components/ui/header";
 import { api } from "@/convex/_generated/api";
 import { buildSkillRows, lowestSkillRow } from "@/lib/skills-profile-display";
@@ -67,19 +69,16 @@ export default function CoachHubScreen() {
                     >
                         <GlassContainer
                             style={{
-                                borderRadius: 24,
                                 padding: 20,
                                 borderWidth: 1,
                                 borderColor: "rgba(63, 125, 32, 0.35)",
                             }}
                         >
-                            <Text className="text-brand text-xs font-bold tracking-wide mb-1">
-                                COACH&apos;S PICK
-                            </Text>
+                            <SectionHeader label="Coach's pick" />
                             <Text className="text-foreground text-lg font-bold">
                                 Work on your {focus.label.toLowerCase()}
                             </Text>
-                            <Text className="text-muted-foreground text-sm mt-1 mb-4">
+                            <Text className="text-muted-foreground text-base mt-1 mb-4">
                                 Your lowest skill — a few drills here move the needle fastest.
                             </Text>
                             <View className="flex-row items-center justify-between">
@@ -101,43 +100,43 @@ export default function CoachHubScreen() {
                     onPress={() => goToDrills()}
                     className="mb-4"
                 >
-                    <GlassContainer style={{ borderRadius: 24, padding: 20 }}>
+                    <GlassContainer style={{ padding: 20 }}>
                         <View className="flex-row items-center justify-between">
                             <View className="flex-row items-center flex-1">
-                                <View className="w-11 h-11 rounded-2xl bg-surface-2 items-center justify-center mr-3">
-                                    <Ionicons name="fitness" size={22} color="#3F7D20" />
+                                <View className="mr-3">
+                                    <IconTile name="fitness" tone="brand" />
                                 </View>
                                 <View className="flex-1">
                                     <Text className="text-foreground text-base font-bold">
                                         Browse drills
                                     </Text>
-                                    <Text className="text-muted-foreground text-sm">
+                                    <Text className="text-muted-foreground text-base">
                                         Filter by skill, track milestones
                                     </Text>
                                 </View>
                             </View>
-                            <Ionicons name="chevron-forward" size={20} color="#3F7D20" />
+                            <Ionicons name="chevron-forward" size={20} color="#6f7a62" />
                         </View>
                     </GlassContainer>
                 </TouchableOpacity>
 
                 <TouchableOpacity activeOpacity={0.85} onPress={goToChat}>
-                    <GlassContainer style={{ borderRadius: 24, padding: 20 }}>
+                    <GlassContainer style={{ padding: 20 }}>
                         <View className="flex-row items-center justify-between">
                             <View className="flex-row items-center flex-1">
-                                <View className="w-11 h-11 rounded-2xl bg-surface-2 items-center justify-center mr-3">
-                                    <Ionicons name="chatbubbles" size={20} color="#3F7D20" />
+                                <View className="mr-3">
+                                    <IconTile name="chatbubbles" tone="brand" />
                                 </View>
                                 <View className="flex-1">
                                     <Text className="text-foreground text-base font-bold">
                                         Chat with coach
                                     </Text>
-                                    <Text className="text-muted-foreground text-sm">
+                                    <Text className="text-muted-foreground text-base">
                                         Ask anything or update your levels
                                     </Text>
                                 </View>
                             </View>
-                            <Ionicons name="chevron-forward" size={20} color="#3F7D20" />
+                            <Ionicons name="chevron-forward" size={20} color="#6f7a62" />
                         </View>
                     </GlassContainer>
                 </TouchableOpacity>

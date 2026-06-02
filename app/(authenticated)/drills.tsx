@@ -3,6 +3,7 @@ import { CreateDrillCard } from "@/components/ui/CreateDrillCard";
 import { DrillCard } from "@/components/ui/DrillCard";
 import { DrillDetailCard } from "@/components/ui/DrillDetailCard";
 import { Header } from "@/components/ui/header";
+import { SkillsProfileCard } from "@/components/coach/SkillsProfileCard";
 import { SkillRoadmapCard } from "@/components/ui/SkillRoadmapCard";
 import { TrainingFAB } from "@/components/ui/TrainingFAB";
 import { api } from "@/convex/_generated/api";
@@ -41,6 +42,8 @@ export default function DrillsScreen() {
 
     const allDrills = useQuery(api.drills.list, {});
     const allProgress = useQuery(api.drillProgress.getAllUserProgress);
+    const skillsProfile = useQuery(api.skillsProfiles.getForCurrentUser);
+    const hasCoachProfile = !!skillsProfile?.confirmedAt;
 
     const progressLookup: Record<string, any> = {};
     if (allProgress) {
@@ -151,7 +154,16 @@ export default function DrillsScreen() {
                     showsVerticalScrollIndicator={false}
                 >
                     <View className="px-4">
-                        <SkillRoadmapCard skillProgress={skillProgress} />
+                        {hasCoachProfile && skillsProfile && (
+                            <View className="mb-4">
+                                <SkillsProfileCard profile={skillsProfile} />
+                            </View>
+                        )}
+                        <SkillRoadmapCard
+                            skillProgress={skillProgress}
+                            hideRadar={hasCoachProfile}
+                            title={hasCoachProfile ? "Drill practice & guides" : "Your skill profile"}
+                        />
                     </View>
 
                     <ScrollView

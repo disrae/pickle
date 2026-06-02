@@ -23,9 +23,9 @@ export function PickleballLoading({
     width = 60,
     height = 60,
     style,
-    duration = 2000,
-    minScale = 0.9,
-    maxScale = 1.1,
+    duration = 2200,
+    minScale = 0.94,
+    maxScale = 1.06,
 }: PickleballLoadingProps) {
     const rotation = useSharedValue(0);
     const scale = useSharedValue(minScale);
@@ -41,20 +41,17 @@ export function PickleballLoading({
             false
         );
 
-        // Realistic bouncing animation (viewed from above)
-        // Ball falls away fast (accelerating), comes back quickly without hanging
+        // Subtle pulse: less playful bounce, more premium idle motion.
         scale.value = maxScale; // Start at the top
         scale.value = withRepeat(
             withSequence(
-                // Falling away - accelerates (gets faster as it falls)
                 withTiming(minScale, {
-                    duration: duration * 0.45, // Fast fall
-                    easing: Easing.in(Easing.quad), // Strong acceleration
+                    duration: duration * 0.5,
+                    easing: Easing.inOut(Easing.quad),
                 }),
-                // Coming back up - quick rise, minimal hang time at peak
                 withTiming(maxScale, {
-                    duration: duration * 0.55, // Quick rise
-                    easing: Easing.out(Easing.ease), // Minimal deceleration - snaps through peak
+                    duration: duration * 0.5,
+                    easing: Easing.inOut(Easing.quad),
                 })
             ),
             -1,

@@ -19,15 +19,18 @@ export function GlassContainer({
     glassEffectStyle: _glassEffectStyle,
     ...props
 }: GlassContainerProps) {
+    // One consistent card surface across the whole app. Callers may still
+    // override radius/padding via `style`, but the defaults keep things unified.
     const surface = {
         backgroundColor: "#FFFFFF",
+        borderRadius: 24,
         borderWidth: 1,
-        borderColor: "rgba(18,23,15,0.08)",
+        borderColor: "rgba(18,23,15,0.14)",
         shadowColor: "#12170F",
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.06,
-        shadowRadius: 14,
-        elevation: 2,
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.08,
+        shadowRadius: 20,
+        elevation: 3,
     };
 
     return (

@@ -4,6 +4,7 @@ import { ReportScoreSheet } from "@/components/compete/ReportScoreSheet";
 import { Background } from "@/components/ui/Background";
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useHeaderHeight } from "@/lib/header-layout";
@@ -194,9 +195,8 @@ function TopControl({
     return (
         <GlassContainer
             style={{
-                borderRadius: 16,
-                padding: 4,
-                marginBottom: 16,
+                padding: 6,
+                marginBottom: 14,
                 flexDirection: "row",
             }}
         >
@@ -209,20 +209,20 @@ function TopControl({
                 >
                     <View
                         style={{
-                            paddingVertical: 10,
-                            borderRadius: 12,
+                            paddingVertical: 12,
+                            borderRadius: 14,
                             alignItems: "center",
                             backgroundColor:
                                 value === tab
-                                    ? "rgba(245, 158, 11, 0.2)"
-                                    : "transparent",
+                                    ? "rgba(245, 158, 11, 0.22)"
+                                    : "rgba(18,23,15,0.04)",
                         }}
                     >
                         <Text
                             style={{
                                 fontWeight: "700",
-                                fontSize: 15,
-                                color: value === tab ? "#B45309" : "#5c6454",
+                                fontSize: 16,
+                                color: value === tab ? "#B45309" : "#3b4332",
                             }}
                         >
                             {tab === "ladder" ? "Ladder" : "Teams"}
@@ -303,18 +303,7 @@ function LadderSection({
             {/* Upcoming matches strip */}
             {scheduled && scheduled.length > 0 && (
                 <View style={{ marginBottom: 16 }}>
-                    <Text
-                        style={{
-                            color: "#5c6454",
-                            fontSize: 12,
-                            fontWeight: "600",
-                            textTransform: "uppercase",
-                            letterSpacing: 1,
-                            marginBottom: 8,
-                        }}
-                    >
-                        Upcoming
-                    </Text>
+                    <SectionHeader label="Upcoming matches" />
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {scheduled.slice(0, 3).map((sm) => (
                             <UpcomingMatchCard key={sm._id} match={sm} />
@@ -340,12 +329,12 @@ function LadderSection({
                         <View
                             style={{
                                 paddingHorizontal: 16,
-                                paddingVertical: 6,
+                                paddingVertical: 8,
                                 borderRadius: 20,
                                 backgroundColor:
                                     format === f
                                         ? "rgba(245, 158, 11, 0.15)"
-                                        : "rgba(18,23,15,0.04)",
+                                        : "rgba(18,23,15,0.06)",
                                 borderWidth: 1,
                                 borderColor:
                                     format === f
@@ -355,9 +344,9 @@ function LadderSection({
                         >
                             <Text
                                 style={{
-                                    color: format === f ? "#B45309" : "#5c6454",
+                                    color: format === f ? "#B45309" : "#3b4332",
                                     fontWeight: "600",
-                                    fontSize: 13,
+                                    fontSize: 14,
                                     textTransform: "capitalize",
                                 }}
                             >
@@ -375,7 +364,7 @@ function LadderSection({
                 ) : doublesLadder.length === 0 ? (
                     <DoublesEmptyState />
                 ) : (
-                    <GlassContainer style={{ borderRadius: 20, overflow: "hidden" }}>
+                    <GlassContainer style={{ overflow: "hidden" }}>
                         {doublesLadder.map((team, i) => (
                             <TeamRow
                                 key={team._id}
@@ -394,7 +383,7 @@ function LadderSection({
             ) : singlesLadder.length === 0 ? (
                 <SinglesEmptyState />
             ) : (
-                <GlassContainer style={{ borderRadius: 20, overflow: "hidden" }}>
+                <GlassContainer style={{ overflow: "hidden" }}>
                     {singlesLadder.map((entry, i) => (
                         <PlayerRow
                             key={entry._id}
@@ -455,12 +444,12 @@ function TeamsSection({
                         <View
                             style={{
                                 paddingHorizontal: 16,
-                                paddingVertical: 6,
+                                paddingVertical: 8,
                                 borderRadius: 20,
                                 backgroundColor:
                                     section === s
                                         ? "rgba(245, 158, 11, 0.15)"
-                                        : "rgba(18,23,15,0.04)",
+                                        : "rgba(18,23,15,0.06)",
                                 borderWidth: 1,
                                 borderColor:
                                     section === s
@@ -470,9 +459,9 @@ function TeamsSection({
                         >
                             <Text
                                 style={{
-                                    color: section === s ? "#B45309" : "#5c6454",
+                                    color: section === s ? "#B45309" : "#3b4332",
                                     fontWeight: "600",
-                                    fontSize: 13,
+                                    fontSize: 14,
                                 }}
                             >
                                 {s === "mine" ? "My Teams" : "Browse"}
@@ -500,7 +489,7 @@ function TeamsSection({
             ) : browseTeams.length === 0 ? (
                 <BrowseEmptyState />
             ) : (
-                <GlassContainer style={{ borderRadius: 20, overflow: "hidden" }}>
+                <GlassContainer style={{ overflow: "hidden" }}>
                     {browseTeams.map((team, i) => (
                         <TeamRow
                             key={team._id}
