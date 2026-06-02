@@ -6,13 +6,13 @@ interface CourtTabIconProps {
     size?: number;
 }
 
-const BRAND_VOLT = "#a3e635";
+const BRAND_GREEN = "#3F7D20";
 
-export function CourtTabIcon({ focused, color = "#8a9482", size = 26 }: CourtTabIconProps) {
+export function CourtTabIcon({ focused, color = "#5c6454", size = 26 }: CourtTabIconProps) {
     return (
         <MinimalPaddleTabIcon
             size={size}
-            color={focused ? BRAND_VOLT : color}
+            color={focused ? BRAND_GREEN : color}
             filled={focused}
         />
     );

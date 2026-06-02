@@ -157,7 +157,7 @@ export default function PlayerProfileScreen() {
         return (
             <Background>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#84cc16" />
+                    <ActivityIndicator size="large" color="#3F7D20" />
                 </View>
             </Background>
         );
@@ -181,7 +181,7 @@ export default function PlayerProfileScreen() {
                     >
                         <View className="items-center">
                             {/* Profile Image */}
-                            <View className="w-32 h-32 rounded-full bg-slate-600 items-center justify-center">
+                            <View className="w-32 h-32 rounded-full bg-brand items-center justify-center">
                                 {profileImageUrl ? (
                                     <Image
                                         source={{ uri: profileImageUrl }}
@@ -200,7 +200,7 @@ export default function PlayerProfileScreen() {
                             </View>
 
                             {/* Name */}
-                            <Text className="text-3xl font-bold text-slate-200 mt-4">
+                            <Text className="text-3xl font-bold text-foreground mt-4">
                                 {profileUser?.name || "Pickle Player"}
                             </Text>
                         </View>
@@ -225,8 +225,8 @@ export default function PlayerProfileScreen() {
                                     gap: 6,
                                 }}
                             >
-                                <Ionicons name="trophy" size={16} color="#f59e0b" />
-                                <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 14 }}>
+                                <Ionicons name="trophy" size={16} color="#B45309" />
+                                <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 14 }}>
                                     Challenge
                                 </Text>
                             </TouchableOpacity>
@@ -237,17 +237,17 @@ export default function PlayerProfileScreen() {
                                     flex: 1,
                                     paddingVertical: 12,
                                     borderRadius: 16,
-                                    backgroundColor: "rgba(255,255,255,0.05)",
+                                    backgroundColor: "rgba(18,23,15,0.04)",
                                     borderWidth: 1,
-                                    borderColor: "rgba(255,255,255,0.1)",
+                                    borderColor: "rgba(18,23,15,0.08)",
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "center",
                                     gap: 6,
                                 }}
                             >
-                                <Ionicons name="people" size={16} color="#9ca3af" />
-                                <Text style={{ color: "#9ca3af", fontWeight: "700", fontSize: 14 }}>
+                                <Ionicons name="people" size={16} color="#5c6454" />
+                                <Text style={{ color: "#5c6454", fontWeight: "700", fontSize: 14 }}>
                                     Invite to Team
                                 </Text>
                             </TouchableOpacity>
@@ -263,8 +263,8 @@ export default function PlayerProfileScreen() {
                         }}
                     >
                         <View className="flex-row items-center mb-4">
-                            <Ionicons name="stats-chart" size={20} color="#a3e635" />
-                            <Text className="text-xl font-bold text-slate-200 ml-2">
+                            <Ionicons name="stats-chart" size={20} color="#3F7D20" />
+                            <Text className="text-xl font-bold text-foreground ml-2">
                                 Skill Profile
                             </Text>
                         </View>
@@ -283,12 +283,12 @@ export default function PlayerProfileScreen() {
                         >
                             <View className="flex-row items-center justify-between mb-4">
                                 <View className="flex-row items-center">
-                                    <Ionicons name="trophy" size={20} color="#f59e0b" />
-                                    <Text className="text-xl font-bold text-slate-200 ml-2">
+                                    <Ionicons name="trophy" size={20} color="#B45309" />
+                                    <Text className="text-xl font-bold text-foreground ml-2">
                                         Match History
                                     </Text>
                                 </View>
-                                <Text className="text-slate-400 text-sm">
+                                <Text className="text-foreground-muted text-sm">
                                     {matches.filter((m) => m.won).length}W–
                                     {matches.filter((m) => !m.won).length}L
                                 </Text>
@@ -297,7 +297,7 @@ export default function PlayerProfileScreen() {
                             {matches.slice(0, 10).map((match) => (
                                 <View
                                     key={match._id}
-                                    className="flex-row items-center py-3 border-t border-slate-600/50"
+                                    className="flex-row items-center py-3 border-t border-border"
                                 >
                                     <View
                                         style={{
@@ -308,13 +308,13 @@ export default function PlayerProfileScreen() {
                                             justifyContent: "center",
                                             backgroundColor: match.won
                                                 ? "rgba(245, 158, 11, 0.15)"
-                                                : "rgba(255,255,255,0.05)",
+                                                : "rgba(18,23,15,0.04)",
                                             marginRight: 12,
                                         }}
                                     >
                                         <Text
                                             style={{
-                                                color: match.won ? "#f59e0b" : "#9ca3af",
+                                                color: match.won ? "#B45309" : "#5c6454",
                                                 fontWeight: "800",
                                                 fontSize: 12,
                                             }}
@@ -323,15 +323,15 @@ export default function PlayerProfileScreen() {
                                         </Text>
                                     </View>
                                     <View className="flex-1">
-                                        <Text className="text-slate-200 font-semibold">
+                                        <Text className="text-foreground font-semibold">
                                             vs {opponentLabel(match, userId)}
                                         </Text>
-                                        <Text className="text-slate-400 text-xs mt-0.5">
+                                        <Text className="text-foreground-muted text-xs mt-0.5">
                                             {match.format === "doubles" ? "Doubles" : "Singles"} ·{" "}
                                             {formatMatchDate(match.confirmedAt ?? match.reportedAt)}
                                         </Text>
                                     </View>
-                                    <Text className="text-slate-200 font-bold">
+                                    <Text className="text-foreground font-bold">
                                         {scoreLabel(match, userId)}
                                     </Text>
                                 </View>
@@ -348,72 +348,72 @@ export default function PlayerProfileScreen() {
                         }}
                     >
                         <View className="flex-row items-center mb-4">
-                            <Ionicons name="notifications" size={20} color="#a3e635" />
-                            <Text className="text-xl font-bold text-slate-200 ml-2">
+                            <Ionicons name="notifications" size={20} color="#3F7D20" />
+                            <Text className="text-xl font-bold text-foreground ml-2">
                                 Notifications
                             </Text>
                         </View>
 
                         {isRequestingPermissions ? (
                             <View className="py-4 items-center">
-                                <ActivityIndicator size="small" color="#84cc16" />
-                                <Text className="text-slate-300 text-sm mt-2">
+                                <ActivityIndicator size="small" color="#3F7D20" />
+                                <Text className="text-foreground text-sm mt-2">
                                     Requesting permissions...
                                 </Text>
                             </View>
                         ) : (
                             <>
                                 {/* Check-in notification toggle */}
-                                <View className="flex-row items-center justify-between py-3 border-b border-slate-600/50">
+                                <View className="flex-row items-center justify-between py-3 border-b border-border">
                                     <View className="flex-1 mr-4">
-                                        <Text className="text-slate-200 font-semibold">
+                                        <Text className="text-foreground font-semibold">
                                             Notify me when {profileUser?.name || "they"} checks in
                                         </Text>
-                                        <Text className="text-slate-400 text-xs mt-1">
+                                        <Text className="text-foreground-muted text-xs mt-1">
                                             Get notified when this player arrives at a court
                                         </Text>
                                     </View>
                                     <Switch
                                         value={notificationSettings?.notifyOnCheckIn || false}
                                         onValueChange={() => handleNotificationToggle(() => toggleCheckInNotif({ targetUserId: userId }))}
-                                        trackColor={{ false: "#334155", true: "#84cc16" }}
-                                        thumbColor={notificationSettings?.notifyOnCheckIn ? "#65a30d" : "#94a3b8"}
+                                        trackColor={{ false: "#c4c9bd", true: "#3F7D20" }}
+                                        thumbColor={notificationSettings?.notifyOnCheckIn ? "#3F7D20" : "#5c6454"}
                                     />
                                 </View>
 
                                 {/* Planned visit notification toggle */}
-                                <View className="flex-row items-center justify-between py-3 border-b border-slate-600/50">
+                                <View className="flex-row items-center justify-between py-3 border-b border-border">
                                     <View className="flex-1 mr-4">
-                                        <Text className="text-slate-200 font-semibold">
+                                        <Text className="text-foreground font-semibold">
                                             Notify me when {profileUser?.name || "they"} plans a visit
                                         </Text>
-                                        <Text className="text-slate-400 text-xs mt-1">
+                                        <Text className="text-foreground-muted text-xs mt-1">
                                             Get notified when this player schedules a court time
                                         </Text>
                                     </View>
                                     <Switch
                                         value={notificationSettings?.notifyOnPlannedVisit || false}
                                         onValueChange={() => handleNotificationToggle(() => togglePlannedVisitNotif({ targetUserId: userId }))}
-                                        trackColor={{ false: "#334155", true: "#84cc16" }}
-                                        thumbColor={notificationSettings?.notifyOnPlannedVisit ? "#65a30d" : "#94a3b8"}
+                                        trackColor={{ false: "#c4c9bd", true: "#3F7D20" }}
+                                        thumbColor={notificationSettings?.notifyOnPlannedVisit ? "#3F7D20" : "#5c6454"}
                                     />
                                 </View>
 
                                 {/* Block user toggle */}
                                 <View className="flex-row items-center justify-between py-3">
                                     <View className="flex-1 mr-4">
-                                        <Text className="text-slate-200 font-semibold">
+                                        <Text className="text-foreground font-semibold">
                                             Block {profileUser?.name || "this player"} from seeing my activity
                                         </Text>
-                                        <Text className="text-slate-400 text-xs mt-1">
+                                        <Text className="text-foreground-muted text-xs mt-1">
                                             They won&apos;t see your check-ins or plans (and you won&apos;t see theirs)
                                         </Text>
                                     </View>
                                     <Switch
                                         value={blockStatus?.isBlocked || false}
                                         onValueChange={handleBlockToggle}
-                                        trackColor={{ false: "#334155", true: "#ef4444" }}
-                                        thumbColor={blockStatus?.isBlocked ? "#dc2626" : "#94a3b8"}
+                                        trackColor={{ false: "#c4c9bd", true: "#ef4444" }}
+                                        thumbColor={blockStatus?.isBlocked ? "#dc2626" : "#5c6454"}
                                     />
                                 </View>
                             </>

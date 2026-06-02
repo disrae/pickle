@@ -30,7 +30,7 @@ export function Header({
 
         return (
             <TouchableOpacity onPress={onLeftPress} className="p-2 -ml-2 mr-1">
-                <Ionicons name="arrow-back" size={28} color="white" />
+                <Ionicons name="arrow-back" size={28} color="#12170f" />
             </TouchableOpacity>
         );
     };
@@ -43,7 +43,7 @@ export function Header({
                 <Ionicons
                     name={rightButton === "chat" ? "chatbubbles" : "arrow-back"}
                     size={28}
-                    color="white"
+                    color="#12170f"
                 />
             </TouchableOpacity>
         );
@@ -53,15 +53,15 @@ export function Header({
         if (onTitlePress) {
             return (
                 <TouchableOpacity onPress={onTitlePress} className="flex-row items-center" activeOpacity={0.7}>
-                    <Text className={`${titleSize} font-bold text-slate-200`}>
+                    <Text className={`${titleSize} font-display text-foreground`}>
                         {title}
                     </Text>
-                    <Ionicons name="chevron-down" size={28} color="white" style={{ marginLeft: 8 }} />
+                    <Ionicons name="chevron-down" size={28} color="#12170f" style={{ marginLeft: 8 }} />
                 </TouchableOpacity>
             );
         }
         return (
-            <Text className={`${titleSize} font-bold text-slate-200`}>
+            <Text className={`${titleSize} font-display text-foreground`}>
                 {title}
             </Text>
         );
@@ -78,15 +78,16 @@ export function Header({
                 paddingTop: getHeaderPaddingTop(top),
                 paddingBottom: getHeaderPaddingBottom(),
                 paddingHorizontal: 16,
-                backgroundColor: "rgba(8, 12, 7, 0.95)",
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
                 borderWidth: 0,
                 borderColor: "transparent",
-                borderBottomWidth: 0,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.28,
+                borderBottomWidth: 1,
+                borderBottomColor: "rgba(18,23,15,0.08)",
+                shadowColor: "#12170F",
+                shadowOffset: { width: 0, height: 6 },
+                shadowOpacity: 0.06,
                 shadowRadius: 14,
-                elevation: 8,
+                elevation: 4,
             }}
         >
             <View className="flex-row items-center justify-between">

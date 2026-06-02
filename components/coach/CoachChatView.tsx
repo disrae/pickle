@@ -162,7 +162,7 @@ export function CoachChatView({ headerHeight }: CoachChatViewProps) {
                 }
             >
                 {displayMessages === undefined ? (
-                    <ActivityIndicator color="#a3e635" />
+                    <ActivityIndicator color="#3F7D20" />
                 ) : (
                     displayMessages.map((msg) => (
                         <View
@@ -176,7 +176,7 @@ export function CoachChatView({ headerHeight }: CoachChatViewProps) {
                                     padding: 14,
                                     backgroundColor:
                                         msg.role === "user"
-                                            ? "rgba(163, 230, 53, 0.15)"
+                                            ? "rgba(63, 125, 32, 0.15)"
                                             : undefined,
                                 }}
                             >
@@ -215,7 +215,7 @@ export function CoachChatView({ headerHeight }: CoachChatViewProps) {
                     <TextInput
                         className="flex-1 bg-surface-2 text-foreground rounded-2xl px-4 py-3"
                         placeholder="Reply to your coach..."
-                        placeholderTextColor="#6b7563"
+                        placeholderTextColor="#c4c9bd"
                         value={input}
                         onChangeText={setInput}
                         onSubmitEditing={handleSend}
@@ -226,7 +226,7 @@ export function CoachChatView({ headerHeight }: CoachChatViewProps) {
                         disabled={sending || !input.trim()}
                         className="bg-brand w-12 h-12 rounded-full items-center justify-center"
                     >
-                        <Ionicons name="send" size={20} color="#151c0c" />
+                        <Ionicons name="send" size={20} color="#f7fbf0" />
                     </TouchableOpacity>
                 </View>
             </View>

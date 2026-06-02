@@ -47,6 +47,7 @@ module.exports = {
         competition: {
           DEFAULT: withVar("--color-competition"),
           foreground: withVar("--color-competition-foreground"),
+          strong: withVar("--color-competition-strong"),
         },
 
         // Primary (high-contrast ink)
@@ -94,6 +95,11 @@ module.exports = {
       },
       borderRadius: {
         "4xl": "28px",
+      },
+      fontFamily: {
+        display: ["Archivo_700Bold"],
+        "display-bold": ["Archivo_800ExtraBold"],
+        "display-medium": ["Archivo_600SemiBold"],
       },
     },
   },

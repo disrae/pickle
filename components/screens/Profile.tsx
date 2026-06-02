@@ -119,7 +119,7 @@ export function ProfileScreen({ userId }: ProfileScreenProps) {
         return (
             <Background>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#84cc16" />
+                    <ActivityIndicator size="large" color="#3F7D20" />
                 </View>
             </Background>
         );
@@ -143,7 +143,7 @@ export function ProfileScreen({ userId }: ProfileScreenProps) {
                     >
                         <View className="items-center">
                             {/* Profile Image */}
-                            <View className="w-32 h-32 rounded-full bg-lime-400 items-center justify-center">
+                            <View className="w-32 h-32 rounded-full bg-brand items-center justify-center">
                                 {profileImageUrl ? (
                                     <Image
                                         source={{ uri: profileImageUrl }}
@@ -162,12 +162,12 @@ export function ProfileScreen({ userId }: ProfileScreenProps) {
                             </View>
 
                             {/* Name */}
-                            <Text className="text-3xl font-bold text-slate-200 mt-4">
+                            <Text className="text-3xl font-bold text-foreground mt-4">
                                 {profileUser?.name || "Pickle Player"}
                             </Text>
 
                             {/* Email */}
-                            <Text className="text-slate-400 text-sm mt-1">
+                            <Text className="text-foreground-muted text-sm mt-1">
                                 {profileUser?.email || ""}
                             </Text>
                         </View>
@@ -182,8 +182,8 @@ export function ProfileScreen({ userId }: ProfileScreenProps) {
                         }}
                     >
                         <View className="flex-row items-center mb-4">
-                            <Ionicons name="stats-chart" size={20} color="#a3e635" />
-                            <Text className="text-xl font-bold text-slate-200 ml-2">
+                            <Ionicons name="stats-chart" size={20} color="#3F7D20" />
+                            <Text className="text-xl font-bold text-foreground ml-2">
                                 Skill Profile
                             </Text>
                         </View>
@@ -200,72 +200,72 @@ export function ProfileScreen({ userId }: ProfileScreenProps) {
                         }}
                     >
                         <View className="flex-row items-center mb-4">
-                            <Ionicons name="notifications" size={20} color="#a3e635" />
-                            <Text className="text-xl font-bold text-slate-200 ml-2">
+                            <Ionicons name="notifications" size={20} color="#3F7D20" />
+                            <Text className="text-xl font-bold text-foreground ml-2">
                                 Notifications
                             </Text>
                         </View>
 
                         {isRequestingPermissions ? (
                             <View className="py-4 items-center">
-                                <ActivityIndicator size="small" color="#84cc16" />
-                                <Text className="text-slate-300 text-sm mt-2">
+                                <ActivityIndicator size="small" color="#3F7D20" />
+                                <Text className="text-foreground text-sm mt-2">
                                     Requesting permissions...
                                 </Text>
                             </View>
                         ) : (
                             <>
                                 {/* Check-in notification toggle */}
-                                <View className="flex-row items-center justify-between py-3 border-b border-slate-600/50">
+                                <View className="flex-row items-center justify-between py-3 border-b border-border">
                                     <View className="flex-1 mr-4">
-                                        <Text className="text-slate-200 font-semibold">
+                                        <Text className="text-foreground font-semibold">
                                             Notify me when {profileUser?.name || "they"} checks in
                                         </Text>
-                                        <Text className="text-slate-400 text-xs mt-1">
+                                        <Text className="text-foreground-muted text-xs mt-1">
                                             Get notified when this player arrives at a court
                                         </Text>
                                     </View>
                                     <Switch
                                         value={notificationSettings?.notifyOnCheckIn || false}
                                         onValueChange={() => handleNotificationToggle(() => toggleCheckInNotif({ targetUserId: userId }))}
-                                        trackColor={{ false: "#334155", true: "#84cc16" }}
-                                        thumbColor={notificationSettings?.notifyOnCheckIn ? "#65a30d" : "#94a3b8"}
+                                        trackColor={{ false: "#c4c9bd", true: "#3F7D20" }}
+                                        thumbColor={notificationSettings?.notifyOnCheckIn ? "#3F7D20" : "#5c6454"}
                                     />
                                 </View>
 
                                 {/* Planned visit notification toggle */}
-                                <View className="flex-row items-center justify-between py-3 border-b border-slate-600/50">
+                                <View className="flex-row items-center justify-between py-3 border-b border-border">
                                     <View className="flex-1 mr-4">
-                                        <Text className="text-slate-200 font-semibold">
+                                        <Text className="text-foreground font-semibold">
                                             Notify me when {profileUser?.name || "they"} plans a visit
                                         </Text>
-                                        <Text className="text-slate-400 text-xs mt-1">
+                                        <Text className="text-foreground-muted text-xs mt-1">
                                             Get notified when this player schedules a court time
                                         </Text>
                                     </View>
                                     <Switch
                                         value={notificationSettings?.notifyOnPlannedVisit || false}
                                         onValueChange={() => handleNotificationToggle(() => togglePlannedVisitNotif({ targetUserId: userId }))}
-                                        trackColor={{ false: "#334155", true: "#84cc16" }}
-                                        thumbColor={notificationSettings?.notifyOnPlannedVisit ? "#65a30d" : "#94a3b8"}
+                                        trackColor={{ false: "#c4c9bd", true: "#3F7D20" }}
+                                        thumbColor={notificationSettings?.notifyOnPlannedVisit ? "#3F7D20" : "#5c6454"}
                                     />
                                 </View>
 
                                 {/* Block user toggle */}
                                 <View className="flex-row items-center justify-between py-3">
                                     <View className="flex-1 mr-4">
-                                        <Text className="text-slate-200 font-semibold">
+                                        <Text className="text-foreground font-semibold">
                                             Block {profileUser?.name || "this player"} from seeing my activity
                                         </Text>
-                                        <Text className="text-slate-400 text-xs mt-1">
+                                        <Text className="text-foreground-muted text-xs mt-1">
                                             They won&apos;t see your check-ins or plans (and you won&apos;t see theirs)
                                         </Text>
                                     </View>
                                     <Switch
                                         value={blockStatus?.isBlocked || false}
                                         onValueChange={handleBlockToggle}
-                                        trackColor={{ false: "#334155", true: "#ef4444" }}
-                                        thumbColor={blockStatus?.isBlocked ? "#dc2626" : "#94a3b8"}
+                                        trackColor={{ false: "#c4c9bd", true: "#ef4444" }}
+                                        thumbColor={blockStatus?.isBlocked ? "#dc2626" : "#5c6454"}
                                     />
                                 </View>
                             </>

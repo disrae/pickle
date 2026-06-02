@@ -120,11 +120,11 @@ export default function LoginScreen() {
                     <View style={{ width: "100%", maxWidth: 448, alignSelf: "center" }}>
                         <View className="items-center pt-2">
                             <Image
-                                source={require("@/assets/icons/splash-icon-dark.png")}
+                                source={require("@/assets/icons/splash-icon-light.png")}
                                 style={{ width: 80, height: 80 }}
                                 contentFit="contain"
                             />
-                            <Text className="mt-5 text-4xl font-extrabold tracking-tight text-foreground">
+                            <Text className="mt-5 text-4xl font-display-bold tracking-tight text-foreground">
                                 WePickle
                             </Text>
                             <Text className="mt-2 text-base text-muted-foreground">

@@ -1,57 +1,37 @@
-import { BlurView } from "expo-blur";
-import { Platform, StyleSheet, View, ViewProps } from "react-native";
+import { View, ViewProps } from "react-native";
 
 interface GlassContainerProps extends ViewProps {
     children: React.ReactNode;
+    /** Retained for API compatibility; ignored in the flat light system. */
     glassEffectStyle?: "clear" | "regular";
 }
 
 /**
- * Elevated "glass" surface for the dark app shell.
- * A subtle translucent-white panel with a hairline border + soft shadow,
- * giving crisp separation from the dark backdrop (replaces the old muddy
- * black-on-lime overlay).
+ * Elevated surface for the light app shell.
+ *
+ * Depth comes from a hairline border + generous radius (flat design language),
+ * with only a whisper of shadow so it reads as a distinct card on the
+ * warm-paper background without looking heavy in sunlight.
  */
 export function GlassContainer({
     children,
     style,
-    glassEffectStyle = "regular",
+    glassEffectStyle: _glassEffectStyle,
     ...props
 }: GlassContainerProps) {
-    const overlayBg =
-        glassEffectStyle === "regular" ? "rgba(10,13,8,0.82)" : "rgba(10,13,8,0.68)";
-    const border = {
+    const surface = {
+        backgroundColor: "#FFFFFF",
         borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.06)",
+        borderColor: "rgba(18,23,15,0.08)",
+        shadowColor: "#12170F",
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.06,
+        shadowRadius: 14,
+        elevation: 2,
     };
-    const shadow = {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.3,
-        shadowRadius: 18,
-        elevation: 6,
-    };
-
-    // Native gets a real blur with a dark tint overlay behind content.
-    if (Platform.OS !== "web") {
-        return (
-            <BlurView
-                intensity={28}
-                tint="dark"
-                style={[{ overflow: "hidden" }, border, shadow, style]}
-                {...props}
-            >
-                <View style={[StyleSheet.absoluteFillObject, { backgroundColor: overlayBg }]} />
-                {children}
-            </BlurView>
-        );
-    }
 
     return (
-        <View
-            style={[{ backgroundColor: "rgba(16,21,12,0.94)" }, border, shadow, style]}
-            {...props}
-        >
+        <View style={[{ overflow: "hidden" }, surface, style]} {...props}>
             {children}
         </View>
     );

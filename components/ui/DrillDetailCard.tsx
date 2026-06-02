@@ -19,13 +19,13 @@ interface DrillDetailCardProps {
     drillId: Id<"drills"> | null;
 }
 
-const categoryIcons: Record<string, string> = {
-    Serving: "🎯",
-    Dinking: "🏓",
-    "Drop Shot": "💧",
-    Reset: "🔄",
-    Volley: "⚡",
-    Footwork: "👟",
+const categoryIcons: Record<string, keyof typeof Ionicons.glyphMap> = {
+    Serving: "locate",
+    Dinking: "tennisball",
+    "Drop Shot": "water",
+    Reset: "refresh",
+    Volley: "flash",
+    Footwork: "footsteps",
 };
 
 const difficultyColors: Record<string, string> = {
@@ -59,7 +59,7 @@ export function DrillDetailCard({
         return null;
     }
 
-    const icon = categoryIcons[drill.category] || "📋";
+    const icon = categoryIcons[drill.category] || "clipboard";
     const completedMilestones = progress?.completedMilestones || [];
 
     const handleToggleMilestone = async (index: number) => {
@@ -94,12 +94,14 @@ export function DrillDetailCard({
         <BottomSheetCard isVisible={isVisible} onClose={onClose}>
             {/* Header */}
             <View className="flex-row items-center justify-between px-6 pb-4 border-b border-slate-200">
-                <Text className="text-2xl">{icon}</Text>
+                <View className="w-11 h-11 rounded-2xl bg-brand/10 items-center justify-center">
+                    <Ionicons name={icon} size={22} color="#3F7D20" />
+                </View>
                 <TouchableOpacity
                     onPress={onClose}
                     className="bg-slate-100 rounded-full p-2"
                 >
-                    <Ionicons name="close" size={24} color="#475569" />
+                    <Ionicons name="close" size={24} color="#5c6454" />
                 </TouchableOpacity>
             </View>
 
@@ -110,13 +112,13 @@ export function DrillDetailCard({
                         {drill.title}
                     </Text>
                     {drill.isOfficial && (
-                        <View className="bg-lime-100 rounded-full px-3 py-1 flex-row items-center">
+                        <View className="bg-brand-subtle rounded-full px-3 py-1 flex-row items-center">
                             <Ionicons
                                 name="shield-checkmark"
                                 size={14}
-                                color="#65a30d"
+                                color="#3F7D20"
                             />
-                            <Text className="text-lime-700 text-xs font-semibold ml-1">
+                            <Text className="text-brand-strong text-xs font-semibold ml-1">
                                 Official
                             </Text>
                         </View>
@@ -125,10 +127,10 @@ export function DrillDetailCard({
 
                 {/* Category and Difficulty */}
                 <View className="flex-row items-center mb-4">
-                    <Text className="text-slate-600 font-medium mr-2">
+                    <Text className="text-foreground-muted font-medium mr-2">
                         {drill.category}
                     </Text>
-                    <Text className="text-slate-400">•</Text>
+                    <Text className="text-foreground-muted">•</Text>
                     <Text
                         className={`font-semibold ml-2 ${difficultyColors[drill.difficulty] || "text-gray-600"}`}
                     >
@@ -143,7 +145,7 @@ export function DrillDetailCard({
 
                 {/* Metric Info */}
                 <View className="bg-slate-50 rounded-2xl p-4 mb-6">
-                    <Text className="text-slate-500 text-sm font-semibold mb-1">
+                    <Text className="text-foreground-muted text-sm font-semibold mb-1">
                         METRIC
                     </Text>
                     <Text className="text-slate-800 font-medium">
@@ -162,10 +164,10 @@ export function DrillDetailCard({
                             key={index}
                             onPress={() => handleToggleMilestone(index)}
                             disabled={isSubmitting}
-                            className={`flex-row items-center p-4 rounded-xl mb-2 border-2 ${isCompleted ? "bg-lime-50 border-lime-400" : "bg-slate-50 border-slate-50"}`}
+                            className={`flex-row items-center p-4 rounded-xl mb-2 border-2 ${isCompleted ? "bg-brand-subtle border-brand" : "bg-slate-50 border-slate-50"}`}
                         >
                             <View
-                                className={`w-6 h-6 rounded-full border-2 items-center justify-center mr-3 ${isCompleted ? "bg-lime-500 border-lime-500" : "border-slate-300"}`}
+                                className={`w-6 h-6 rounded-full border-2 items-center justify-center mr-3 ${isCompleted ? "bg-brand border-brand" : "border-slate-300"}`}
                             >
                                 {isCompleted && (
                                     <Ionicons name="checkmark" size={16} color="white" />
@@ -173,11 +175,11 @@ export function DrillDetailCard({
                             </View>
                             <View className="flex-1">
                                 <Text
-                                    className={`font-semibold ${isCompleted ? "text-lime-700" : "text-slate-800"}`}
+                                    className={`font-semibold ${isCompleted ? "text-brand-strong" : "text-slate-800"}`}
                                 >
                                     {milestone.description}
                                 </Text>
-                                <Text className="text-slate-500 text-sm">
+                                <Text className="text-foreground-muted text-sm">
                                     Goal: {milestone.count}
                                 </Text>
                             </View>
@@ -191,11 +193,11 @@ export function DrillDetailCard({
                         Personal Best
                     </Text>
                     {progress?.personalBest && (
-                        <View className="bg-lime-50 rounded-xl p-4 mb-3 border border-lime-200">
-                            <Text className="text-lime-600 text-sm font-semibold mb-1">
+                        <View className="bg-brand-subtle rounded-xl p-4 mb-3 border border-brand/30">
+                            <Text className="text-brand-strong text-sm font-semibold mb-1">
                                 CURRENT BEST
                             </Text>
-                            <Text className="text-3xl font-bold text-lime-700">
+                            <Text className="text-3xl font-bold text-brand-strong">
                                 {progress.personalBest}
                             </Text>
                         </View>
@@ -213,7 +215,7 @@ export function DrillDetailCard({
                         <TouchableOpacity
                             onPress={handleUpdatePB}
                             disabled={!pbValue || isSubmitting}
-                            className={`rounded-xl px-6 py-3 ${!pbValue || isSubmitting ? "bg-slate-300" : "bg-lime-500"}`}
+                            className={`rounded-xl px-6 py-3 ${!pbValue || isSubmitting ? "bg-slate-300" : "bg-brand"}`}
                         >
                             {isSubmitting ? (
                                 <ActivityIndicator size="small" color="white" />
@@ -227,7 +229,7 @@ export function DrillDetailCard({
                 {/* Creator Info */}
                 {!drill.isOfficial && drill.creator && (
                     <View className="mt-4 mb-6 p-4 bg-slate-50 rounded-xl">
-                        <Text className="text-slate-500 text-xs font-semibold mb-1">
+                        <Text className="text-foreground-muted text-xs font-semibold mb-1">
                             CREATED BY
                         </Text>
                         <Text className="text-slate-700">
@@ -237,9 +239,9 @@ export function DrillDetailCard({
                 )}
 
                 {/* Encouragement */}
-                <View className="bg-lime-400/20 rounded-2xl p-4 mb-6 border-2 border-lime-400">
+                <View className="bg-brand/20 rounded-2xl p-4 mb-6 border-2 border-brand">
                     <Text className="text-slate-700 text-center font-medium">
-                        💪 Keep practicing and track your progress!
+                        Keep practicing and track your progress
                     </Text>
                 </View>
             </ScrollView>

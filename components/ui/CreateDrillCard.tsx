@@ -161,7 +161,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                     onPress={handleClose}
                     className="bg-slate-100 rounded-full p-2"
                 >
-                    <Ionicons name="close" size={24} color="#475569" />
+                    <Ionicons name="close" size={24} color="#5c6454" />
                 </TouchableOpacity>
             </View>
 
@@ -181,7 +181,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                     <TextInput
                         className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800"
                         placeholder="e.g., Deep Serve Mastery"
-                        placeholderTextColor="#64748b"
+                        placeholderTextColor="#5c6454"
                         value={title}
                         onChangeText={setTitle}
                         editable={!isSubmitting}
@@ -196,7 +196,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                     <TextInput
                         className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800"
                         placeholder="Describe the drill and its objectives..."
-                        placeholderTextColor="#64748b"
+                        placeholderTextColor="#5c6454"
                         value={description}
                         onChangeText={setDescription}
                         multiline
@@ -217,7 +217,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                                 key={cat}
                                 onPress={() => setCategory(cat)}
                                 disabled={isSubmitting}
-                                className={`rounded-full px-4 py-2 mr-2 mb-2 ${category === cat ? "bg-lime-500" : "bg-slate-100"}`}
+                                className={`rounded-full px-4 py-2 mr-2 mb-2 ${category === cat ? "bg-brand" : "bg-slate-100"}`}
                             >
                                 <Text
                                     className={`font-medium ${category === cat ? "text-white" : "text-slate-700"}`}
@@ -240,7 +240,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                                 key={diff}
                                 onPress={() => setDifficulty(diff)}
                                 disabled={isSubmitting}
-                                className={`rounded-full px-4 py-2 mr-2 mb-2 ${difficulty === diff ? "bg-lime-500" : "bg-slate-100"}`}
+                                className={`rounded-full px-4 py-2 mr-2 mb-2 ${difficulty === diff ? "bg-brand" : "bg-slate-100"}`}
                             >
                                 <Text
                                     className={`font-medium ${difficulty === diff ? "text-white" : "text-slate-700"}`}
@@ -260,7 +260,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                     <TextInput
                         className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800"
                         placeholder="e.g., serve, accuracy, technique"
-                        placeholderTextColor="#64748b"
+                        placeholderTextColor="#5c6454"
                         value={tags}
                         onChangeText={setTags}
                         editable={!isSubmitting}
@@ -278,7 +278,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                                 key={metric.value}
                                 onPress={() => setMetricType(metric.value)}
                                 disabled={isSubmitting}
-                                className={`rounded-full px-4 py-2 mr-2 mb-2 ${metricType === metric.value ? "bg-lime-500" : "bg-slate-100"}`}
+                                className={`rounded-full px-4 py-2 mr-2 mb-2 ${metricType === metric.value ? "bg-brand" : "bg-slate-100"}`}
                             >
                                 <Text
                                     className={`font-medium ${metricType === metric.value ? "text-white" : "text-slate-700"}`}
@@ -297,7 +297,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                     </Text>
                     <TextInput
                         className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800"
-                        placeholderTextColor="#64748b"
+                        placeholderTextColor="#5c6454"
                         placeholder="e.g., Consecutive successful serves"
                         value={metricDescription}
                         onChangeText={setMetricDescription}
@@ -314,9 +314,9 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                         <TouchableOpacity
                             onPress={handleAddMilestone}
                             disabled={isSubmitting}
-                            className="bg-lime-100 rounded-full p-2"
+                            className="bg-brand-subtle rounded-full p-2"
                         >
-                            <Ionicons name="add" size={20} color="#65a30d" />
+                            <Ionicons name="add" size={20} color="#3F7D20" />
                         </TouchableOpacity>
                     </View>
                     {milestones.map((milestone, index) => (
@@ -360,7 +360,7 @@ export function CreateDrillCard({ isVisible, onClose }: CreateDrillCardProps) {
                 <TouchableOpacity
                     onPress={handleSubmit}
                     disabled={isSubmitting}
-                    className={`rounded-xl py-4 items-center mb-6 ${isSubmitting ? "bg-slate-300" : "bg-lime-500"}`}
+                    className={`rounded-xl py-4 items-center mb-6 ${isSubmitting ? "bg-slate-300" : "bg-brand"}`}
                 >
                     {isSubmitting ? (
                         <ActivityIndicator size="small" color="white" />

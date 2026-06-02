@@ -81,7 +81,7 @@ export function CreateFeatureCard({ isVisible, onClose }: CreateFeatureCardProps
                     onPress={handleClose}
                     className="bg-slate-100 rounded-full p-2"
                 >
-                    <Ionicons name="close" size={24} color="#475569" />
+                    <Ionicons name="close" size={24} color="#5c6454" />
                 </TouchableOpacity>
             </View>
 
@@ -101,7 +101,7 @@ export function CreateFeatureCard({ isVisible, onClose }: CreateFeatureCardProps
                     <TextInput
                         className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800"
                         placeholder="Brief title for your feature..."
-                        placeholderTextColor="#64748b"
+                        placeholderTextColor="#5c6454"
                         value={title}
                         onChangeText={setTitle}
                         maxLength={100}
@@ -117,7 +117,7 @@ export function CreateFeatureCard({ isVisible, onClose }: CreateFeatureCardProps
                     <TextInput
                         className="bg-slate-50 rounded-xl px-4 py-3 text-slate-800"
                         placeholder="Describe your feature idea..."
-                        placeholderTextColor="#64748b"
+                        placeholderTextColor="#5c6454"
                         value={description}
                         onChangeText={setDescription}
                         multiline
@@ -144,7 +144,7 @@ export function CreateFeatureCard({ isVisible, onClose }: CreateFeatureCardProps
                                 onPress={() => setSelectedCategory(category)}
                                 disabled={isSubmitting}
                                 className={`rounded-full px-4 py-2 mr-2 border ${selectedCategory === category
-                                    ? "bg-lime-500 border-lime-300"
+                                    ? "bg-brand border-brand"
                                     : "bg-slate-100 border-slate-300"
                                     }`}
                             >
@@ -168,7 +168,7 @@ export function CreateFeatureCard({ isVisible, onClose }: CreateFeatureCardProps
                     className={`rounded-xl py-4 items-center mb-6 ${
                         isSubmitting || !title.trim() || !description.trim()
                             ? "bg-slate-300"
-                            : "bg-lime-500"
+                            : "bg-brand"
                     }`}
                 >
                     {isSubmitting ? (

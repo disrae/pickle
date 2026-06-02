@@ -22,13 +22,13 @@ export default function Support() {
 
                         <View className="space-y-4">
                             <StyledButton
-                                title="📧 Contact Support"
+                                title="Contact Support"
                                 onPress={sendSupportEmail}
                                 variant="primary"
                             />
 
                             <StyledButton
-                                title="⬅️ Back to App"
+                                title="Back to App"
                                 onPress={() => router.back()}
                                 variant="secondary"
                             />
@@ -39,7 +39,7 @@ export default function Support() {
                         <Text className="text-lg font-semibold text-slate-800 mb-4">Quick Help</Text>
 
                         <View className="space-y-4">
-                            <View className="border-l-4 border-lime-500 pl-4">
+                            <View className="border-l-4 border-brand pl-4">
                                 <Text className="font-medium text-slate-800">Having trouble signing in?</Text>
                                 <Text className="text-slate-600 text-sm mt-1">
                                     Check your email for the login link, including spam/junk folders.
@@ -62,8 +62,8 @@ export default function Support() {
                         </View>
                     </View>
 
-                    <View className="bg-slate-500 rounded-2xl p-6 shadow-sm">
-                        <Text className="text-white text-lg font-semibold mb-2">🧈 Happy Pickling!</Text>
+                    <View className="bg-brand rounded-2xl p-6 shadow-sm">
+                        <Text className="text-white text-lg font-semibold mb-2">Happy Pickling</Text>
                         <Text className="text-white/90">
                             WePickle is made by pickleball enthusiasts, for pickleball enthusiasts.
                             Your feedback helps us make the app better for everyone.

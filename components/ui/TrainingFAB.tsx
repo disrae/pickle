@@ -70,7 +70,7 @@ export function TrainingFAB({ onPress }: TrainingFABProps) {
                     bottom: isLiquidGlassAvailable() ? 90 : 16,
                     right: 24,
                     ...(Platform.OS !== 'web' && {
-                        shadowColor: "#000",
+                        shadowColor: "#12170F",
                         shadowOffset: { width: 0, height: 2 },
                         elevation: 4,
                     }),
@@ -80,10 +80,10 @@ export function TrainingFAB({ onPress }: TrainingFABProps) {
         >
             <TouchableOpacity
                 onPress={onPress}
-                className="bg-lime-500 rounded-full w-16 h-16 items-center justify-center"
+                className="bg-brand rounded-full w-16 h-16 items-center justify-center"
                 activeOpacity={0.8}
             >
-                <Ionicons name="add" size={32} color="#000000" />
+                <Ionicons name="add" size={32} color="#FFFFFF" />
             </TouchableOpacity>
         </Animated.View>
     );
@@ -141,7 +141,7 @@ export function BuilderFAB({ onPress }: BuilderFABProps) {
                     bottom: isLiquidGlassAvailable() ? 90 : 16,
                     right: 24,
                     ...(Platform.OS !== 'web' && {
-                        shadowColor: "#000",
+                        shadowColor: "#12170F",
                         shadowOffset: { width: 0, height: 2 },
                         elevation: 4,
                     }),
@@ -151,10 +151,10 @@ export function BuilderFAB({ onPress }: BuilderFABProps) {
         >
             <TouchableOpacity
                 onPress={onPress}
-                className="bg-lime-500 rounded-full w-16 h-16 items-center justify-center"
+                className="bg-brand rounded-full w-16 h-16 items-center justify-center"
                 activeOpacity={0.8}
             >
-                <Ionicons name="bulb" size={28} color="#000000" />
+                <Ionicons name="bulb" size={28} color="#FFFFFF" />
             </TouchableOpacity>
         </Animated.View>
     );

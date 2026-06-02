@@ -12,7 +12,7 @@ import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 function LiquidGlassTabs() {
     const { hidden } = useTabBarVisibility();
     return (
-        <NativeTabs tintColor="#a3e635" {...({ hidden } as { hidden?: boolean })}>
+        <NativeTabs tintColor="#3F7D20" {...({ hidden } as { hidden?: boolean })}>
             <NativeTabs.Trigger name="court">
                 <Label hidden>Court</Label>
                 <Icon sf="figure.pickleball.circle.fill" />
@@ -42,8 +42,8 @@ function JsTabs() {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarActiveTintColor: "#a3e635",
-                tabBarInactiveTintColor: "#8a9482",
+                tabBarActiveTintColor: "#3F7D20",
+                tabBarInactiveTintColor: "#5C6454",
             }}
         >
             <Tabs.Screen name="index" options={{ href: null }} />
@@ -76,7 +76,7 @@ function JsTabs() {
                     tabBarIcon: ({ focused, color, size }) => (
                         <Ionicons
                             name={focused ? "trophy" : "trophy-outline"}
-                            color={focused ? "#f59e0b" : color}
+                            color={focused ? "#B45309" : color}
                             size={size * 1.1}
                         />
                     ),

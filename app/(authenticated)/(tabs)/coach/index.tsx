@@ -37,7 +37,7 @@ export default function CoachHubScreen() {
         return (
             <Background>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator color="#a3e635" />
+                    <ActivityIndicator color="#3F7D20" />
                 </View>
                 <Header title="Coach's Corner" />
             </Background>
@@ -70,7 +70,7 @@ export default function CoachHubScreen() {
                                 borderRadius: 24,
                                 padding: 20,
                                 borderWidth: 1,
-                                borderColor: "rgba(163, 230, 53, 0.35)",
+                                borderColor: "rgba(63, 125, 32, 0.35)",
                             }}
                         >
                             <Text className="text-brand text-xs font-bold tracking-wide mb-1">
@@ -86,7 +86,7 @@ export default function CoachHubScreen() {
                                 <Text className="text-foreground font-semibold">
                                     See {focus.label} drills
                                 </Text>
-                                <Ionicons name="arrow-forward" size={20} color="#a3e635" />
+                                <Ionicons name="arrow-forward" size={20} color="#3F7D20" />
                             </View>
                         </GlassContainer>
                     </TouchableOpacity>
@@ -105,7 +105,7 @@ export default function CoachHubScreen() {
                         <View className="flex-row items-center justify-between">
                             <View className="flex-row items-center flex-1">
                                 <View className="w-11 h-11 rounded-2xl bg-surface-2 items-center justify-center mr-3">
-                                    <Ionicons name="fitness" size={22} color="#a3e635" />
+                                    <Ionicons name="fitness" size={22} color="#3F7D20" />
                                 </View>
                                 <View className="flex-1">
                                     <Text className="text-foreground text-base font-bold">
@@ -116,7 +116,7 @@ export default function CoachHubScreen() {
                                     </Text>
                                 </View>
                             </View>
-                            <Ionicons name="chevron-forward" size={20} color="#a3e635" />
+                            <Ionicons name="chevron-forward" size={20} color="#3F7D20" />
                         </View>
                     </GlassContainer>
                 </TouchableOpacity>
@@ -126,7 +126,7 @@ export default function CoachHubScreen() {
                         <View className="flex-row items-center justify-between">
                             <View className="flex-row items-center flex-1">
                                 <View className="w-11 h-11 rounded-2xl bg-surface-2 items-center justify-center mr-3">
-                                    <Ionicons name="chatbubbles" size={20} color="#a3e635" />
+                                    <Ionicons name="chatbubbles" size={20} color="#3F7D20" />
                                 </View>
                                 <View className="flex-1">
                                     <Text className="text-foreground text-base font-bold">
@@ -137,7 +137,7 @@ export default function CoachHubScreen() {
                                     </Text>
                                 </View>
                             </View>
-                            <Ionicons name="chevron-forward" size={20} color="#a3e635" />
+                            <Ionicons name="chevron-forward" size={20} color="#3F7D20" />
                         </View>
                     </GlassContainer>
                 </TouchableOpacity>

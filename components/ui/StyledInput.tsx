@@ -15,9 +15,9 @@ const LIGHT = {
     text: "#12170f",
     placeholder: "#6b7560",
     fieldBg: "#ffffff",
-    fieldBgFocused: "#e9f6d3",
+    fieldBgFocused: "#e8f3dc",
     border: "#e2e4db",
-    borderFocused: "#84cc16",
+    borderFocused: "#3f7d20",
 } as const;
 
 function focusRing(color: string) {
@@ -74,7 +74,7 @@ export function StyledInput({
                         ? focusRing(
                               theme === "dark"
                                   ? "rgba(163,230,53,0.22)"
-                                  : "rgba(132,204,22,0.22)"
+                                  : "rgba(63,125,32,0.22)"
                           )
                         : {}),
                 }}

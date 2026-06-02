@@ -68,9 +68,9 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
     };
 
     return (
-        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="85%" tone="dark">
+        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="85%" tone="light">
             <View style={{ paddingHorizontal: 20, paddingBottom: 32 }}>
-                <Text style={{ color: "#f1f5f9", fontWeight: "700", fontSize: 20, marginBottom: 20 }}>
+                <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 20, marginBottom: 20 }}>
                     New Team
                 </Text>
 
@@ -80,23 +80,23 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
                     value={teamName}
                     onChangeText={setTeamName}
                     placeholder="e.g. The Dink Tanks"
-                    placeholderTextColor="#6b7280"
+                    placeholderTextColor="#8b9382"
                     onFocus={() => setNameFocused(true)}
                     onBlur={() => setNameFocused(false)}
                     underlineColorAndroid="transparent"
                     className="outline-none"
                     style={{
                         backgroundColor: nameFocused
-                            ? "rgba(245,158,11,0.08)"
-                            : "rgba(255,255,255,0.07)",
+                            ? "rgba(245,158,11,0.1)"
+                            : "#f3f4ef",
                         borderRadius: 14,
                         borderWidth: 1,
                         borderColor: nameFocused
                             ? "rgba(245,158,11,0.55)"
                             : teamName.length >= 2
                               ? "rgba(245,158,11,0.4)"
-                              : "rgba(255,255,255,0.1)",
-                        color: "#f1f5f9",
+                              : "rgba(18,23,15,0.12)",
+                        color: "#12170f",
                         fontSize: 15,
                         paddingHorizontal: 14,
                         paddingVertical: 12,
@@ -105,7 +105,7 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
                             ? Platform.OS === "web"
                                 ? { boxShadow: "0 0 0 3px rgba(245,158,11,0.22)" }
                                 : {
-                                      shadowColor: "#f59e0b",
+                                      shadowColor: "#B45309",
                                       shadowOffset: { width: 0, height: 0 },
                                       shadowOpacity: 0.35,
                                       shadowRadius: 6,
@@ -120,7 +120,7 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
                 <Text style={labelStyle}>Invite Partner</Text>
 
                 {allUsers === undefined ? (
-                    <ActivityIndicator color="#f59e0b" style={{ marginVertical: 20 }} />
+                    <ActivityIndicator color="#B45309" style={{ marginVertical: 20 }} />
                 ) : (
                     <ScrollView style={{ maxHeight: 300 }} showsVerticalScrollIndicator={false}>
                         {checkedInPlayers.length > 0 && (
@@ -180,11 +180,11 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
                             <Ionicons
                                 name="people"
                                 size={18}
-                                color={canSubmit ? "#151c0c" : "#f59e0b"}
+                                color={canSubmit ? "#151c0c" : "#B45309"}
                             />
                             <Text
                                 style={{
-                                    color: canSubmit ? "#151c0c" : "#f59e0b",
+                                    color: canSubmit ? "#151c0c" : "#B45309",
                                     fontWeight: "700",
                                     fontSize: 15,
                                 }}
@@ -219,11 +219,11 @@ function PlayerPill({
                     borderRadius: 14,
                     backgroundColor: selected
                         ? "rgba(245,158,11,0.12)"
-                        : "rgba(255,255,255,0.04)",
+                        : "rgba(18,23,15,0.04)",
                     borderWidth: 1,
                     borderColor: selected
                         ? "rgba(245,158,11,0.4)"
-                        : "rgba(255,255,255,0.07)",
+                        : "rgba(18,23,15,0.08)",
                 }}
             >
                 <View
@@ -232,8 +232,8 @@ function PlayerPill({
                         height: 20,
                         borderRadius: 10,
                         borderWidth: 2,
-                        borderColor: selected ? "#f59e0b" : "#4b5563",
-                        backgroundColor: selected ? "#f59e0b" : "transparent",
+                        borderColor: selected ? "#B45309" : "#c4c9bd",
+                        backgroundColor: selected ? "#B45309" : "transparent",
                         marginRight: 12,
                         alignItems: "center",
                         justifyContent: "center",
@@ -243,7 +243,7 @@ function PlayerPill({
                 </View>
                 <Text
                     style={{
-                        color: selected ? "#f1f5f9" : "#9ca3af",
+                        color: selected ? "#12170f" : "#5c6454",
                         fontWeight: selected ? "600" : "400",
                         fontSize: 14,
                     }}
@@ -256,7 +256,7 @@ function PlayerPill({
 }
 
 const labelStyle = {
-    color: "#6b7280",
+    color: "#5c6454",
     fontSize: 11,
     fontWeight: "600" as const,
     textTransform: "uppercase" as const,
@@ -265,7 +265,7 @@ const labelStyle = {
 };
 
 const sectionStyle = {
-    color: "#4b5563",
+    color: "#5c6454",
     fontSize: 11,
     fontWeight: "600" as const,
     textTransform: "uppercase" as const,

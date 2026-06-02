@@ -109,16 +109,16 @@ export default function CompeteScreen() {
                                         borderColor: "rgba(245,158,11,0.4)",
                                     }}
                                 >
-                                    <Ionicons name="alert-circle" size={20} color="#f59e0b" />
+                                    <Ionicons name="alert-circle" size={20} color="#B45309" />
                                     <View style={{ flex: 1, marginLeft: 10 }}>
-                                        <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 13 }}>
+                                        <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 13 }}>
                                             Confirm match result
                                         </Text>
-                                        <Text style={{ color: "#9ca3af", fontSize: 12 }}>
+                                        <Text style={{ color: "#5c6454", fontSize: 12 }}>
                                             Your opponent reported the score — tap to confirm
                                         </Text>
                                     </View>
-                                    <Ionicons name="chevron-forward" size={16} color="#f59e0b" />
+                                    <Ionicons name="chevron-forward" size={16} color="#B45309" />
                                 </GlassContainer>
                             </TouchableOpacity>
                         ))}
@@ -222,7 +222,7 @@ function TopControl({
                             style={{
                                 fontWeight: "700",
                                 fontSize: 15,
-                                color: value === tab ? "#f59e0b" : "#6b7280",
+                                color: value === tab ? "#B45309" : "#5c6454",
                             }}
                         >
                             {tab === "ladder" ? "Ladder" : "Teams"}
@@ -280,22 +280,22 @@ function LadderSection({
                             borderColor: "rgba(245, 158, 11, 0.5)",
                         }}
                     >
-                        <Ionicons name="chatbubble-ellipses" size={22} color="#f59e0b" />
+                        <Ionicons name="chatbubble-ellipses" size={22} color="#B45309" />
                         <View style={{ flex: 1, marginLeft: 12 }}>
                             <Text
                                 style={{
-                                    color: "#f59e0b",
+                                    color: "#B45309",
                                     fontWeight: "700",
                                     fontSize: 14,
                                 }}
                             >
                                 Post-match debrief ready
                             </Text>
-                            <Text style={{ color: "#9ca3af", fontSize: 12, marginTop: 2 }}>
+                            <Text style={{ color: "#5c6454", fontSize: 12, marginTop: 2 }}>
                                 Your coach wants to hear about the game
                             </Text>
                         </View>
-                        <Ionicons name="chevron-forward" size={18} color="#f59e0b" />
+                        <Ionicons name="chevron-forward" size={18} color="#B45309" />
                     </GlassContainer>
                 </TouchableOpacity>
             )}
@@ -305,7 +305,7 @@ function LadderSection({
                 <View style={{ marginBottom: 16 }}>
                     <Text
                         style={{
-                            color: "#9ca3af",
+                            color: "#5c6454",
                             fontSize: 12,
                             fontWeight: "600",
                             textTransform: "uppercase",
@@ -345,17 +345,17 @@ function LadderSection({
                                 backgroundColor:
                                     format === f
                                         ? "rgba(245, 158, 11, 0.15)"
-                                        : "rgba(255,255,255,0.05)",
+                                        : "rgba(18,23,15,0.04)",
                                 borderWidth: 1,
                                 borderColor:
                                     format === f
                                         ? "rgba(245, 158, 11, 0.4)"
-                                        : "rgba(255,255,255,0.08)",
+                                        : "rgba(18,23,15,0.08)",
                             }}
                         >
                             <Text
                                 style={{
-                                    color: format === f ? "#f59e0b" : "#6b7280",
+                                    color: format === f ? "#B45309" : "#5c6454",
                                     fontWeight: "600",
                                     fontSize: 13,
                                     textTransform: "capitalize",
@@ -371,7 +371,7 @@ function LadderSection({
             {/* Ladder rows */}
             {format === "doubles" ? (
                 doublesLadder === undefined ? (
-                    <ActivityIndicator color="#f59e0b" style={{ marginTop: 40 }} />
+                    <ActivityIndicator color="#B45309" style={{ marginTop: 40 }} />
                 ) : doublesLadder.length === 0 ? (
                     <DoublesEmptyState />
                 ) : (
@@ -390,7 +390,7 @@ function LadderSection({
                     </GlassContainer>
                 )
             ) : singlesLadder === undefined ? (
-                <ActivityIndicator color="#f59e0b" style={{ marginTop: 40 }} />
+                <ActivityIndicator color="#B45309" style={{ marginTop: 40 }} />
             ) : singlesLadder.length === 0 ? (
                 <SinglesEmptyState />
             ) : (
@@ -460,17 +460,17 @@ function TeamsSection({
                                 backgroundColor:
                                     section === s
                                         ? "rgba(245, 158, 11, 0.15)"
-                                        : "rgba(255,255,255,0.05)",
+                                        : "rgba(18,23,15,0.04)",
                                 borderWidth: 1,
                                 borderColor:
                                     section === s
                                         ? "rgba(245, 158, 11, 0.4)"
-                                        : "rgba(255,255,255,0.08)",
+                                        : "rgba(18,23,15,0.08)",
                             }}
                         >
                             <Text
                                 style={{
-                                    color: section === s ? "#f59e0b" : "#6b7280",
+                                    color: section === s ? "#B45309" : "#5c6454",
                                     fontWeight: "600",
                                     fontSize: 13,
                                 }}
@@ -484,7 +484,7 @@ function TeamsSection({
 
             {section === "mine" ? (
                 myTeams === undefined ? (
-                    <ActivityIndicator color="#f59e0b" style={{ marginTop: 40 }} />
+                    <ActivityIndicator color="#B45309" style={{ marginTop: 40 }} />
                 ) : myTeams.length === 0 ? (
                     <MyTeamsEmptyState onNewTeam={onNewTeam} />
                 ) : (
@@ -496,7 +496,7 @@ function TeamsSection({
                     </View>
                 )
             ) : browseTeams === undefined ? (
-                <ActivityIndicator color="#f59e0b" style={{ marginTop: 40 }} />
+                <ActivityIndicator color="#B45309" style={{ marginTop: 40 }} />
             ) : browseTeams.length === 0 ? (
                 <BrowseEmptyState />
             ) : (
@@ -538,14 +538,14 @@ function UpcomingMatchCard({ match }: { match: any }) {
                 borderColor: "rgba(245, 158, 11, 0.2)",
             }}
         >
-            <Text style={{ color: "#f59e0b", fontSize: 11, fontWeight: "600", marginBottom: 6 }}>
+            <Text style={{ color: "#B45309", fontSize: 11, fontWeight: "600", marginBottom: 6 }}>
                 {dateStr} · {timeStr}
             </Text>
-            <Text style={{ color: "#e2e8f0", fontWeight: "700", fontSize: 13 }} numberOfLines={1}>
+            <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 13 }} numberOfLines={1}>
                 {match.team1?.name ?? match.player1?.name ?? "You"}
             </Text>
-            <Text style={{ color: "#6b7280", fontSize: 11, marginVertical: 2 }}>vs</Text>
-            <Text style={{ color: "#e2e8f0", fontWeight: "700", fontSize: 13 }} numberOfLines={1}>
+            <Text style={{ color: "#5c6454", fontSize: 11, marginVertical: 2 }}>vs</Text>
+            <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 13 }} numberOfLines={1}>
                 {match.team2?.name ?? match.player3?.name ?? "Opponent"}
             </Text>
             <View
@@ -558,7 +558,7 @@ function UpcomingMatchCard({ match }: { match: any }) {
                     alignSelf: "flex-start",
                 }}
             >
-                <Text style={{ color: "#f59e0b", fontSize: 11, fontWeight: "600" }}>
+                <Text style={{ color: "#B45309", fontSize: 11, fontWeight: "600" }}>
                     {match.format === "doubles" ? "Doubles" : "Singles"}
                 </Text>
             </View>
@@ -588,13 +588,13 @@ function TeamRow({
                 alignItems: "center",
                 padding: 14,
                 borderBottomWidth: isLast ? 0 : 1,
-                borderBottomColor: "rgba(255,255,255,0.06)",
+                borderBottomColor: "rgba(18,23,15,0.08)",
             }}
         >
             {/* Rank */}
             <Text
                 style={{
-                    color: "#f59e0b",
+                    color: "#B45309",
                     fontWeight: "800",
                     fontSize: 16,
                     width: 32,
@@ -606,7 +606,7 @@ function TeamRow({
             {/* Team info */}
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                    <Text style={{ color: "#f1f5f9", fontWeight: "700", fontSize: 15 }}>
+                    <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 15 }}>
                         {team.name}
                     </Text>
                     {isProvisional && (
@@ -615,26 +615,26 @@ function TeamRow({
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
                                 borderRadius: 6,
-                                backgroundColor: "rgba(107,114,128,0.2)",
+                                backgroundColor: "rgba(92,100,84,0.15)",
                             }}
                         >
-                            <Text style={{ color: "#6b7280", fontSize: 10, fontWeight: "600" }}>
+                            <Text style={{ color: "#5c6454", fontSize: 10, fontWeight: "600" }}>
                                 PROVISIONAL
                             </Text>
                         </View>
                     )}
                 </View>
-                <Text style={{ color: "#6b7280", fontSize: 12, marginTop: 2 }}>
+                <Text style={{ color: "#5c6454", fontSize: 12, marginTop: 2 }}>
                     {team.player1?.name ?? "?"} · {team.player2?.name ?? "?"}
                 </Text>
             </View>
 
             {/* Rating + W/L */}
             <View style={{ alignItems: "flex-end" }}>
-                <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 16 }}>
+                <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 16 }}>
                     {team.rating}
                 </Text>
-                <Text style={{ color: "#6b7280", fontSize: 11 }}>
+                <Text style={{ color: "#5c6454", fontSize: 11 }}>
                     {team.wins}W {team.losses}L
                 </Text>
             </View>
@@ -653,7 +653,7 @@ function TeamRow({
                     borderColor: "rgba(245, 158, 11, 0.3)",
                 }}
             >
-                <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 12 }}>
+                <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 12 }}>
                     Challenge
                 </Text>
             </TouchableOpacity>
@@ -685,13 +685,13 @@ function PlayerRow({
                 alignItems: "center",
                 padding: 14,
                 borderBottomWidth: isLast ? 0 : 1,
-                borderBottomColor: "rgba(255,255,255,0.06)",
+                borderBottomColor: "rgba(18,23,15,0.08)",
             }}
         >
             {/* Rank */}
             <Text
                 style={{
-                    color: entry.isMe ? "#a3e635" : "#f59e0b",
+                    color: entry.isMe ? "#3F7D20" : "#B45309",
                     fontWeight: "800",
                     fontSize: 16,
                     width: 32,
@@ -705,7 +705,7 @@ function PlayerRow({
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
                     <Text
                         style={{
-                            color: entry.isMe ? "#a3e635" : "#f1f5f9",
+                            color: entry.isMe ? "#3F7D20" : "#12170f",
                             fontWeight: "700",
                             fontSize: 15,
                         }}
@@ -719,10 +719,10 @@ function PlayerRow({
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
                                 borderRadius: 6,
-                                backgroundColor: "rgba(107,114,128,0.2)",
+                                backgroundColor: "rgba(92,100,84,0.15)",
                             }}
                         >
-                            <Text style={{ color: "#6b7280", fontSize: 10, fontWeight: "600" }}>
+                            <Text style={{ color: "#5c6454", fontSize: 10, fontWeight: "600" }}>
                                 PROVISIONAL
                             </Text>
                         </View>
@@ -734,14 +734,14 @@ function PlayerRow({
             <View style={{ alignItems: "flex-end" }}>
                 <Text
                     style={{
-                        color: entry.isMe ? "#a3e635" : "#f59e0b",
+                        color: entry.isMe ? "#3F7D20" : "#B45309",
                         fontWeight: "700",
                         fontSize: 16,
                     }}
                 >
                     {entry.rating}
                 </Text>
-                <Text style={{ color: "#6b7280", fontSize: 11 }}>
+                <Text style={{ color: "#5c6454", fontSize: 11 }}>
                     {entry.wins}W {entry.losses}L
                 </Text>
             </View>
@@ -761,7 +761,7 @@ function PlayerRow({
                         borderColor: "rgba(245, 158, 11, 0.3)",
                     }}
                 >
-                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 12 }}>
+                    <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 12 }}>
                         Challenge
                     </Text>
                 </TouchableOpacity>
@@ -782,18 +782,18 @@ function MyTeamCard({ team, router }: { team: any; router: any }) {
         >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ flex: 1 }}>
-                    <Text style={{ color: "#f1f5f9", fontWeight: "700", fontSize: 16 }}>
+                    <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 16 }}>
                         {team.name}
                     </Text>
-                    <Text style={{ color: "#6b7280", fontSize: 13, marginTop: 2 }}>
+                    <Text style={{ color: "#5c6454", fontSize: 13, marginTop: 2 }}>
                         with {team.partner?.name ?? "Unknown"}
                     </Text>
                 </View>
                 <View style={{ alignItems: "flex-end" }}>
-                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 18 }}>
+                    <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 18 }}>
                         {team.rating}
                     </Text>
-                    <Text style={{ color: "#6b7280", fontSize: 12 }}>
+                    <Text style={{ color: "#5c6454", fontSize: 12 }}>
                         {team.wins}W {team.losses}L
                     </Text>
                 </View>
@@ -804,10 +804,10 @@ function MyTeamCard({ team, router }: { team: any; router: any }) {
                         marginTop: 10,
                         padding: 8,
                         borderRadius: 10,
-                        backgroundColor: "rgba(107,114,128,0.1)",
+                        backgroundColor: "rgba(92,100,84,0.1)",
                     }}
                 >
-                    <Text style={{ color: "#6b7280", fontSize: 12, textAlign: "center" }}>
+                    <Text style={{ color: "#5c6454", fontSize: 12, textAlign: "center" }}>
                         Provisional — play {3 - team.matchesPlayed} more match
                         {3 - team.matchesPlayed !== 1 ? "es" : ""} to get ranked
                     </Text>
@@ -833,10 +833,10 @@ function InviteCard({ invite }: { invite: any }) {
                 borderColor: "rgba(245, 158, 11, 0.3)",
             }}
         >
-            <Text style={{ color: "#f1f5f9", fontWeight: "700", fontSize: 14 }}>
+            <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 14 }}>
                 Team invite: "{invite.teamName}"
             </Text>
-            <Text style={{ color: "#9ca3af", fontSize: 13, marginTop: 2 }}>
+            <Text style={{ color: "#5c6454", fontSize: 13, marginTop: 2 }}>
                 from {invite.inviter?.name ?? "Someone"}
             </Text>
             <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
@@ -860,9 +860,9 @@ function InviteCard({ invite }: { invite: any }) {
                     }}
                 >
                     {accepting ? (
-                        <ActivityIndicator size="small" color="#f59e0b" />
+                        <ActivityIndicator size="small" color="#B45309" />
                     ) : (
-                        <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 13 }}>
+                        <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 13 }}>
                             Accept
                         </Text>
                     )}
@@ -880,16 +880,16 @@ function InviteCard({ invite }: { invite: any }) {
                         flex: 1,
                         paddingVertical: 8,
                         borderRadius: 10,
-                        backgroundColor: "rgba(255,255,255,0.05)",
+                        backgroundColor: "rgba(18,23,15,0.04)",
                         borderWidth: 1,
-                        borderColor: "rgba(255,255,255,0.1)",
+                        borderColor: "rgba(18,23,15,0.12)",
                         alignItems: "center",
                     }}
                 >
                     {declining ? (
-                        <ActivityIndicator size="small" color="#6b7280" />
+                        <ActivityIndicator size="small" color="#5c6454" />
                     ) : (
-                        <Text style={{ color: "#6b7280", fontWeight: "700", fontSize: 13 }}>
+                        <Text style={{ color: "#5c6454", fontWeight: "700", fontSize: 13 }}>
                             Decline
                         </Text>
                     )}
@@ -914,8 +914,8 @@ function NewTeamButton({ onPress }: { onPress: () => void }) {
                     gap: 8,
                 }}
             >
-                <Ionicons name="add-circle-outline" size={20} color="#f59e0b" />
-                <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 14 }}>
+                <Ionicons name="add-circle-outline" size={20} color="#B45309" />
+                <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 14 }}>
                     New Team
                 </Text>
             </GlassContainer>
@@ -934,10 +934,10 @@ function DoublesEmptyState() {
                 borderColor: "rgba(245, 158, 11, 0.15)",
             }}
         >
-            <Ionicons name="trophy-outline" size={44} color="#f59e0b" />
+            <Ionicons name="trophy-outline" size={44} color="#B45309" />
             <Text
                 style={{
-                    color: "#f1f5f9",
+                    color: "#12170f",
                     fontWeight: "700",
                     fontSize: 17,
                     marginTop: 12,
@@ -948,7 +948,7 @@ function DoublesEmptyState() {
             </Text>
             <Text
                 style={{
-                    color: "#6b7280",
+                    color: "#5c6454",
                     fontSize: 13,
                     marginTop: 6,
                     textAlign: "center",
@@ -972,10 +972,10 @@ function SinglesEmptyState() {
                 borderColor: "rgba(245, 158, 11, 0.15)",
             }}
         >
-            <Ionicons name="person-outline" size={44} color="#f59e0b" />
+            <Ionicons name="person-outline" size={44} color="#B45309" />
             <Text
                 style={{
-                    color: "#f1f5f9",
+                    color: "#12170f",
                     fontWeight: "700",
                     fontSize: 17,
                     marginTop: 12,
@@ -986,7 +986,7 @@ function SinglesEmptyState() {
             </Text>
             <Text
                 style={{
-                    color: "#6b7280",
+                    color: "#5c6454",
                     fontSize: 13,
                     marginTop: 6,
                     textAlign: "center",
@@ -1010,10 +1010,10 @@ function MyTeamsEmptyState({ onNewTeam }: { onNewTeam: () => void }) {
                 borderColor: "rgba(245, 158, 11, 0.15)",
             }}
         >
-            <Ionicons name="people-outline" size={44} color="#f59e0b" />
+            <Ionicons name="people-outline" size={44} color="#B45309" />
             <Text
                 style={{
-                    color: "#f1f5f9",
+                    color: "#12170f",
                     fontWeight: "700",
                     fontSize: 17,
                     marginTop: 12,
@@ -1024,7 +1024,7 @@ function MyTeamsEmptyState({ onNewTeam }: { onNewTeam: () => void }) {
             </Text>
             <Text
                 style={{
-                    color: "#6b7280",
+                    color: "#5c6454",
                     fontSize: 13,
                     marginTop: 6,
                     textAlign: "center",
@@ -1046,7 +1046,7 @@ function MyTeamsEmptyState({ onNewTeam }: { onNewTeam: () => void }) {
                     borderColor: "rgba(245,158,11,0.3)",
                 }}
             >
-                <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 14 }}>
+                <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 14 }}>
                     Invite a Partner
                 </Text>
             </TouchableOpacity>
@@ -1065,10 +1065,10 @@ function BrowseEmptyState() {
                 borderColor: "rgba(245, 158, 11, 0.15)",
             }}
         >
-            <Ionicons name="search-outline" size={44} color="#f59e0b" />
+            <Ionicons name="search-outline" size={44} color="#B45309" />
             <Text
                 style={{
-                    color: "#f1f5f9",
+                    color: "#12170f",
                     fontWeight: "700",
                     fontSize: 17,
                     marginTop: 12,
@@ -1079,7 +1079,7 @@ function BrowseEmptyState() {
             </Text>
             <Text
                 style={{
-                    color: "#6b7280",
+                    color: "#5c6454",
                     fontSize: 13,
                     marginTop: 6,
                     textAlign: "center",

@@ -25,7 +25,7 @@ export function SkillsProfileCard({
         <GlassContainer style={{ borderRadius: 24, padding: 20 }}>
             <View className="flex-row items-center justify-between mb-2">
                 <View className="flex-row items-center">
-                    <Ionicons name="stats-chart" size={20} color="#a3e635" />
+                    <Ionicons name="stats-chart" size={20} color="#3F7D20" />
                     <Text className="text-foreground text-lg font-bold ml-2">{title}</Text>
                 </View>
                 {typeof profile.overallLevel === "number" && (

@@ -28,10 +28,10 @@ const difficultyColors: Record<string, string> = {
 };
 
 const difficultyTextColors: Record<string, string> = {
-    Beginner: "text-green-300",
-    Intermediate: "text-yellow-300",
-    Advanced: "text-orange-300",
-    Expert: "text-red-300",
+    Beginner: "text-green-700",
+    Intermediate: "text-yellow-700",
+    Advanced: "text-orange-700",
+    Expert: "text-red-700",
 };
 
 export function DrillCard({ drill, progress, onPress }: DrillCardProps) {
@@ -46,15 +46,15 @@ export function DrillCard({ drill, progress, onPress }: DrillCardProps) {
             <View className="flex-1">
                 {/* Category and Difficulty Tags */}
                 <View className="flex-row items-center mb-2">
-                    <View className="bg-slate-700/80 rounded-full px-2 py-1 mr-2">
-                        <Text className="text-slate-100 text-xs font-medium tracking-wide">
+                    <View className="bg-surface-2 rounded-full px-2 py-1 mr-2">
+                        <Text className="text-foreground text-xs font-medium tracking-wide">
                             {drill.category}
                         </Text>
                     </View>
                     <View
-                        className={`rounded-full px-2 py-1 border ${difficultyColors[drill.difficulty] || "bg-slate-700/80 border-slate-600"}`}
+                        className={`rounded-full px-2 py-1 border ${difficultyColors[drill.difficulty] || "bg-surface-2 border-border"}`}
                     >
-                        <Text className={`text-xs font-medium ${difficultyTextColors[drill.difficulty] || "text-slate-200"}`}>
+                        <Text className={`text-xs font-medium ${difficultyTextColors[drill.difficulty] || "text-foreground"}`}>
                             {drill.difficulty}
                         </Text>
                     </View>
@@ -62,13 +62,13 @@ export function DrillCard({ drill, progress, onPress }: DrillCardProps) {
 
                 {/* Title */}
                 <View className="flex-row items-center mb-1">
-                    <Text className="text-lg font-semibold text-slate-200 flex-1">
+                    <Text className="text-lg font-semibold text-foreground flex-1">
                         {drill.title}
                     </Text>
                 </View>
 
                 {/* Description */}
-                <Text className="text-slate-200 text-sm tracking-wide mb-2" numberOfLines={2}>
+                <Text className="text-foreground text-sm tracking-wide mb-2" numberOfLines={2}>
                     {drill.description}
                 </Text>
 
@@ -76,18 +76,18 @@ export function DrillCard({ drill, progress, onPress }: DrillCardProps) {
                 {progress && completedCount > 0 && (
                     <View className="mb-2">
                         <View className="flex-row justify-between items-center mb-1">
-                            <Text className="text-slate-400 text-xs">
+                            <Text className="text-foreground-muted text-xs">
                                 {completedCount}/{totalMilestones} milestones
                             </Text>
                             {progress.personalBest && (
-                                <Text className="text-lime-400 text-xs font-semibold">
+                                <Text className="text-brand-strong text-xs font-semibold">
                                     PB: {progress.personalBest}
                                 </Text>
                             )}
                         </View>
-                        <View className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                        <View className="h-1.5 bg-surface-2 rounded-full overflow-hidden">
                             <View
-                                className="h-full bg-lime-500 rounded-full"
+                                className="h-full bg-brand rounded-full"
                                 style={{ width: `${progressPercentage}%` }}
                             />
                         </View>
@@ -96,7 +96,7 @@ export function DrillCard({ drill, progress, onPress }: DrillCardProps) {
 
                 {/* Creator */}
                 {!drill.isOfficial && drill.creator && (
-                    <Text className="text-slate-500 text-xs">
+                    <Text className="text-foreground-muted text-xs">
                         by {drill.creator.name || drill.creator.email}
                     </Text>
                 )}
@@ -104,7 +104,7 @@ export function DrillCard({ drill, progress, onPress }: DrillCardProps) {
 
             {/* Arrow */}
             <View className="ml-2 justify-center">
-                <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
+                <Ionicons name="chevron-forward" size={20} color="#5c6454" />
             </View>
         </View>
     );

@@ -15,6 +15,7 @@
     "@auth/core": "^0.37.0",
     "@convex-dev/agent": "^0.6.2",
     "@convex-dev/auth": "^0.0.90",
+    "@expo-google-fonts/archivo": "^0.4.2",
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
     "@oslojs/crypto": "^1.0.1",

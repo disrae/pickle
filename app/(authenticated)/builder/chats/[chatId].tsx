@@ -175,8 +175,8 @@ export default function BuilderChatScreen() {
         return (
             <ChatBackground>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#a3e635" />
-                    <Text className="text-slate-600 mt-4">Loading chat...</Text>
+                    <ActivityIndicator size="large" color="#3F7D20" />
+                    <Text className="text-foreground-muted mt-4">Loading chat...</Text>
                 </View>
             </ChatBackground>
         );
@@ -193,7 +193,7 @@ export default function BuilderChatScreen() {
                     {/* Chat Description & Notification Toggle */}
                     <View className="px-4 py-3 bg-slate-100/80">
                         {chat.description && (
-                            <Text className="text-sm text-slate-600 text-center mb-2">
+                            <Text className="text-sm text-foreground-muted text-center mb-2">
                                 {chat.description}
                             </Text>
                         )}
@@ -205,11 +205,11 @@ export default function BuilderChatScreen() {
                             <Ionicons
                                 name={chat.notifyOnNewMessage ? "notifications" : "notifications-off-outline"}
                                 size={18}
-                                color={chat.notifyOnNewMessage ? "#84cc16" : "#94a3b8"}
+                                color={chat.notifyOnNewMessage ? "#3F7D20" : "#5c6454"}
                             />
                             <Text
                                 className={`text-sm ml-2 ${
-                                    chat.notifyOnNewMessage ? "text-lime-600 font-semibold" : "text-slate-500"
+                                    chat.notifyOnNewMessage ? "text-brand-strong font-semibold" : "text-foreground-muted"
                                 }`}
                             >
                                 {chat.notifyOnNewMessage
@@ -220,7 +220,7 @@ export default function BuilderChatScreen() {
                         {currentUser?.isAdmin && (
                             <TouchableOpacity
                                 onPress={handleDeleteChat}
-                                className="flex-row items-center justify-center py-2 mt-2 border-t border-slate-200 pt-2"
+                                className="flex-row items-center justify-center py-2 mt-2 border-t border-border pt-2"
                                 activeOpacity={0.7}
                             >
                                 <Ionicons name="trash-outline" size={18} color="#dc2626" />
@@ -239,11 +239,11 @@ export default function BuilderChatScreen() {
                     >
                         {messages.length === 0 ? (
                             <View className="items-center justify-center py-12">
-                                <Ionicons name="chatbubble-outline" size={64} color="#cbd5e1" />
-                                <Text className="text-slate-400 text-center mt-4 text-lg">
+                                <Ionicons name="chatbubble-outline" size={64} color="#5c6454" />
+                                <Text className="text-foreground-muted text-center mt-4 text-lg">
                                     No messages yet
                                 </Text>
-                                <Text className="text-slate-400 text-center text-sm mt-2">
+                                <Text className="text-foreground-muted text-center text-sm mt-2">
                                     Start the conversation!
                                 </Text>
                             </View>
@@ -260,7 +260,7 @@ export default function BuilderChatScreen() {
                                         {showDate && (
                                             <View className="items-center my-4">
                                                 <View className="bg-slate-200 rounded-full px-3 py-1">
-                                                    <Text className="text-xs text-slate-600 font-semibold">
+                                                    <Text className="text-xs text-foreground-muted font-semibold">
                                                         {new Date(msg.createdAt).toDateString() ===
                                                         new Date().toDateString()
                                                             ? "Today"
@@ -282,18 +282,18 @@ export default function BuilderChatScreen() {
                                             }`}
                                         >
                                             {!isCurrentUser && (
-                                                <Text className="text-xs text-slate-500 mb-1 ml-2">
+                                                <Text className="text-xs text-foreground-muted mb-1 ml-2">
                                                     {msg.user?.name || msg.user?.email || "Unknown"}
                                                 </Text>
                                             )}
                                             <View
                                                 className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                                                     isCurrentUser
-                                                        ? "bg-lime-500 rounded-br-sm"
-                                                        : "bg-white/95 rounded-bl-sm"
+                                                        ? "bg-brand rounded-br-sm"
+                                                        : "bg-surface-2 rounded-bl-sm"
                                                 }`}
                                                 style={{
-                                                    shadowColor: "#000",
+                                                    shadowColor: "#12170F",
                                                     shadowOffset: { width: 0, height: 1 },
                                                     shadowOpacity: 0.1,
                                                     shadowRadius: 2,
@@ -304,7 +304,7 @@ export default function BuilderChatScreen() {
                                                     className={`text-base ${
                                                         isCurrentUser
                                                             ? "text-white"
-                                                            : "text-slate-800"
+                                                            : "text-foreground"
                                                     }`}
                                                 >
                                                     {msg.message}
@@ -313,7 +313,7 @@ export default function BuilderChatScreen() {
                                                     className={`text-xs mt-1 ${
                                                         isCurrentUser
                                                             ? "text-lime-100"
-                                                            : "text-slate-400"
+                                                            : "text-foreground-muted"
                                                     }`}
                                                 >
                                                     {formatMessageTime(msg.createdAt)}
@@ -328,17 +328,17 @@ export default function BuilderChatScreen() {
 
                     {/* Message Input */}
                     <View
-                        className="px-4 py-3 bg-white/95 border-t border-slate-200"
+                        className="px-4 py-3 bg-white/95 border-t border-border"
                         style={{ paddingBottom: bottom + 12 }}
                     >
                         <View className="flex-row items-end gap-2">
-                            <View className="flex-1 bg-slate-50 rounded-2xl px-4 py-2">
+                            <View className="flex-1 bg-surface-2 rounded-2xl px-4 py-2">
                                 <TextInput
                                     value={message}
                                     onChangeText={setMessage}
                                     placeholder="Type a message..."
-                                    className="text-base text-slate-800 max-h-24"
-                                    placeholderTextColor="#64748b"
+                                    className="text-base text-foreground max-h-24"
+                                    placeholderTextColor="#c4c9bd"
                                     multiline
                                     editable={!isSending}
                                 />
@@ -346,7 +346,7 @@ export default function BuilderChatScreen() {
                             <TouchableOpacity
                                 onPress={handleSend}
                                 disabled={!message.trim() || isSending}
-                                className="bg-lime-500 rounded-full w-10 h-10 items-center justify-center"
+                                className="bg-brand rounded-full w-10 h-10 items-center justify-center"
                                 style={{
                                     opacity: !message.trim() || isSending ? 0.5 : 1,
                                 }}

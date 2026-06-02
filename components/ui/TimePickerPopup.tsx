@@ -90,7 +90,7 @@ export const TimePickerPopup = ({ isVisible, onClose, onSelectTime }: TimePicker
                                     onSelectTime(slot.timestamp);
                                     onClose();
                                 }}
-                                className="py-4 px-4 border-b border-slate-100 active:bg-lime-50"
+                                className="py-4 px-4 border-b border-slate-100 active:bg-brand/10"
                             >
                                 <Text className="text-lg text-slate-700">
                                     {slot.label}

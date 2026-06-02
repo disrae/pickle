@@ -89,11 +89,11 @@ export function ReportScoreSheet({
     if (!match) return null;
 
     return (
-        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="60%" tone="dark">
+        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="60%" tone="light">
             <View style={{ paddingHorizontal: 24, paddingBottom: 32 }}>
                 <Text
                     style={{
-                        color: "#f1f5f9",
+                        color: "#12170f",
                         fontWeight: "700",
                         fontSize: 20,
                         marginBottom: 6,
@@ -101,7 +101,7 @@ export function ReportScoreSheet({
                 >
                     {isConfirming ? "Confirm Score" : "Report Score"}
                 </Text>
-                <Text style={{ color: "#6b7280", fontSize: 13, marginBottom: 24 }}>
+                <Text style={{ color: "#5c6454", fontSize: 13, marginBottom: 24 }}>
                     {match.format === "doubles" ? "Doubles" : "Singles"} ·{" "}
                     {isConfirming
                         ? "Does this score look right?"
@@ -122,7 +122,7 @@ export function ReportScoreSheet({
                     <View style={{ alignItems: "center", flex: 1 }}>
                         <Text
                             style={{
-                                color: "#9ca3af",
+                                color: "#5c6454",
                                 fontSize: 12,
                                 fontWeight: "600",
                                 marginBottom: 8,
@@ -134,15 +134,15 @@ export function ReportScoreSheet({
                         </Text>
                         <TextInput
                             style={{
-                                backgroundColor: "rgba(255,255,255,0.07)",
+                                backgroundColor: "#f3f4ef",
                                 borderRadius: 16,
                                 borderWidth: 1,
                                 borderColor: score1
                                     ? "rgba(245,158,11,0.5)"
-                                    : "rgba(255,255,255,0.1)",
-                                color: "#f1f5f9",
+                                    : "rgba(18,23,15,0.12)",
+                                color: "#12170f",
                                 fontSize: 36,
-                                fontWeight: "800",
+                                fontFamily: "Archivo_800ExtraBold",
                                 textAlign: "center",
                                 width: 80,
                                 height: 72,
@@ -152,18 +152,18 @@ export function ReportScoreSheet({
                             keyboardType="number-pad"
                             maxLength={2}
                             placeholder="0"
-                            placeholderTextColor="#374151"
+                            placeholderTextColor="#c4c9bd"
                             editable={!isConfirming}
                         />
                     </View>
 
-                    <Text style={{ color: "#374151", fontSize: 28, fontWeight: "300" }}>–</Text>
+                    <Text style={{ color: "#c4c9bd", fontSize: 28, fontWeight: "300" }}>–</Text>
 
                     {/* Team 2 */}
                     <View style={{ alignItems: "center", flex: 1 }}>
                         <Text
                             style={{
-                                color: "#9ca3af",
+                                color: "#5c6454",
                                 fontSize: 12,
                                 fontWeight: "600",
                                 marginBottom: 8,
@@ -175,15 +175,15 @@ export function ReportScoreSheet({
                         </Text>
                         <TextInput
                             style={{
-                                backgroundColor: "rgba(255,255,255,0.07)",
+                                backgroundColor: "#f3f4ef",
                                 borderRadius: 16,
                                 borderWidth: 1,
                                 borderColor: score2
                                     ? "rgba(245,158,11,0.5)"
-                                    : "rgba(255,255,255,0.1)",
-                                color: "#f1f5f9",
+                                    : "rgba(18,23,15,0.12)",
+                                color: "#12170f",
                                 fontSize: 36,
-                                fontWeight: "800",
+                                fontFamily: "Archivo_800ExtraBold",
                                 textAlign: "center",
                                 width: 80,
                                 height: 72,
@@ -193,7 +193,7 @@ export function ReportScoreSheet({
                             keyboardType="number-pad"
                             maxLength={2}
                             placeholder="0"
-                            placeholderTextColor="#374151"
+                            placeholderTextColor="#c4c9bd"
                             editable={!isConfirming}
                         />
                     </View>
@@ -223,11 +223,11 @@ export function ReportScoreSheet({
                             <Ionicons
                                 name={isConfirming ? "checkmark-circle" : "trophy"}
                                 size={18}
-                                color={canSubmit ? "#151c0c" : "#f59e0b"}
+                                color={canSubmit ? "#151c0c" : "#B45309"}
                             />
                             <Text
                                 style={{
-                                    color: canSubmit ? "#151c0c" : "#f59e0b",
+                                    color: canSubmit ? "#151c0c" : "#B45309",
                                     fontWeight: "700",
                                     fontSize: 15,
                                 }}

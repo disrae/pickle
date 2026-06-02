@@ -164,11 +164,11 @@ export default function DrillsScreen() {
                             <TouchableOpacity
                                 key={category}
                                 onPress={() => toggleCategory(category)}
-                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedCategories.includes(category) ? "bg-lime-400 border-lime-300" : "bg-black/60 border-slate-600/50"}`}
+                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedCategories.includes(category) ? "bg-brand border-brand" : "bg-surface-2 border-border"}`}
                                 style={
                                     selectedCategories.includes(category)
                                         ? {
-                                              shadowColor: "#84cc16",
+                                              shadowColor: "#3F7D20",
                                               shadowOffset: { width: 0, height: 0 },
                                               shadowOpacity: 0.6,
                                               shadowRadius: 10,
@@ -178,7 +178,7 @@ export default function DrillsScreen() {
                                 }
                             >
                                 <Text
-                                    className={`font-semibold ${selectedCategories.includes(category) ? "text-black" : "text-slate-200"}`}
+                                    className={`font-semibold ${selectedCategories.includes(category) ? "text-brand-foreground" : "text-foreground"}`}
                                 >
                                     {category}
                                 </Text>
@@ -196,11 +196,11 @@ export default function DrillsScreen() {
                             <TouchableOpacity
                                 key={difficulty}
                                 onPress={() => toggleDifficulty(difficulty)}
-                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedDifficulties.includes(difficulty) ? "bg-lime-400 border-lime-300" : "bg-black/60 border-slate-600/50"}`}
+                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedDifficulties.includes(difficulty) ? "bg-brand border-brand" : "bg-surface-2 border-border"}`}
                                 style={
                                     selectedDifficulties.includes(difficulty)
                                         ? {
-                                              shadowColor: "#84cc16",
+                                              shadowColor: "#3F7D20",
                                               shadowOffset: { width: 0, height: 0 },
                                               shadowOpacity: 0.6,
                                               shadowRadius: 10,
@@ -210,7 +210,7 @@ export default function DrillsScreen() {
                                 }
                             >
                                 <Text
-                                    className={`font-semibold ${selectedDifficulties.includes(difficulty) ? "text-black" : "text-slate-200"}`}
+                                    className={`font-semibold ${selectedDifficulties.includes(difficulty) ? "text-brand-foreground" : "text-foreground"}`}
                                 >
                                     {difficulty}
                                 </Text>
@@ -219,18 +219,18 @@ export default function DrillsScreen() {
                     </ScrollView>
 
                     <View className="px-4">
-                        <View className="bg-black/60 rounded-2xl px-4 py-3 mb-4 flex-row items-center border border-slate-600/50">
-                            <Ionicons name="search" size={20} color="#cbd5e1" />
+                        <View className="bg-surface rounded-2xl px-4 py-3 mb-4 flex-row items-center border border-border">
+                            <Ionicons name="search" size={20} color="#5c6454" />
                             <TextInput
-                                className="flex-1 ml-2 text-slate-200"
+                                className="flex-1 ml-2 text-foreground"
                                 placeholder="Search drills..."
-                                placeholderTextColor="#94a3b8"
+                                placeholderTextColor="#5c6454"
                                 value={searchTerm}
                                 onChangeText={setSearchTerm}
                             />
                             {searchTerm !== "" && (
                                 <TouchableOpacity onPress={() => setSearchTerm("")}>
-                                    <Ionicons name="close-circle" size={20} color="#cbd5e1" />
+                                    <Ionicons name="close-circle" size={20} color="#5c6454" />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -245,9 +245,9 @@ export default function DrillsScreen() {
                                 />
                             ))
                         ) : (
-                            <View className="bg-black/60 rounded-2xl p-8 items-center border border-slate-600/50">
-                                <Ionicons name="fitness-outline" size={48} color="#cbd5e1" />
-                                <Text className="text-slate-300 text-center mt-4">
+                            <View className="bg-surface rounded-2xl p-8 items-center border border-border">
+                                <Ionicons name="fitness-outline" size={48} color="#5c6454" />
+                                <Text className="text-foreground text-center mt-4">
                                     {searchTerm
                                         ? "No drills found matching your search"
                                         : "No drills available yet"}
@@ -255,9 +255,9 @@ export default function DrillsScreen() {
                                 {!searchTerm && (
                                     <TouchableOpacity
                                         onPress={() => setShowCreateModal(true)}
-                                        className="mt-4 bg-lime-500 rounded-full px-6 py-3"
+                                        className="mt-4 bg-brand rounded-full px-6 py-3"
                                     >
-                                        <Text className="text-white font-semibold">
+                                        <Text className="text-brand-foreground font-semibold">
                                             Create First Drill
                                         </Text>
                                     </TouchableOpacity>

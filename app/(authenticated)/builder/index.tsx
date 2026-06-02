@@ -42,8 +42,8 @@ export default function BuilderScreen() {
                     }}
                 >
                     <View className="flex-row items-center">
-                        <Ionicons name="bulb" size={20} color="#84cc16" />
-                        <Text className="text-slate-300 text-sm ml-2 flex-1">
+                        <Ionicons name="bulb" size={20} color="#3F7D20" />
+                        <Text className="text-foreground text-sm ml-2 flex-1">
                             Vote for features or submit your own ideas
                         </Text>
                     </View>
@@ -51,7 +51,7 @@ export default function BuilderScreen() {
 
                 {!features ? (
                     <View className="items-center justify-center py-12">
-                        <ActivityIndicator size="large" color="#84cc16" />
+                        <ActivityIndicator size="large" color="#3F7D20" />
                     </View>
                 ) : sortedFeatures.length > 0 ? (
                     sortedFeatures.map((feature) => (
@@ -65,8 +65,8 @@ export default function BuilderScreen() {
                         }}
                     >
                         <View className="items-center">
-                            <Ionicons name="rocket-outline" size={48} color="#cbd5e1" />
-                            <Text className="text-slate-300 text-center mt-4">
+                            <Ionicons name="rocket-outline" size={48} color="#5c6454" />
+                            <Text className="text-foreground text-center mt-4">
                                 No features yet. Be the first to suggest one!
                             </Text>
                         </View>

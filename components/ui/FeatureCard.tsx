@@ -33,11 +33,11 @@ const categoryColors: Record<string, string> = {
 };
 
 const categoryTextColors: Record<string, string> = {
-    "Gameplay": "text-blue-300",
-    "Social": "text-purple-300",
-    "Training": "text-green-300",
-    "UI/UX": "text-yellow-300",
-    "Other": "text-slate-300",
+    "Gameplay": "text-blue-700",
+    "Social": "text-purple-700",
+    "Training": "text-green-700",
+    "UI/UX": "text-yellow-700",
+    "Other": "text-foreground-muted",
 };
 
 export function FeatureCard({ feature }: FeatureCardProps) {
@@ -96,7 +96,7 @@ export function FeatureCard({ feature }: FeatureCardProps) {
                     </View>
 
                     {/* Title */}
-                    <Text className="text-lg font-semibold text-slate-200 mb-1">
+                    <Text className="text-lg font-semibold text-foreground mb-1">
                         {feature.title}
                     </Text>
 
@@ -105,11 +105,11 @@ export function FeatureCard({ feature }: FeatureCardProps) {
                         onPress={() => setIsExpanded(!isExpanded)}
                         activeOpacity={0.7}
                     >
-                        <Text className="text-slate-300 text-sm mb-1" numberOfLines={isExpanded ? undefined : 3}>
+                        <Text className="text-foreground text-sm mb-1" numberOfLines={isExpanded ? undefined : 3}>
                             {feature.description}
                         </Text>
                         {feature.description.length > 100 && (
-                            <Text className="text-lime-400 text-xs font-medium">
+                            <Text className="text-brand-strong text-xs font-medium">
                                 {isExpanded ? "Show less" : "Read more"}
                             </Text>
                         )}
@@ -118,7 +118,7 @@ export function FeatureCard({ feature }: FeatureCardProps) {
 
                     {/* Creator */}
                     {!feature.isPreset && feature.creator && (
-                        <Text className="text-slate-500 text-xs mb-2">
+                        <Text className="text-foreground-muted text-xs mb-2">
                             suggested by {feature.creator.name || feature.creator.email}
                         </Text>
                     )}
@@ -132,22 +132,22 @@ export function FeatureCard({ feature }: FeatureCardProps) {
                         disabled={isVoting}
                         className={`items-center justify-center px-3 py-2 rounded-lg min-w-[60px] ${
                             feature.userHasVoted 
-                                ? "bg-lime-500/20 border-2 border-lime-400" 
-                                : "bg-slate-700/60 border-2 border-slate-600"
+                                ? "bg-brand/20 border-2 border-brand" 
+                                : "bg-surface-2 border-2 border-border"
                         }`}
                         activeOpacity={0.7}
                     >
                         {isVoting ? (
-                            <ActivityIndicator size="small" color="#84cc16" />
+                            <ActivityIndicator size="small" color="#3F7D20" />
                         ) : (
                             <>
                                 <Ionicons
                                     name={feature.userHasVoted ? "checkmark-circle" : "arrow-up-circle-outline"}
                                     size={24}
-                                    color={feature.userHasVoted ? "#84cc16" : "#cbd5e1"}
+                                    color={feature.userHasVoted ? "#3F7D20" : "#5c6454"}
                                 />
                                 <Text className={`text-xs font-bold mt-1 ${
-                                    feature.userHasVoted ? "text-lime-400" : "text-slate-300"
+                                    feature.userHasVoted ? "text-brand-strong" : "text-foreground"
                                 }`}>
                                     {feature.voteCount}
                                 </Text>

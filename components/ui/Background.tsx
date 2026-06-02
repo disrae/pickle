@@ -4,51 +4,38 @@ import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 /**
- * App-wide backdrop: a rich green-black gradient with two soft Volt glows.
+ * App-wide backdrop (light theme): a clean warm-paper surface with a single,
+ * very soft brand-green wash in the top corner for warmth.
  *
- * The glows are drawn as SVG radial gradients (not solid circles) so they
- * fade smoothly to transparent with no hard edges. Coordinates are in real
- * pixels (userSpaceOnUse) so placement is predictable on any screen size,
- * and identical across iOS, Android, and web.
+ * Depth in the app comes from hairline borders + spacing, not from this
+ * backdrop — keep the wash subtle so content stays crisp in sunlight.
  */
 export function Background({ children }: { children: React.ReactNode; }) {
     const { width, height } = useWindowDimensions();
     const radius = Math.max(width, height) * 0.55;
 
     return (
-        <View className="flex-1 bg-[#0b0e09]">
+        <View className="flex-1 bg-background">
             <LinearGradient
-                colors={["#16210d", "#0d1209", "#080a06"]}
-                locations={[0, 0.45, 1]}
+                colors={["#FFFFFF", "#FAFAF7"]}
+                locations={[0, 1]}
                 style={StyleSheet.absoluteFill}
             />
             <Svg width={width} height={height} style={StyleSheet.absoluteFill} pointerEvents="none">
                 <Defs>
                     <RadialGradient
-                        id="glowTopRight"
-                        cx={width * 0.86}
-                        cy={height * 0.05}
+                        id="brandWash"
+                        cx={width * 0.88}
+                        cy={height * 0.04}
                         r={radius}
                         gradientUnits="userSpaceOnUse"
                     >
-                        <Stop offset="0%" stopColor="#a3e635" stopOpacity={0.34} />
-                        <Stop offset="45%" stopColor="#84cc16" stopOpacity={0.12} />
-                        <Stop offset="100%" stopColor="#84cc16" stopOpacity={0} />
-                    </RadialGradient>
-                    <RadialGradient
-                        id="glowLeft"
-                        cx={width * 0.08}
-                        cy={height * 0.5}
-                        r={radius}
-                        gradientUnits="userSpaceOnUse"
-                    >
-                        <Stop offset="0%" stopColor="#65a30d" stopOpacity={0.30} />
-                        <Stop offset="50%" stopColor="#3f6212" stopOpacity={0.12} />
-                        <Stop offset="100%" stopColor="#3f6212" stopOpacity={0} />
+                        <Stop offset="0%" stopColor="#3F7D20" stopOpacity={0.08} />
+                        <Stop offset="55%" stopColor="#3F7D20" stopOpacity={0.03} />
+                        <Stop offset="100%" stopColor="#3F7D20" stopOpacity={0} />
                     </RadialGradient>
                 </Defs>
-                <Rect x="0" y="0" width={width} height={height} fill="url(#glowTopRight)" />
-                <Rect x="0" y="0" width={width} height={height} fill="url(#glowLeft)" />
+                <Rect x="0" y="0" width={width} height={height} fill="url(#brandWash)" />
             </Svg>
             {children}
         </View>
@@ -56,29 +43,12 @@ export function Background({ children }: { children: React.ReactNode; }) {
 }
 
 export function ChatBackground({ children }: { children: React.ReactNode; }) {
-    const { width, height } = useWindowDimensions();
-
     return (
-        <View className="flex-1 bg-[#0b0e09]">
+        <View className="flex-1 bg-background">
             <LinearGradient
-                colors={["#11180b", "#0b0e09"]}
+                colors={["#FFFFFF", "#FAFAF7"]}
                 style={StyleSheet.absoluteFill}
             />
-            <Svg width={width} height={height} style={StyleSheet.absoluteFill} pointerEvents="none">
-                <Defs>
-                    <RadialGradient
-                        id="chatGlow"
-                        cx={width * 0.9}
-                        cy={height * 0.04}
-                        r={Math.max(width, height) * 0.5}
-                        gradientUnits="userSpaceOnUse"
-                    >
-                        <Stop offset="0%" stopColor="#84cc16" stopOpacity={0.18} />
-                        <Stop offset="100%" stopColor="#84cc16" stopOpacity={0} />
-                    </RadialGradient>
-                </Defs>
-                <Rect x="0" y="0" width={width} height={height} fill="url(#chatGlow)" />
-            </Svg>
             {children}
         </View>
     );

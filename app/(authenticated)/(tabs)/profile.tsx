@@ -161,7 +161,7 @@ export default function ProfileScreen() {
                                 disabled={isUploadingImage}
                                 className="relative"
                             >
-                                <View className="w-32 h-32 rounded-full bg-lime-400 items-center justify-center">
+                                <View className="w-32 h-32 rounded-full bg-brand items-center justify-center">
                                     {isUploadingImage ? (
                                         <ActivityIndicator size="large" color="white" />
                                     ) : profileImageUrl ? (
@@ -181,24 +181,24 @@ export default function ProfileScreen() {
                                     )}
                                 </View>
                                 {!isUploadingImage && (
-                                    <View className="absolute bottom-0 right-0 bg-lime-600 rounded-full p-2 border-4 border-slate-800/80">
+                                    <View className="absolute bottom-0 right-0 bg-brand rounded-full p-2 border-4 border-border">
                                         <Ionicons name="camera" size={20} color="white" />
                                     </View>
                                 )}
                             </TouchableOpacity>
 
                             {/* Name */}
-                            <Text className="text-3xl font-bold text-slate-200 mt-4">
+                            <Text className="text-3xl font-bold text-foreground mt-4">
                                 {user?.name || "Pickle Player"}
                             </Text>
 
                             {/* Edit Name Button */}
                             <TouchableOpacity
                                 onPress={() => setShowNamePopup(true)}
-                                className="flex-row items-center mt-2 px-3 py-1.5 rounded-lg bg-slate-700/80 border border-lime-400"
+                                className="flex-row items-center mt-2 px-3 py-1.5 rounded-lg bg-surface-2 border border-brand"
                             >
-                                <Ionicons name="create-outline" size={16} color="#84cc16" />
-                                <Text className="text-lime-400 ml-1.5 text-sm font-semibold">
+                                <Ionicons name="create-outline" size={16} color="#3F7D20" />
+                                <Text className="text-brand-strong ml-1.5 text-sm font-semibold">
                                     Edit Name
                                 </Text>
                             </TouchableOpacity>
@@ -206,14 +206,14 @@ export default function ProfileScreen() {
                             {/* Email with Privacy Notice */}
                             <View className="items-center mt-4">
                                 <View className="flex-row items-center">
-                                    <Ionicons name="mail" size={16} color="#94a3b8" />
-                                    <Text className="text-slate-300 ml-2">
+                                    <Ionicons name="mail" size={16} color="#5c6454" />
+                                    <Text className="text-foreground ml-2">
                                         {user?.email || "No email"}
                                     </Text>
                                 </View>
-                                <View className="flex-row items-center mt-2 px-3 py-1 rounded-lg bg-slate-700/50">
-                                    <Ionicons name="lock-closed" size={12} color="#64748b" />
-                                    <Text className="text-slate-400 text-xs ml-1">
+                                <View className="flex-row items-center mt-2 px-3 py-1 rounded-lg bg-surface-2">
+                                    <Ionicons name="lock-closed" size={12} color="#5c6454" />
+                                    <Text className="text-foreground-muted text-xs ml-1">
                                         Your email is private and only visible to you
                                     </Text>
                                 </View>
@@ -223,24 +223,24 @@ export default function ProfileScreen() {
 
                     {/* Court & presence */}
                     <GlassContainer style={{ borderRadius: 24, padding: 24, marginBottom: 16 }}>
-                        <Text className="text-xl font-bold text-slate-200 mb-4">Court & presence</Text>
+                        <Text className="text-xl font-bold text-foreground mb-4">Court & presence</Text>
 
-                        <View className="flex-row items-center justify-between py-3 border-b border-slate-700">
+                        <View className="flex-row items-center justify-between py-3 border-b border-border">
                             <View className="flex-1 pr-4">
-                                <Text className="text-slate-200 font-semibold">Appear at the court</Text>
-                                <Text className="text-slate-400 text-sm mt-1">
+                                <Text className="text-foreground font-semibold">Appear at the court</Text>
+                                <Text className="text-foreground-muted text-sm mt-1">
                                     Others can see you&apos;re here. Turn off for ghost mode.
                                 </Text>
                             </View>
                             <Switch
                                 value={appearAtCourt}
                                 onValueChange={(v) => updateAppearAtCourt({ appearAtCourt: v })}
-                                trackColor={{ false: "#475569", true: "#65a30d" }}
+                                trackColor={{ false: "#c4c9bd", true: "#3F7D20" }}
                                 thumbColor="#fff"
                             />
                         </View>
 
-                        <Text className="text-slate-400 text-sm mt-4 mb-2">Auto check-in</Text>
+                        <Text className="text-foreground-muted text-sm mt-4 mb-2">Auto check-in</Text>
                         {(
                             [
                                 ["off", "Manual only"],
@@ -265,15 +265,15 @@ export default function ProfileScreen() {
                                 }}
                                 className={`py-3 px-4 rounded-xl mb-2 border ${
                                     locationMode === mode
-                                        ? "border-lime-400 bg-lime-500/10"
-                                        : "border-slate-600 bg-slate-700/30"
+                                        ? "border-brand bg-brand/10"
+                                        : "border-border bg-surface-2"
                                 }`}
                             >
                                 <Text
                                     className={
                                         locationMode === mode
-                                            ? "text-lime-400 font-semibold"
-                                            : "text-slate-300"
+                                            ? "text-brand-strong font-semibold"
+                                            : "text-foreground"
                                     }
                                 >
                                     {label}
@@ -283,10 +283,10 @@ export default function ProfileScreen() {
 
                         <TouchableOpacity
                             onPress={() => router.push("/builder")}
-                            className="flex-row items-center justify-between mt-4 pt-4 border-t border-slate-700"
+                            className="flex-row items-center justify-between mt-4 pt-4 border-t border-border"
                         >
-                            <Text className="text-slate-200 font-semibold">Feature ideas (Builder)</Text>
-                            <Ionicons name="chevron-forward" size={20} color="#64748b" />
+                            <Text className="text-foreground font-semibold">Feature ideas (Builder)</Text>
+                            <Ionicons name="chevron-forward" size={20} color="#5c6454" />
                         </TouchableOpacity>
                     </GlassContainer>
 
@@ -298,45 +298,45 @@ export default function ProfileScreen() {
                             marginBottom: 16,
                         }}
                     >
-                        <Text className="text-xl font-bold text-slate-200 mb-4">
+                        <Text className="text-xl font-bold text-foreground mb-4">
                             Account
                         </Text>
 
                         {/* Sign Out Button */}
                         <TouchableOpacity
                             onPress={handleSignOut}
-                            className="flex-row items-center justify-between p-4 rounded-xl bg-slate-700/50 border border-slate-600 mb-3"
+                            className="flex-row items-center justify-between p-4 rounded-xl bg-surface-2 border border-border mb-3"
                         >
                             <View className="flex-row items-center">
-                                <View className="bg-slate-600 rounded-full p-2 mr-3">
-                                    <Ionicons name="log-out-outline" size={20} color="#94a3b8" />
+                                <View className="bg-surface-2 rounded-full p-2 mr-3">
+                                    <Ionicons name="log-out-outline" size={20} color="#5c6454" />
                                 </View>
-                                <Text className="text-slate-200 font-semibold text-lg">
+                                <Text className="text-foreground font-semibold text-lg">
                                     Sign Out
                                 </Text>
                             </View>
-                            <Ionicons name="chevron-forward" size={20} color="#64748b" />
+                            <Ionicons name="chevron-forward" size={20} color="#5c6454" />
                         </TouchableOpacity>
 
                         {/* Delete Account Button */}
                         <TouchableOpacity
                             onPress={handleDeleteAccount}
-                            className="flex-row items-center justify-between p-4 rounded-xl bg-red-950/30 border border-red-900/50"
+                            className="flex-row items-center justify-between p-4 rounded-xl bg-red-50 border border-red-200"
                         >
                             <View className="flex-row items-center">
-                                <View className="bg-red-900/50 rounded-full p-2 mr-3">
-                                    <Ionicons name="trash-outline" size={20} color="#ef4444" />
+                                <View className="bg-red-100 rounded-full p-2 mr-3">
+                                    <Ionicons name="trash-outline" size={20} color="#dc2626" />
                                 </View>
                                 <View>
-                                    <Text className="text-red-400 font-semibold text-lg">
+                                    <Text className="text-red-600 font-semibold text-lg">
                                         Delete Account
                                     </Text>
-                                    <Text className="text-red-400/90 text-sm mt-0.5">
+                                    <Text className="text-red-500 text-sm mt-0.5">
                                         This action cannot be undone
                                     </Text>
                                 </View>
                             </View>
-                            <Ionicons name="chevron-forward" size={20} color="#ef4444" />
+                            <Ionicons name="chevron-forward" size={20} color="#dc2626" />
                         </TouchableOpacity>
                     </GlassContainer>
 
@@ -348,46 +348,46 @@ export default function ProfileScreen() {
                             marginBottom: 16,
                         }}
                     >
-                        <Text className="text-xl font-bold text-slate-200 mb-4">
+                        <Text className="text-xl font-bold text-foreground mb-4">
                             App Info
                         </Text>
 
                         {/* Version Info */}
                         <View className="space-y-2 mb-4">
                             <View className="flex-row justify-between py-2">
-                                <Text className="text-slate-400 text-sm">Version</Text>
-                                <Text className="text-slate-200 text-sm font-semibold">
+                                <Text className="text-foreground-muted text-sm">Version</Text>
+                                <Text className="text-foreground text-sm font-semibold">
                                     {appVersion}
                                 </Text>
                             </View>
                             {runtimeVersion && (
                                 <View className="flex-row justify-between py-2">
-                                    <Text className="text-slate-400 text-sm">Runtime</Text>
-                                    <Text className="text-slate-200 text-sm font-mono">
+                                    <Text className="text-foreground-muted text-sm">Runtime</Text>
+                                    <Text className="text-foreground text-sm font-mono">
                                         {runtimeVersion}
                                     </Text>
                                 </View>
                             )}
                             {channel && (
                                 <View className="flex-row justify-between py-2">
-                                    <Text className="text-slate-400 text-sm">Channel</Text>
-                                    <Text className="text-slate-200 text-sm font-semibold">
+                                    <Text className="text-foreground-muted text-sm">Channel</Text>
+                                    <Text className="text-foreground text-sm font-semibold">
                                         {channel}
                                     </Text>
                                 </View>
                             )}
                             {currentUpdateId && (
                                 <View className="flex-row justify-between py-2">
-                                    <Text className="text-slate-400 text-sm">Update ID</Text>
-                                    <Text className="text-slate-200 text-xs font-mono" numberOfLines={1}>
+                                    <Text className="text-foreground-muted text-sm">Update ID</Text>
+                                    <Text className="text-foreground text-xs font-mono" numberOfLines={1}>
                                         {currentUpdateId.substring(0, 16)}...
                                     </Text>
                                 </View>
                             )}
                             {lastCheckTime && (
                                 <View className="flex-row justify-between py-2">
-                                    <Text className="text-slate-400 text-sm">Last Check</Text>
-                                    <Text className="text-slate-200 text-xs">
+                                    <Text className="text-foreground-muted text-sm">Last Check</Text>
+                                    <Text className="text-foreground text-xs">
                                         {lastCheckTime.toLocaleTimeString()}
                                     </Text>
                                 </View>
@@ -398,22 +398,22 @@ export default function ProfileScreen() {
                         {isUpdateAvailable && (
                             <TouchableOpacity
                                 onPress={applyUpdate}
-                                className="flex-row items-center justify-between p-4 rounded-xl bg-lime-500/20 border border-lime-400"
+                                className="flex-row items-center justify-between p-4 rounded-xl bg-brand/20 border border-brand"
                             >
                                 <View className="flex-row items-center">
-                                    <View className="bg-lime-500/30 rounded-full p-2 mr-3">
-                                        <Ionicons name="cloud-download" size={20} color="#84cc16" />
+                                    <View className="bg-brand/30 rounded-full p-2 mr-3">
+                                        <Ionicons name="cloud-download" size={20} color="#3F7D20" />
                                     </View>
                                     <View>
-                                        <Text className="text-lime-400 font-semibold text-lg">
+                                        <Text className="text-brand-strong font-semibold text-lg">
                                             Update Available
                                         </Text>
-                                        <Text className="text-lime-400/90 text-sm mt-0.5">
+                                        <Text className="text-brand-strong/90 text-sm mt-0.5">
                                             Tap to restart and update
                                         </Text>
                                     </View>
                                 </View>
-                                <Ionicons name="chevron-forward" size={20} color="#84cc16" />
+                                <Ionicons name="chevron-forward" size={20} color="#3F7D20" />
                             </TouchableOpacity>
                         )}
 
@@ -422,19 +422,19 @@ export default function ProfileScreen() {
                             <TouchableOpacity
                                 onPress={checkForUpdate}
                                 disabled={isChecking || isDownloading}
-                                className="flex-row items-center justify-center p-4 rounded-xl bg-slate-700/50 border border-slate-600"
+                                className="flex-row items-center justify-center p-4 rounded-xl bg-surface-2 border border-border"
                             >
                                 {isChecking || isDownloading ? (
                                     <>
-                                        <ActivityIndicator size="small" color="#84cc16" />
-                                        <Text className="text-slate-300 ml-2 font-semibold">
+                                        <ActivityIndicator size="small" color="#3F7D20" />
+                                        <Text className="text-foreground ml-2 font-semibold">
                                             {isDownloading ? "Downloading..." : "Checking..."}
                                         </Text>
                                     </>
                                 ) : (
                                     <>
-                                        <Ionicons name="refresh" size={20} color="#94a3b8" />
-                                        <Text className="text-slate-300 ml-2 font-semibold">
+                                        <Ionicons name="refresh" size={20} color="#5c6454" />
+                                        <Text className="text-foreground ml-2 font-semibold">
                                             Check for Updates
                                         </Text>
                                     </>

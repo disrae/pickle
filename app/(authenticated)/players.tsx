@@ -120,18 +120,18 @@ export default function PlayersScreen() {
                 >
                     {/* Search Bar */}
                     <View className="px-4 mb-4">
-                        <View className="bg-black/60 rounded-2xl px-4 py-3 flex-row items-center border border-slate-600/50">
-                            <Ionicons name="search" size={20} color="#cbd5e1" />
+                        <View className="bg-surface rounded-2xl px-4 py-3 flex-row items-center border border-border">
+                            <Ionicons name="search" size={20} color="#5c6454" />
                             <TextInput
-                                className="flex-1 ml-2 text-slate-200"
+                                className="flex-1 ml-2 text-foreground"
                                 placeholder="Search players..."
-                                placeholderTextColor="#94a3b8"
+                                placeholderTextColor="#5c6454"
                                 value={searchTerm}
                                 onChangeText={setSearchTerm}
                             />
                             {searchTerm !== "" && (
                                 <TouchableOpacity onPress={() => setSearchTerm("")}>
-                                    <Ionicons name="close-circle" size={20} color="#cbd5e1" />
+                                    <Ionicons name="close-circle" size={20} color="#5c6454" />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -148,9 +148,9 @@ export default function PlayersScreen() {
                             <TouchableOpacity
                                 key={filter}
                                 onPress={() => toggleFilter(filter)}
-                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedFilters.includes(filter) ? "bg-lime-400 border-lime-300" : "bg-black/60 border-slate-600/50"}`}
+                                className={`rounded-full px-5 py-2.5 mr-2 border ${selectedFilters.includes(filter) ? "bg-brand border-brand" : "bg-surface border-border"}`}
                                 style={selectedFilters.includes(filter) ? {
-                                    shadowColor: '#84cc16',
+                                    shadowColor: '#3F7D20',
                                     shadowOffset: { width: 0, height: 0 },
                                     shadowOpacity: 0.6,
                                     shadowRadius: 10,
@@ -158,7 +158,7 @@ export default function PlayersScreen() {
                                 } : {}}
                             >
                                 <Text
-                                    className={`font-semibold ${selectedFilters.includes(filter) ? "text-black" : "text-slate-200"}`}
+                                    className={`font-semibold ${selectedFilters.includes(filter) ? "text-brand-foreground" : "text-foreground"}`}
                                 >
                                     {filter}
                                 </Text>
@@ -170,7 +170,7 @@ export default function PlayersScreen() {
                     <View className="px-4">
                         {!allUsers ? (
                             <View className="items-center py-8">
-                                <ActivityIndicator size="large" color="#84cc16" />
+                                <ActivityIndicator size="large" color="#3F7D20" />
                             </View>
                         ) : filteredUsers.length > 0 ? (
                             filteredUsers.map((user) => (
@@ -181,9 +181,9 @@ export default function PlayersScreen() {
                                 />
                             ))
                         ) : (
-                            <View className="bg-black/60 rounded-2xl p-8 items-center border border-slate-600/50">
-                                <Ionicons name="people-outline" size={48} color="#cbd5e1" />
-                                <Text className="text-slate-300 text-center mt-4">
+                            <View className="bg-surface rounded-2xl p-8 items-center border border-border">
+                                <Ionicons name="people-outline" size={48} color="#5c6454" />
+                                <Text className="text-foreground text-center mt-4">
                                     {searchTerm || selectedFilters.length > 0
                                         ? "No players found matching your search"
                                         : "No players available"}
@@ -219,7 +219,7 @@ function PlayerCard({ user, onPress }: { user: UserWithProgress; onPress: () => 
             >
                 <View className="flex-row items-center">
                     {/* Profile Image */}
-                    <View className="w-16 h-16 rounded-full bg-slate-600 items-center justify-center mr-4">
+                    <View className="w-16 h-16 rounded-full bg-brand items-center justify-center mr-4">
                         {profileImageUrl ? (
                             <Image
                                 source={{ uri: profileImageUrl }}
@@ -231,7 +231,7 @@ function PlayerCard({ user, onPress }: { user: UserWithProgress; onPress: () => 
                                 contentFit="cover"
                             />
                         ) : (
-                            <Text className="text-2xl font-bold text-slate-200">
+                            <Text className="text-2xl font-bold text-brand-foreground">
                                 {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "?"}
                             </Text>
                         )}
@@ -239,14 +239,14 @@ function PlayerCard({ user, onPress }: { user: UserWithProgress; onPress: () => 
 
                     {/* User Info */}
                     <View className="flex-1">
-                        <Text className="text-slate-200 font-bold text-lg">
+                        <Text className="text-foreground font-bold text-lg">
                             {user?.name || "Pickle Player"}
                         </Text>
                         <View className="flex-row items-center mt-1">
                             {user.isCheckedIn && (
                                 <View className="flex-row items-center mr-3">
-                                    <Ionicons name="checkmark-circle" size={14} color="#84cc16" />
-                                    <Text className="text-lime-400 text-xs tracking-wide ml-1">Checked In</Text>
+                                    <Ionicons name="checkmark-circle" size={14} color="#3F7D20" />
+                                    <Text className="text-brand-strong text-xs tracking-wide ml-1">Checked In</Text>
                                 </View>
                             )}
                             {user.hasPlans && (
@@ -260,7 +260,7 @@ function PlayerCard({ user, onPress }: { user: UserWithProgress; onPress: () => 
 
                     {/* Mini Radar Chart */}
                     <View className="ml-2">
-                        <Ionicons name="chevron-forward" size={20} color="#eee" />
+                        <Ionicons name="chevron-forward" size={20} color="#5c6454" />
                     </View>
                 </View>
             </GlassContainer>

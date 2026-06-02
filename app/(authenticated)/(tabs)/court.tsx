@@ -6,6 +6,7 @@ import { Background } from "@/components/ui/Background";
 import { CourtSelectorPopup } from "@/components/ui/CourtSelectorPopup";
 import { GlassContainer } from "@/components/ui/GlassContainer";
 import { Header } from "@/components/ui/header";
+import { Popup } from "@/components/ui/Popup";
 import { TimePickerPopup } from "@/components/ui/TimePickerPopup";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -27,6 +28,7 @@ export default function CourtsScreen() {
     const user = useQuery(api.users.currentUser);
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [showCourtSelector, setShowCourtSelector] = useState(false);
+    const [showLineupInfo, setShowLineupInfo] = useState(false);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [isHeadedThere, setIsHeadedThere] = useState(false);
@@ -196,7 +198,7 @@ export default function CourtsScreen() {
         return (
             <Background>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#a3e635" />
+                    <ActivityIndicator size="large" color="#3F7D20" />
                 </View>
             </Background>
         );
@@ -206,7 +208,7 @@ export default function CourtsScreen() {
         return (
             <Background>
                 <View className="flex-1 items-center justify-center px-8">
-                    <Ionicons name="location-outline" size={92} color="#a3e635" />
+                    <Ionicons name="location-outline" size={92} color="#3F7D20" />
                     <Text className="text-foreground text-2xl font-bold mt-6 text-center">Pick your home court</Text>
                     <Text className="text-muted-foreground text-base mt-2 text-center">
                         Queen Elizabeth or Jericho Beach — see who&apos;s playing.
@@ -259,18 +261,41 @@ export default function CourtsScreen() {
 
                 {/* Lineup — secondary */}
                 <GlassContainer style={{ borderRadius: 24, padding: 20, marginBottom: 16 }}>
-                    <Text className="text-muted-foreground text-xs font-semibold uppercase mb-3">Lineup</Text>
-                    <View className="flex-row flex-wrap gap-3">
+                    <View className="flex-row items-center mb-3">
+                        <Text className="text-muted-foreground text-xs font-semibold uppercase">Lineup</Text>
+                        <TouchableOpacity
+                            onPress={() => setShowLineupInfo(true)}
+                            hitSlop={10}
+                            className="ml-1.5"
+                        >
+                            <Ionicons name="information-circle-outline" size={15} color="#9aa392" />
+                        </TouchableOpacity>
+                    </View>
+                    <View className="flex-row flex-wrap gap-2.5">
                         {Array.from({ length: 8 }, (_, i) => {
                             const n = i + 1;
                             const filled = isLineupValid && court?.currentLineupCount !== undefined && n <= court.currentLineupCount;
                             const selected = isLineupValid && court?.currentLineupCount === n;
+                            const paddle = (
+                                <PicklePaddle
+                                    width={26}
+                                    height={26}
+                                    filled={filled}
+                                    tintColor={filled ? "#3F7D20" : "#b5bbad"}
+                                    strokeWidth={1.6}
+                                />
+                            );
                             return isCheckedIn ? (
-                                <TouchableOpacity key={i} onPress={() => handleReportLineup(selected ? 0 : n)} disabled={isReportingLineup}>
-                                    <PicklePaddle width={28} height={28} tintColor={filled ? "#b8ff48" : "#555"} />
+                                <TouchableOpacity
+                                    key={i}
+                                    onPress={() => handleReportLineup(selected ? 0 : n)}
+                                    disabled={isReportingLineup}
+                                    className={`p-1.5 rounded-xl ${selected ? "bg-brand/10" : ""}`}
+                                >
+                                    {paddle}
                                 </TouchableOpacity>
                             ) : (
-                                <PicklePaddle key={i} width={28} height={28} tintColor={filled ? "#b8ff48" : "#555"} />
+                                <View key={i} className="p-1.5">{paddle}</View>
                             );
                         })}
                     </View>
@@ -296,7 +321,7 @@ export default function CourtsScreen() {
                     <View className="flex-row items-center justify-between mb-4">
                         <Text className="text-xl font-bold text-foreground">Who&apos;s coming</Text>
                         <TouchableOpacity onPress={() => setShowTimePicker(true)} className="flex-row items-center px-3 py-1.5 rounded-lg border border-brand">
-                            <Ionicons name="add-circle-outline" size={18} color="#a3e635" />
+                            <Ionicons name="add-circle-outline" size={18} color="#3F7D20" />
                             <Text className="text-brand text-sm font-semibold ml-1">Plan</Text>
                         </TouchableOpacity>
                     </View>
@@ -335,7 +360,7 @@ export default function CourtsScreen() {
                 <TouchableOpacity onPress={() => router.push("/players")} activeOpacity={0.7}>
                     <GlassContainer style={{ borderRadius: 24, padding: 20, marginBottom: 16 }}>
                         <View className="flex-row items-center justify-center">
-                            <Ionicons name="people" size={24} color="#a3e635" />
+                            <Ionicons name="people" size={24} color="#3F7D20" />
                             <Text className="text-lg font-bold text-foreground ml-3">Browse players</Text>
                         </View>
                     </GlassContainer>
@@ -351,6 +376,13 @@ export default function CourtsScreen() {
 
             <TimePickerPopup isVisible={showTimePicker} onClose={() => setShowTimePicker(false)} onSelectTime={handleSelectTime} />
             <CourtSelectorPopup isVisible={showCourtSelector} onClose={() => setShowCourtSelector(false)} currentCourtId={court?._id} />
+
+            <Popup
+                isVisible={showLineupInfo}
+                onClose={() => setShowLineupInfo(false)}
+                title="What's the lineup?"
+                message="The lineup is how many games are waiting to play. Tap a paddle to report how many groups are in line right now — it helps everyone see how busy the court is before heading over."
+            />
 
             {court && challengeOpponentId && (
                 <ChallengeSheet

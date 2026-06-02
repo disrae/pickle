@@ -142,8 +142,8 @@ export default function CourtWallScreen() {
         return (
             <ChatBackground>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#a3e635" />
-                    <Text className="text-slate-600 mt-4">Loading court wall...</Text>
+                    <ActivityIndicator size="large" color="#3F7D20" />
+                    <Text className="text-foreground-muted mt-4">Loading court wall...</Text>
                 </View>
             </ChatBackground>
         );
@@ -165,11 +165,11 @@ export default function CourtWallScreen() {
                     >
                         {messages.length === 0 ? (
                             <View className="flex-1 items-center justify-center py-12 px-4">
-                                <Ionicons name="chatbubbles-outline" size={64} color="#cbd5e1" />
-                                <Text className="text-slate-500 text-center mt-4 text-lg font-semibold">
+                                <Ionicons name="chatbubbles-outline" size={64} color="#5c6454" />
+                                <Text className="text-foreground-muted text-center mt-4 text-lg font-semibold">
                                     Court wall
                                 </Text>
-                                <Text className="text-slate-400 text-center text-sm mt-2 leading-5">
+                                <Text className="text-foreground-muted text-center text-sm mt-2 leading-5">
                                     Post who&apos;s in, court conditions, or if you need a fourth. Everyone at{" "}
                                     {court.name} can see it here.
                                 </Text>
@@ -189,7 +189,7 @@ export default function CourtWallScreen() {
                                         {showDate && (
                                             <View className="items-center my-4">
                                                 <View className="bg-slate-200 rounded-full px-3 py-1">
-                                                    <Text className="text-xs text-slate-600 font-semibold">
+                                                    <Text className="text-xs text-foreground-muted font-semibold">
                                                         {new Date(msg.createdAt).toDateString() ===
                                                         new Date().toDateString()
                                                             ? "Today"
@@ -214,7 +214,7 @@ export default function CourtWallScreen() {
                                                     }
                                                     className="mb-1 ml-2"
                                                 >
-                                                    <Text className="text-xs text-slate-500">{displayName}</Text>
+                                                    <Text className="text-xs text-foreground-muted">{displayName}</Text>
                                                 </TouchableOpacity>
                                             )}
                                             <TouchableOpacity
@@ -231,11 +231,11 @@ export default function CourtWallScreen() {
                                                 }
                                                 className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                                                     isCurrentUser
-                                                        ? "bg-lime-500 rounded-br-sm"
-                                                        : "bg-white/95 rounded-bl-sm"
+                                                        ? "bg-brand rounded-br-sm"
+                                                        : "bg-surface-2 rounded-bl-sm"
                                                 }`}
                                                 style={{
-                                                    shadowColor: "#000",
+                                                    shadowColor: "#12170F",
                                                     shadowOffset: { width: 0, height: 1 },
                                                     shadowOpacity: 0.1,
                                                     shadowRadius: 2,
@@ -244,14 +244,14 @@ export default function CourtWallScreen() {
                                             >
                                                 <Text
                                                     className={`text-base ${
-                                                        isCurrentUser ? "text-white" : "text-slate-800"
+                                                        isCurrentUser ? "text-white" : "text-foreground"
                                                     }`}
                                                 >
                                                     {msg.message}
                                                 </Text>
                                                 <Text
                                                     className={`text-xs mt-1 ${
-                                                        isCurrentUser ? "text-lime-100" : "text-slate-400"
+                                                        isCurrentUser ? "text-lime-100" : "text-foreground-muted"
                                                     }`}
                                                 >
                                                     {formatMessageTime(msg.createdAt)}
@@ -320,12 +320,12 @@ export default function CourtWallScreen() {
                                 style={{ opacity: !draft.trim() || isSending ? 0.5 : 1 }}
                             >
                                 {isSending ? (
-                                    <ActivityIndicator size="small" color="#151c0c" />
+                                    <ActivityIndicator size="small" color="#FFFFFF" />
                                 ) : (
                                     <Ionicons
                                         name={editingId ? "checkmark" : "send"}
                                         size={20}
-                                        color="#151c0c"
+                                        color="#FFFFFF"
                                     />
                                 )}
                             </TouchableOpacity>

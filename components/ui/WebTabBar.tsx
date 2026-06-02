@@ -3,9 +3,9 @@ import { getMainTabEntries } from "@/lib/main-tab-routes";
 import React, { useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 
-const ACTIVE = "#a3e635"; // Volt
-const INACTIVE = "#8a9482";
-const INACTIVE_HOVER = "#c4cdb8";
+const ACTIVE = "#3F7D20"; // sport-green
+const INACTIVE = "#5C6454"; // muted ink
+const INACTIVE_HOVER = "#2E5C16";
 
 /**
  * Floating, centered "pill" tab bar used on web only.
@@ -32,14 +32,14 @@ export function WebTabBar({ state, descriptors, navigation }: BottomTabBarProps)
                     flexDirection: "row",
                     alignItems: "center",
                     gap: 4,
-                    backgroundColor: "rgba(16,20,12,0.92)",
+                    backgroundColor: "rgba(255,255,255,0.92)",
                     borderWidth: 1,
-                    borderColor: "rgba(255,255,255,0.08)",
+                    borderColor: "rgba(18,23,15,0.08)",
                     borderRadius: 999,
                     paddingHorizontal: 8,
                     paddingVertical: 8,
                     backdropFilter: "blur(12px)",
-                    boxShadow: "0 12px 32px rgba(0,0,0,0.45)",
+                    boxShadow: "0 12px 32px rgba(18,23,15,0.12)",
                 }}
             >
                 {getMainTabEntries(state, descriptors).map(({ route, routeIndex, options }) => {
@@ -108,9 +108,9 @@ function TabPill({
                 paddingHorizontal: isFocused ? 16 : 14,
                 borderRadius: 999,
                 backgroundColor: isFocused
-                    ? "rgba(163,230,53,0.14)"
+                    ? "rgba(63,125,32,0.12)"
                     : hovered
-                      ? "rgba(255,255,255,0.06)"
+                      ? "rgba(18,23,15,0.05)"
                       : "transparent",
                 ...(Platform.OS === "web" ? { transitionDuration: "150ms", cursor: "pointer" } : {}),
             }}

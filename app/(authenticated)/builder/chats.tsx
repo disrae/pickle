@@ -72,17 +72,17 @@ export default function BuilderChatsListScreen() {
                 {/* Search Bar */}
                 <View className="px-4 mb-4">
                     <View className="bg-white/95 rounded-2xl px-4 py-3 flex-row items-center">
-                        <Ionicons name="search" size={20} color="#94a3b8" />
+                        <Ionicons name="search" size={20} color="#5c6454" />
                         <TextInput
                             value={searchQuery}
                             onChangeText={setSearchQuery}
                             placeholder="Search builder chats..."
-                            className="flex-1 ml-2 text-slate-800 text-base"
-                            placeholderTextColor="#475569"
+                            className="flex-1 ml-2 text-foreground text-base"
+                            placeholderTextColor="#c4c9bd"
                         />
                         {searchQuery.length > 0 && (
                             <TouchableOpacity onPress={() => setSearchQuery("")}>
-                                <Ionicons name="close-circle" size={20} color="#94a3b8" />
+                                <Ionicons name="close-circle" size={20} color="#5c6454" />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -92,15 +92,15 @@ export default function BuilderChatsListScreen() {
                 <View className="px-4">
                     {!chats ? (
                         <View className="items-center justify-center py-12">
-                            <ActivityIndicator size="large" color="#a3e635" />
+                            <ActivityIndicator size="large" color="#3F7D20" />
                         </View>
                     ) : chats.length === 0 ? (
                         <View className="bg-white/95 rounded-3xl p-8 items-center">
-                            <Ionicons name="chatbubbles-outline" size={64} color="#cbd5e1" />
-                            <Text className="text-slate-400 text-center mt-4 text-lg font-semibold">
+                            <Ionicons name="chatbubbles-outline" size={64} color="#5c6454" />
+                            <Text className="text-foreground-muted text-center mt-4 text-lg font-semibold">
                                 {searchQuery.trim() ? "No chats found" : "No builder chats yet"}
                             </Text>
-                            <Text className="text-slate-400 text-center text-sm mt-2">
+                            <Text className="text-foreground-muted text-center text-sm mt-2">
                                 {searchQuery.trim()
                                     ? "Try a different search term"
                                     : "Create the first builder chat!"}
@@ -118,17 +118,17 @@ export default function BuilderChatsListScreen() {
                                         activeOpacity={0.95}
                                     >
                                         <View className="flex-row items-start justify-between mb-1">
-                                            <Text className="text-base font-semibold text-slate-800 flex-1 mr-2">
+                                            <Text className="text-base font-semibold text-foreground flex-1 mr-2">
                                                 {chat.title}
                                             </Text>
-                                            <Text className="text-xs text-slate-400">
+                                            <Text className="text-xs text-foreground-muted">
                                                 {formatLastMessageTime(chat.lastMessageAt)}
                                             </Text>
                                         </View>
 
                                         {chat.description && (
                                             <Text
-                                                className="text-sm text-slate-600 mb-1"
+                                                className="text-sm text-foreground-muted mb-1"
                                                 numberOfLines={2}
                                             >
                                                 {chat.description}
@@ -136,8 +136,8 @@ export default function BuilderChatsListScreen() {
                                         )}
 
                                         <View className="flex-row items-center">
-                                            <Ionicons name="people" size={14} color="#84cc16" />
-                                            <Text className="text-xs text-slate-500 ml-1">
+                                            <Ionicons name="people" size={14} color="#3F7D20" />
+                                            <Text className="text-xs text-foreground-muted ml-1">
                                                 {chat.participantCount}{" "}
                                                 {chat.participantCount === 1
                                                     ? "participant"

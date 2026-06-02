@@ -85,7 +85,7 @@ export function BottomSheetCard({
                 <TouchableOpacity
                     activeOpacity={1}
                     onPress={onClose}
-                    className="flex-1 justify-end bg-black/0"
+                    className="flex-1 justify-end bg-black/40"
                 >
                     <Animated.View
                         className="rounded-t-3xl"

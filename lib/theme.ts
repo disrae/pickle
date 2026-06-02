@@ -8,9 +8,10 @@ import { vars } from "nativewind";
  * (`bg-background`, `text-foreground`, `bg-brand`, etc.) is theme-aware.
  *
  * Brand:
- *  - brand  = "Volt" pickleball lime-green (energy, primary CTAs)
+ *  - brand  = deep sport-green (energy, primary CTAs) — tuned for AA on white
  *  - ink    = green-tinted near-black (structure, text)
  *  - competition = amber, reserved for ladder / tournament / ranking
+ *      (use `competition-strong` for text/icons on light surfaces)
  *
  * Values are space-separated RGB triplets (no rgb() wrapper) so Tailwind
  * can apply opacity modifiers like `bg-brand/20`.
@@ -30,15 +31,16 @@ export const themes = {
         "--color-foreground": "18 23 15", // ink
         "--color-muted-foreground": "92 100 84",
 
-        // Brand (Volt)
-        "--color-brand": "132 204 22",
-        "--color-brand-foreground": "21 28 12",
-        "--color-brand-strong": "101 163 13",
-        "--color-brand-subtle": "233 246 211",
+        // Brand (deep sport-green)
+        "--color-brand": "63 125 32", // #3F7D20 — CTA fills, AA on white
+        "--color-brand-foreground": "247 251 240",
+        "--color-brand-strong": "46 92 22", // #2E5C16 — brand text/icons on white
+        "--color-brand-subtle": "232 243 220", // #E8F3DC — tint / selected bg
 
         // Competition (Amber) — ladder / tournament / ranking only
-        "--color-competition": "245 158 11",
-        "--color-competition-foreground": "36 22 4",
+        "--color-competition": "245 158 11", // fills / badges
+        "--color-competition-foreground": "36 22 4", // text on amber fill
+        "--color-competition-strong": "180 83 9", // #B45309 — amber text/icons on white
 
         // Primary (high-contrast ink for solid dark elements)
         "--color-primary": "18 23 15",
@@ -64,7 +66,7 @@ export const themes = {
         // Lines & focus
         "--color-border": "226 228 219",
         "--color-input": "226 228 219",
-        "--color-ring": "132 204 22",
+        "--color-ring": "63 125 32",
     }),
 
     dark: vars({
@@ -90,6 +92,7 @@ export const themes = {
         // Competition (Amber)
         "--color-competition": "251 191 36",
         "--color-competition-foreground": "28 18 4",
+        "--color-competition-strong": "252 211 77", // amber text/icons on dark
 
         // Primary (light ink on dark)
         "--color-primary": "244 247 240",

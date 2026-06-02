@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import React from "react";
 import { ActivityIndicator, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface CourtSelectorPopupProps {
     isVisible: boolean;
@@ -12,6 +13,7 @@ interface CourtSelectorPopupProps {
 }
 
 export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: CourtSelectorPopupProps) => {
+    const { bottom } = useSafeAreaInsets();
     const courts = useQuery(api.courts.list);
     const updateSelectedCourt = useMutation(api.users.updateSelectedCourt);
     const [isUpdating, setIsUpdating] = React.useState(false);
@@ -35,11 +37,12 @@ export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: Court
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <TouchableOpacity className="flex-1" onPress={onClose}>
-                <View className="flex-1 justify-end">
+            <TouchableOpacity className="flex-1" onPress={onClose} activeOpacity={1}>
+                <View className="flex-1 justify-end bg-black/50">
                     <View
                         className="bg-white rounded-t-3xl max-h-[70%]"
                         style={{
+                            paddingBottom: bottom + 12,
                             shadowColor: "#000",
                             shadowOffset: { width: 0, height: -4 },
                             shadowOpacity: 0.1,
@@ -61,7 +64,7 @@ export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: Court
                         <ScrollView className="px-4 py-2">
                             {!courts ? (
                                 <View className="py-8 items-center">
-                                    <ActivityIndicator size="large" color="#84cc16" />
+                                    <ActivityIndicator size="large" color="#3F7D20" />
                                 </View>
                             ) : courts.length === 0 ? (
                                 <View className="py-8 items-center">
@@ -77,20 +80,19 @@ export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: Court
                                             key={court._id}
                                             onPress={() => handleSelectCourt(court._id)}
                                             disabled={isUpdating}
-                                            className={`py-4 px-4 border-b border-slate-100 flex-row items-center justify-between ${isSelected ? "bg-lime-50" : "active:bg-slate-50"
+                                            className={`py-4 px-4 border-b border-slate-100 flex-row items-center justify-between ${isSelected ? "bg-brand/10" : "active:bg-slate-50"
                                                 }`}
                                         >
-                                            <Text className={`text-lg ${isSelected ? "text-lime-700 font-semibold" : "text-slate-700"}`}>
+                                            <Text className={`text-lg ${isSelected ? "text-brand-strong font-semibold" : "text-slate-700"}`}>
                                                 {court.name}
                                             </Text>
                                             {isSelected && (
-                                                <Ionicons name="checkmark-circle" size={24} color="#84cc16" />
+                                                <Ionicons name="checkmark-circle" size={24} color="#3F7D20" />
                                             )}
                                         </TouchableOpacity>
                                     );
                                 })
                             )}
-                            <View className="h-4" />
                         </ScrollView>
                     </View>
                 </View>

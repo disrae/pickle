@@ -26,8 +26,8 @@ function TabsLayoutInner() {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarActiveTintColor: "#a3e635",
-                tabBarInactiveTintColor: "#8a9482",
+                tabBarActiveTintColor: "#3F7D20",
+                tabBarInactiveTintColor: "#5C6454",
             }}
         >
             <Tabs.Screen name="index" options={{ href: null }} />
@@ -60,7 +60,7 @@ function TabsLayoutInner() {
                     tabBarIcon: ({ focused, color, size }) => (
                         <Ionicons
                             name={focused ? "trophy" : "trophy-outline"}
-                            color={focused ? "#f59e0b" : color}
+                            color={focused ? "#B45309" : color}
                             size={size}
                         />
                     ),

@@ -190,8 +190,8 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                     borderRadius: 16,
                     padding: 16,
                     borderWidth: 1,
-                    borderColor: "rgba(255,255,255,0.08)",
-                    backgroundColor: "rgba(8, 12, 7, 0.93)",
+                    borderColor: "rgba(18,23,15,0.08)",
+                    backgroundColor: "#FFFFFF",
                 }}
             >
                 {/* Collapsed State */}
@@ -199,16 +199,16 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                     <View className="flex-row items-center justify-between">
                         <View className="flex-1">
                             <View className="flex-row items-center mb-1">
-                                <Ionicons name="stats-chart" size={20} color="#a3e635" />
-                                <Text className="text-lg font-bold text-slate-200 ml-2">
+                                <Ionicons name="stats-chart" size={20} color="#3F7D20" />
+                                <Text className="text-lg font-bold text-foreground ml-2">
                                     Your Skill Profile
                                 </Text>
                             </View>
-                            <Text className="text-slate-300 text-sm tracking-wide">
+                            <Text className="text-foreground-muted text-sm tracking-wide">
                                 {overallProgress.toFixed(0)}% Overall Progress • Tap to explore
                             </Text>
                         </View>
-                        <Ionicons name="chevron-down" size={24} color="#cbd5e1" />
+                        <Ionicons name="chevron-down" size={24} color="#5c6454" />
                     </View>
                 ) : (
                     // Expanded State
@@ -216,12 +216,12 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                         {/* Header */}
                         <View className="flex-row items-center justify-between mb-4">
                             <View className="flex-row items-center">
-                                <Ionicons name="stats-chart" size={20} color="#a3e635" />
-                                <Text className="text-lg font-bold text-slate-200 ml-2">
+                                <Ionicons name="stats-chart" size={20} color="#3F7D20" />
+                                <Text className="text-lg font-bold text-foreground ml-2">
                                     Your Skill Profile
                                 </Text>
                             </View>
-                            <Ionicons name="chevron-up" size={24} color="#cbd5e1" />
+                            <Ionicons name="chevron-up" size={24} color="#5c6454" />
                         </View>
 
                         {/* Radar Chart */}
@@ -237,49 +237,49 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                             toggleSkill(skill.name);
                                         }}
                                         activeOpacity={0.7}
-                                        className="flex-row items-center justify-between py-3 border-t border-slate-600/50"
+                                        className="flex-row items-center justify-between py-3 border-t border-border"
                                     >
                                         <View className="flex-1 flex-row items-center">
-                                            <Text className="text-slate-200 font-semibold text-base">
+                                            <Text className="text-foreground font-semibold text-base">
                                                 {skill.name}
                                             </Text>
-                                            <View className="ml-3 flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                            <View className="ml-3 flex-1 h-2 bg-surface-2 rounded-full overflow-hidden">
                                                 <View
-                                                    className="h-full bg-lime-500 rounded-full"
+                                                    className="h-full bg-brand rounded-full"
                                                     style={{
                                                         width: `${skillProgress[skill.name] || 0}%`,
                                                     }}
                                                 />
                                             </View>
-                                            <Text className="ml-2 text-slate-400 text-sm w-10 text-right">
+                                            <Text className="ml-2 text-foreground-muted text-sm w-10 text-right">
                                                 {(skillProgress[skill.name] || 0).toFixed(0)}%
                                             </Text>
                                         </View>
                                         <Ionicons
                                             name={expandedSkills.has(skill.name) ? "chevron-up" : "chevron-down"}
                                             size={20}
-                                            color="#cbd5e1"
+                                            color="#5c6454"
                                         />
                                     </TouchableOpacity>
 
                                     {expandedSkills.has(skill.name) && (
                                         <View className="pb-3 pl-2">
-                                            <Text className="text-slate-200 text-sm tracking-wide mb-2">
+                                            <Text className="text-foreground text-sm tracking-wide mb-2">
                                                 {skill.description}
                                             </Text>
-                                            <View className="bg-slate-800/50 rounded-lg p-3 mb-2">
-                                                <Text className="text-lime-400 text-xs font-semibold mb-1">
-                                                    WHEN TO USE
+                                            <View className="bg-surface-2 rounded-lg p-3 mb-2">
+                                            <Text className="text-brand-strong text-xs font-semibold mb-1">
+                                                WHEN TO USE
                                                 </Text>
-                                                <Text className="text-slate-200 text-sm tracking-wide">
+                                                <Text className="text-foreground text-sm tracking-wide">
                                                     {skill.whenToUse}
                                                 </Text>
                                             </View>
-                                            <View className="bg-slate-800/50 rounded-lg p-3">
-                                                <Text className="text-lime-400 text-xs font-semibold mb-1">
+                                            <View className="bg-surface-2 rounded-lg p-3">
+                                                <Text className="text-brand-strong text-xs font-semibold mb-1">
                                                     DUPR PROGRESSION
                                                 </Text>
-                                                <Text className="text-slate-200 text-sm tracking-wide">
+                                                <Text className="text-foreground text-sm tracking-wide">
                                                     {skill.duprGuidance}
                                                 </Text>
                                             </View>
@@ -297,18 +297,18 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                     toggleStrategy();
                                 }}
                                 activeOpacity={0.7}
-                                className="flex-row items-center justify-between py-3 border-t border-slate-600/50"
+                                className="flex-row items-center justify-between py-3 border-t border-border"
                             >
                                 <View className="flex-row items-center">
-                                    <Ionicons name="book" size={18} color="#a3e635" />
-                                    <Text className="text-slate-200 font-semibold text-base ml-2">
+                                    <Ionicons name="book" size={18} color="#3F7D20" />
+                                    <Text className="text-foreground font-semibold text-base ml-2">
                                         {STRATEGY_CONTENT.title}
                                     </Text>
                                 </View>
                                 <Ionicons
                                     name={showStrategy ? "chevron-up" : "chevron-down"}
                                     size={20}
-                                    color="#cbd5e1"
+                                    color="#5c6454"
                                 />
                             </TouchableOpacity>
 
@@ -316,10 +316,10 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                 <View className="pb-3 pl-2">
                                     {STRATEGY_CONTENT.sections.map((section, idx) => (
                                         <View key={idx} className="mb-3">
-                                            <Text className="text-lime-400 text-sm font-semibold mb-1">
+                                            <Text className="text-brand-strong text-sm font-semibold mb-1">
                                                 {section.title}
                                             </Text>
-                                            <Text className="text-slate-200 text-sm tracking-wide">
+                                            <Text className="text-foreground text-sm tracking-wide">
                                                 {section.content}
                                             </Text>
                                         </View>
@@ -336,18 +336,18 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                     toggleDupr();
                                 }}
                                 activeOpacity={0.7}
-                                className="flex-row items-center justify-between py-3 border-t border-slate-600/50"
+                                className="flex-row items-center justify-between py-3 border-t border-border"
                             >
                                 <View className="flex-row items-center">
-                                    <Ionicons name="analytics" size={18} color="#a3e635" />
-                                    <Text className="text-slate-200 font-semibold text-base ml-2">
+                                    <Ionicons name="analytics" size={18} color="#3F7D20" />
+                                    <Text className="text-foreground font-semibold text-base ml-2">
                                         {DUPR_CONTENT.title}
                                     </Text>
                                 </View>
                                 <Ionicons
                                     name={showDupr ? "chevron-up" : "chevron-down"}
                                     size={20}
-                                    color="#cbd5e1"
+                                    color="#5c6454"
                                 />
                             </TouchableOpacity>
 
@@ -355,10 +355,10 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                 <View className="pb-3 pl-2">
                                     {DUPR_CONTENT.sections.map((section, idx) => (
                                         <View key={idx} className="mb-3">
-                                            <Text className="text-lime-400 text-sm font-semibold mb-1">
+                                            <Text className="text-brand-strong text-sm font-semibold mb-1">
                                                 {section.title}
                                             </Text>
-                                            <Text className="text-slate-200 text-sm tracking-wide">
+                                            <Text className="text-foreground text-sm tracking-wide">
                                                 {section.content}
                                             </Text>
                                         </View>
@@ -375,18 +375,18 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                     toggleRules();
                                 }}
                                 activeOpacity={0.7}
-                                className="flex-row items-center justify-between py-3 border-t border-slate-600/50"
+                                className="flex-row items-center justify-between py-3 border-t border-border"
                             >
                                 <View className="flex-row items-center">
-                                    <Ionicons name="clipboard" size={18} color="#a3e635" />
-                                    <Text className="text-slate-200 font-semibold text-base ml-2">
+                                    <Ionicons name="clipboard" size={18} color="#3F7D20" />
+                                    <Text className="text-foreground font-semibold text-base ml-2">
                                         {RULES_CONTENT.title}
                                     </Text>
                                 </View>
                                 <Ionicons
                                     name={showRules ? "chevron-up" : "chevron-down"}
                                     size={20}
-                                    color="#cbd5e1"
+                                    color="#5c6454"
                                 />
                             </TouchableOpacity>
 
@@ -394,10 +394,10 @@ export function SkillRoadmapCard({ skillProgress }: SkillRoadmapCardProps) {
                                 <View className="pb-3 pl-2">
                                     {RULES_CONTENT.sections.map((section, idx) => (
                                         <View key={idx} className="mb-3">
-                                            <Text className="text-lime-400 text-sm font-semibold mb-1">
+                                            <Text className="text-brand-strong text-sm font-semibold mb-1">
                                                 {section.title}
                                             </Text>
-                                            <Text className="text-slate-200 text-sm tracking-wide">
+                                            <Text className="text-foreground text-sm tracking-wide">
                                                 {section.content}
                                             </Text>
                                         </View>
@@ -453,7 +453,7 @@ function RadarChart({ skillProgress }: RadarChartProps) {
                         cy={center}
                         r={maxRadius * scale}
                         fill="none"
-                        stroke="rgba(148, 163, 184, 0.2)"
+                        stroke="rgba(18,23,15,0.1)"
                         strokeWidth="1"
                     />
                 ))}
@@ -466,7 +466,7 @@ function RadarChart({ skillProgress }: RadarChartProps) {
                         y1={center}
                         x2={center + maxRadius * Math.cos((Math.PI * 2 * index) / numSkills - Math.PI / 2)}
                         y2={center + maxRadius * Math.sin((Math.PI * 2 * index) / numSkills - Math.PI / 2)}
-                        stroke="rgba(148, 163, 184, 0.3)"
+                        stroke="rgba(18,23,15,0.15)"
                         strokeWidth="1"
                     />
                 ))}
@@ -474,8 +474,8 @@ function RadarChart({ skillProgress }: RadarChartProps) {
                 {/* Skill progress polygon */}
                 <Polygon
                     points={polygonPoints}
-                    fill="rgba(163, 230, 53, 0.3)"
-                    stroke="rgba(163, 230, 53, 0.8)"
+                    fill="rgba(63, 125, 32, 0.3)"
+                    stroke="rgba(63, 125, 32, 0.8)"
                     strokeWidth="2"
                 />
 
@@ -493,7 +493,7 @@ function RadarChart({ skillProgress }: RadarChartProps) {
                             y={point.labelY}
                             fontSize="12"
                             fontWeight="600"
-                            fill="#cbd5e1"
+                            fill="#5c6454"
                             textAnchor={textAnchor}
                             alignmentBaseline="middle"
                         >

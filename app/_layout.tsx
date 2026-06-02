@@ -1,6 +1,12 @@
 import { LoadingScreen } from "@/components/screens/Loading";
 import { UpdateToast } from "@/components/ui/UpdateToast";
 import { api } from "@/convex/_generated/api";
+import {
+  Archivo_600SemiBold,
+  Archivo_700Bold,
+  Archivo_800ExtraBold,
+  useFonts,
+} from "@expo-google-fonts/archivo";
 import { LoadingProvider } from '@/lib/loading-context';
 import { ThemeProvider, useTheme } from '@/lib/theme-context';
 import { UpdatesProvider, useUpdatesContext } from '@/lib/updates-context';
@@ -57,7 +63,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider defaultTheme="light">
         <ConvexAuthProvider
           client={convex}
           storage={
@@ -84,12 +90,17 @@ export default function RootLayout() {
 function AppContent() {
   const { activeTheme } = useTheme();
   const user = useQuery(api.users.currentUser);
+  const [fontsLoaded] = useFonts({
+    Archivo_600SemiBold,
+    Archivo_700Bold,
+    Archivo_800ExtraBold,
+  });
 
   useEffect(() => {
-    if (user !== undefined) {
+    if (user !== undefined && fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [user]);
+  }, [user, fontsLoaded]);
 
   return (
     <View style={activeTheme} className="flex-1 bg-background">

@@ -54,9 +54,9 @@ export function ProposedSkillsCompact({
                     className="mt-2 bg-brand rounded-xl py-2.5 items-center"
                 >
                     {confirming ? (
-                        <ActivityIndicator color="#151c0c" size="small" />
+                        <ActivityIndicator color="#f7fbf0" size="small" />
                     ) : (
-                        <Text className="text-[#151c0c] text-sm font-bold">OK</Text>
+                        <Text className="text-brand-foreground text-sm font-bold">OK</Text>
                     )}
                 </TouchableOpacity>
             </GlassContainer>

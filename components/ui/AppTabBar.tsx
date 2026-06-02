@@ -4,8 +4,8 @@ import { TAB_BAR_CONTENT_HEIGHT, TAB_BAR_TOP_PADDING } from "@/lib/tab-bar-layou
 import { Platform, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const ACTIVE = "#a3e635";
-const INACTIVE = "#8a9482";
+const ACTIVE = "#3F7D20"; // sport-green
+const INACTIVE = "#5C6454"; // muted ink
 
 /**
  * Bottom tab bar for Android (and iOS when NativeTabs / liquid glass unavailable).
@@ -18,9 +18,9 @@ export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps)
     return (
         <View
             style={{
-                backgroundColor: "#0c100a",
+                backgroundColor: "#FFFFFF",
                 borderTopWidth: 1,
-                borderTopColor: "rgba(255,255,255,0.08)",
+                borderTopColor: "rgba(18,23,15,0.08)",
                 paddingTop: TAB_BAR_TOP_PADDING,
                 paddingBottom: bottom,
                 ...(Platform.OS === "android" ? { elevation: 12 } : {}),
@@ -70,7 +70,7 @@ export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps)
                             accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
                             onPress={onPress}
                             onLongPress={onLongPress}
-                            android_ripple={{ color: "rgba(163,230,53,0.12)", borderless: true }}
+                            android_ripple={{ color: "rgba(63,125,32,0.12)", borderless: true }}
                             style={{
                                 flex: 1,
                                 alignItems: "center",

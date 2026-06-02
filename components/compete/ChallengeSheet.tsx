@@ -76,12 +76,12 @@ export function ChallengeSheet({
     };
 
     return (
-        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="80%" tone="dark">
+        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="80%" tone="light">
             <View style={{ paddingHorizontal: 20, paddingBottom: 32 }}>
                 {/* Title */}
                 <Text
                     style={{
-                        color: "#f1f5f9",
+                        color: "#12170f",
                         fontWeight: "700",
                         fontSize: 20,
                         marginBottom: 20,
@@ -111,17 +111,17 @@ export function ChallengeSheet({
                                     backgroundColor:
                                         format === f
                                             ? "rgba(245,158,11,0.15)"
-                                            : "rgba(255,255,255,0.05)",
+                                            : "rgba(18,23,15,0.04)",
                                     borderWidth: 1,
                                     borderColor:
                                         format === f
                                             ? "rgba(245,158,11,0.4)"
-                                            : "rgba(255,255,255,0.1)",
+                                            : "rgba(18,23,15,0.12)",
                                 }}
                             >
                                 <Text
                                     style={{
-                                        color: format === f ? "#f59e0b" : "#6b7280",
+                                        color: format === f ? "#B45309" : "#5c6454",
                                         fontWeight: "600",
                                         fontSize: 14,
                                         textTransform: "capitalize",
@@ -135,9 +135,9 @@ export function ChallengeSheet({
                 </View>
 
                 {checkIns === undefined ? (
-                    <ActivityIndicator color="#f59e0b" />
+                    <ActivityIndicator color="#B45309" />
                 ) : checkedInPlayers.length === 0 ? (
-                    <Text style={{ color: "#6b7280", textAlign: "center", marginVertical: 16 }}>
+                    <Text style={{ color: "#5c6454", textAlign: "center", marginVertical: 16 }}>
                         Nobody else checked in right now
                     </Text>
                 ) : (
@@ -244,11 +244,11 @@ export function ChallengeSheet({
                             <Ionicons
                                 name="trophy"
                                 size={18}
-                                color={canSubmit ? "#151c0c" : "#f59e0b"}
+                                color={canSubmit ? "#151c0c" : "#B45309"}
                             />
                             <Text
                                 style={{
-                                    color: canSubmit ? "#151c0c" : "#f59e0b",
+                                    color: canSubmit ? "#151c0c" : "#B45309",
                                     fontWeight: "700",
                                     fontSize: 15,
                                 }}
@@ -283,11 +283,11 @@ function PlayerPill({
                     borderRadius: 14,
                     backgroundColor: selected
                         ? "rgba(245,158,11,0.12)"
-                        : "rgba(255,255,255,0.04)",
+                        : "rgba(18,23,15,0.04)",
                     borderWidth: 1,
                     borderColor: selected
                         ? "rgba(245,158,11,0.4)"
-                        : "rgba(255,255,255,0.07)",
+                        : "rgba(18,23,15,0.08)",
                 }}
             >
                 <View
@@ -296,8 +296,8 @@ function PlayerPill({
                         height: 20,
                         borderRadius: 10,
                         borderWidth: 2,
-                        borderColor: selected ? "#f59e0b" : "#4b5563",
-                        backgroundColor: selected ? "#f59e0b" : "transparent",
+                        borderColor: selected ? "#B45309" : "#c4c9bd",
+                        backgroundColor: selected ? "#B45309" : "transparent",
                         marginRight: 12,
                         alignItems: "center",
                         justifyContent: "center",
@@ -307,7 +307,7 @@ function PlayerPill({
                 </View>
                 <Text
                     style={{
-                        color: selected ? "#f1f5f9" : "#9ca3af",
+                        color: selected ? "#12170f" : "#5c6454",
                         fontWeight: selected ? "600" : "400",
                         fontSize: 14,
                     }}
@@ -320,7 +320,7 @@ function PlayerPill({
 }
 
 const labelStyle = {
-    color: "#6b7280",
+    color: "#5c6454",
     fontSize: 11,
     fontWeight: "600" as const,
     textTransform: "uppercase" as const,

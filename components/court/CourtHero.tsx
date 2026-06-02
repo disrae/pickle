@@ -94,7 +94,7 @@ export function CourtHero({
                                     >
                                         <Text
                                             style={{
-                                                color: "#f59e0b",
+                                                color: "#B45309",
                                                 fontWeight: "700",
                                                 fontSize: 12,
                                             }}
@@ -139,9 +139,9 @@ export function CourtHero({
                             className="px-4 py-3 rounded-2xl border border-border items-center justify-center"
                         >
                             {isCheckingIn ? (
-                                <ActivityIndicator size="small" color="#a3e635" />
+                                <ActivityIndicator size="small" color="#3F7D20" />
                             ) : (
-                                <Ionicons name="eye-off-outline" size={22} color="#6b7563" />
+                                <Ionicons name="eye-off-outline" size={22} color="#5c6454" />
                             )}
                         </TouchableOpacity>
                     </>

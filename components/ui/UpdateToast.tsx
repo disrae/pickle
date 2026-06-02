@@ -61,27 +61,26 @@ export function UpdateToast({ isVisible, onPress, onDismiss }: UpdateToastProps)
         >
             <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
                 <GlassContainer
-                    // this needs to be dark
                     glassEffectStyle="regular"
                     style={{
                         borderRadius: 16,
                         padding: 16,
                         borderWidth: 1,
-                        borderColor: "rgba(132, 204, 22, 0.3)",
+                        borderColor: "rgba(63, 125, 32, 0.3)",
                     }}
                 >
                     <View className="flex-row items-center">
                         {/* Icon */}
-                        <View className="bg-lime-500/20 rounded-full p-2 mr-3">
-                            <Ionicons name="cloud-download" size={24} color="#84cc16" />
+                        <View className="bg-brand/15 rounded-full p-2 mr-3">
+                            <Ionicons name="cloud-download" size={24} color="#3F7D20" />
                         </View>
 
                         {/* Content */}
                         <View className="flex-1">
-                            <Text className="text-lime-400 font-bold text-lg">
+                            <Text className="text-brand-strong font-bold text-lg">
                                 Update Available
                             </Text>
-                            <Text className="text-slate-300 text-sm mt-0.5">
+                            <Text className="text-foreground-muted text-sm mt-0.5">
                                 Tap to update now
                             </Text>
                         </View>
@@ -94,7 +93,7 @@ export function UpdateToast({ isVisible, onPress, onDismiss }: UpdateToastProps)
                             }}
                             className="ml-2 p-1"
                         >
-                            <Ionicons name="close" size={20} color="#94a3b8" />
+                            <Ionicons name="close" size={20} color="#5c6454" />
                         </TouchableOpacity>
                     </View>
                 </GlassContainer>
