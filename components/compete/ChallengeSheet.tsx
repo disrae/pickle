@@ -76,7 +76,7 @@ export function ChallengeSheet({
     };
 
     return (
-        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="80%">
+        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="80%" tone="dark">
             <View style={{ paddingHorizontal: 20, paddingBottom: 32 }}>
                 {/* Title */}
                 <Text

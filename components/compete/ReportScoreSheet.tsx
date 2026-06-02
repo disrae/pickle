@@ -89,7 +89,7 @@ export function ReportScoreSheet({
     if (!match) return null;
 
     return (
-        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="60%">
+        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="60%" tone="dark">
             <View style={{ paddingHorizontal: 24, paddingBottom: 32 }}>
                 <Text
                     style={{

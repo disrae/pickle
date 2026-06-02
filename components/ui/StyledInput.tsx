@@ -15,10 +15,21 @@ const LIGHT = {
     text: "#12170f",
     placeholder: "#6b7560",
     fieldBg: "#ffffff",
-    fieldBgFocused: "#ffffff",
+    fieldBgFocused: "#e9f6d3",
     border: "#e2e4db",
     borderFocused: "#84cc16",
 } as const;
+
+function focusRing(color: string) {
+    return Platform.OS === "web"
+        ? ({ boxShadow: `0 0 0 3px ${color}` } as const)
+        : {
+              shadowColor: color,
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.45,
+              shadowRadius: 6,
+          };
+}
 
 export function StyledInput({
     label,
@@ -59,6 +70,13 @@ export function StyledInput({
                     borderColor: focused ? palette.borderFocused : palette.border,
                     borderWidth: 1,
                     borderCurve: "continuous",
+                    ...(focused
+                        ? focusRing(
+                              theme === "dark"
+                                  ? "rgba(163,230,53,0.22)"
+                                  : "rgba(132,204,22,0.22)"
+                          )
+                        : {}),
                 }}
             >
                 <TextInput

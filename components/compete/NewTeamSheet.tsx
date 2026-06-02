@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import {
     ActivityIndicator,
+    Platform,
     ScrollView,
     Text,
     TextInput,
@@ -27,6 +28,7 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
         preselectedPartnerId ?? null
     );
     const [sending, setSending] = useState(false);
+    const [nameFocused, setNameFocused] = useState(false);
 
     const currentUser = useQuery(api.users.currentUser);
     const checkIns = useQuery(
@@ -66,7 +68,7 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
     };
 
     return (
-        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="85%">
+        <BottomSheetCard isVisible={isVisible} onClose={onClose} maxHeight="85%" tone="dark">
             <View style={{ paddingHorizontal: 20, paddingBottom: 32 }}>
                 <Text style={{ color: "#f1f5f9", fontWeight: "700", fontSize: 20, marginBottom: 20 }}>
                     New Team
@@ -78,19 +80,38 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
                     value={teamName}
                     onChangeText={setTeamName}
                     placeholder="e.g. The Dink Tanks"
-                    placeholderTextColor="#374151"
+                    placeholderTextColor="#6b7280"
+                    onFocus={() => setNameFocused(true)}
+                    onBlur={() => setNameFocused(false)}
+                    underlineColorAndroid="transparent"
+                    className="outline-none"
                     style={{
-                        backgroundColor: "rgba(255,255,255,0.07)",
+                        backgroundColor: nameFocused
+                            ? "rgba(245,158,11,0.08)"
+                            : "rgba(255,255,255,0.07)",
                         borderRadius: 14,
                         borderWidth: 1,
-                        borderColor: teamName.length >= 2
-                            ? "rgba(245,158,11,0.4)"
-                            : "rgba(255,255,255,0.1)",
+                        borderColor: nameFocused
+                            ? "rgba(245,158,11,0.55)"
+                            : teamName.length >= 2
+                              ? "rgba(245,158,11,0.4)"
+                              : "rgba(255,255,255,0.1)",
                         color: "#f1f5f9",
                         fontSize: 15,
                         paddingHorizontal: 14,
                         paddingVertical: 12,
                         marginBottom: 20,
+                        ...(nameFocused
+                            ? Platform.OS === "web"
+                                ? { boxShadow: "0 0 0 3px rgba(245,158,11,0.22)" }
+                                : {
+                                      shadowColor: "#f59e0b",
+                                      shadowOffset: { width: 0, height: 0 },
+                                      shadowOpacity: 0.35,
+                                      shadowRadius: 6,
+                                  }
+                            : {}),
+                        ...(Platform.OS === "web" ? { outlineStyle: "none" as const } : {}),
                     }}
                     maxLength={32}
                 />

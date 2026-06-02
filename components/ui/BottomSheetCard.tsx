@@ -19,14 +19,23 @@ interface BottomSheetCardProps {
     onClose: () => void;
     children: ReactNode;
     maxHeight?: string;
+    /** Light for forms with slate text; dark for compete-style sheets. */
+    tone?: "light" | "dark";
 }
+
+const TONE = {
+    light: { background: "#ffffff", handle: "#cbd5e1" },
+    dark: { background: "#141a10", handle: "rgba(255,255,255,0.22)" },
+} as const;
 
 export function BottomSheetCard({
     isVisible,
     onClose,
     children,
     maxHeight = "85%",
+    tone = "light",
 }: BottomSheetCardProps) {
+    const palette = TONE[tone];
     // Gesture handling
     const translateY = useSharedValue(0);
     const context = useSharedValue({ y: 0 });
@@ -79,9 +88,9 @@ export function BottomSheetCard({
                     className="flex-1 justify-end bg-black/0"
                 >
                     <Animated.View
-                        className="bg-white rounded-t-3xl"
+                        className="rounded-t-3xl"
                         style={[
-                            { maxHeight: maxHeight as any, backgroundColor: "white" },
+                            { maxHeight: maxHeight as any, backgroundColor: palette.background },
                             rBottomSheetStyle,
                         ]}
                         onStartShouldSetResponder={() => true}
@@ -89,7 +98,10 @@ export function BottomSheetCard({
                         {/* Drag Handle - Only this area responds to pan gestures */}
                         <GestureDetector gesture={gesture}>
                             <View className="items-center pt-3 pb-2">
-                                <View className="w-12 h-1 bg-slate-300 rounded-full" />
+                                <View
+                                    className="w-12 h-1 rounded-full"
+                                    style={{ backgroundColor: palette.handle }}
+                                />
                             </View>
                         </GestureDetector>
 
