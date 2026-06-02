@@ -349,6 +349,10 @@ const schema = defineSchema({
         challengedTeamId: v.optional(v.id("teams")),
         format: v.union(v.literal("doubles"), v.literal("singles")),
         courtId: v.id("courts"),
+        /** Candidate schedule options proposed by challenger */
+        proposedTimes: v.optional(v.array(v.number())),
+        /** Final selected time after challenge acceptance */
+        selectedTime: v.optional(v.number()),
         status: v.union(
             v.literal("pending"),
             v.literal("accepted"),

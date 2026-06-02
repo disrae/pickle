@@ -13,18 +13,25 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import {
     ActivityIndicator,
     ScrollView,
     Text,
     TouchableOpacity,
     View,
+    type ViewStyle,
 } from "react-native";
 
 type TopTab = "ladder" | "teams";
 type LadderFormat = "doubles" | "singles";
 type TeamSection = "mine" | "browse";
+type IoniconName = ComponentProps<typeof Ionicons>["name"];
+
+const BRAND_GREEN = "#3F7D20";
+const BRAND_GREEN_DARK = "#244B16";
+const INK = "#12170F";
+const MUTED_INK = "#5c6454";
 
 type ChallengeTarget = {
     opponentId: Id<"users">;
@@ -193,43 +200,143 @@ function TopControl({
     onChange: (v: TopTab) => void;
 }) {
     return (
+        <PillSwitch
+            value={value}
+            onChange={onChange}
+            variant="primary"
+            options={[
+                {
+                    value: "ladder",
+                    label: "Ladder",
+                    helper: "Rankings",
+                    icon: "podium-outline",
+                },
+                {
+                    value: "teams",
+                    label: "Teams",
+                    helper: "Partners",
+                    icon: "people-outline",
+                },
+            ]}
+            style={{ marginBottom: 16 }}
+        />
+    );
+}
+
+function PillSwitch<T extends string>({
+    value,
+    onChange,
+    options,
+    variant = "compact",
+    style,
+}: {
+    value: T;
+    onChange: (value: T) => void;
+    options: {
+        value: T;
+        label: string;
+        icon: IoniconName;
+        helper?: string;
+    }[];
+    variant?: "primary" | "compact";
+    style?: ViewStyle;
+}) {
+    const isPrimary = variant === "primary";
+
+    return (
         <GlassContainer
-            style={{
-                padding: 6,
-                marginBottom: 14,
-                flexDirection: "row",
-            }}
+            style={[
+                {
+                    padding: isPrimary ? 6 : 4,
+                    flexDirection: "row",
+                    borderRadius: isPrimary ? 24 : 999,
+                    borderColor: "rgba(18,23,15,0.10)",
+                    backgroundColor: "rgba(255,255,255,0.92)",
+                },
+                style,
+            ]}
         >
-            {(["ladder", "teams"] as TopTab[]).map((tab) => (
-                <TouchableOpacity
-                    key={tab}
-                    onPress={() => onChange(tab)}
-                    activeOpacity={0.7}
-                    style={{ flex: 1 }}
-                >
-                    <View
-                        style={{
-                            paddingVertical: 12,
-                            borderRadius: 14,
-                            alignItems: "center",
-                            backgroundColor:
-                                value === tab
-                                    ? "rgba(245, 158, 11, 0.22)"
-                                    : "rgba(18,23,15,0.04)",
-                        }}
+            {options.map((option) => {
+                const active = value === option.value;
+
+                return (
+                    <TouchableOpacity
+                        key={option.value}
+                        onPress={() => onChange(option.value)}
+                        activeOpacity={0.78}
+                        style={isPrimary ? { flex: 1 } : undefined}
                     >
-                        <Text
+                        <View
                             style={{
-                                fontWeight: "700",
-                                fontSize: 16,
-                                color: value === tab ? "#B45309" : "#3b4332",
+                                minHeight: isPrimary ? 58 : 38,
+                                paddingHorizontal: isPrimary ? 12 : 14,
+                                paddingVertical: isPrimary ? 10 : 8,
+                                borderRadius: 999,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: isPrimary ? 9 : 6,
+                                backgroundColor: active
+                                    ? isPrimary
+                                        ? BRAND_GREEN_DARK
+                                        : "rgba(63,125,32,0.12)"
+                                    : "transparent",
+                                borderWidth: 1,
+                                borderColor: active
+                                    ? isPrimary
+                                        ? "rgba(63,125,32,0.95)"
+                                        : "rgba(63,125,32,0.28)"
+                                    : "transparent",
                             }}
                         >
-                            {tab === "ladder" ? "Ladder" : "Teams"}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            ))}
+                            <View
+                                style={{
+                                    width: isPrimary ? 30 : 20,
+                                    height: isPrimary ? 30 : 20,
+                                    borderRadius: 999,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    backgroundColor: active
+                                        ? isPrimary
+                                            ? "rgba(255,255,255,0.16)"
+                                            : "rgba(63,125,32,0.14)"
+                                        : "rgba(18,23,15,0.06)",
+                                }}
+                            >
+                                <Ionicons
+                                    name={option.icon}
+                                    size={isPrimary ? 17 : 13}
+                                    color={active ? (isPrimary ? "#FFFFFF" : BRAND_GREEN) : MUTED_INK}
+                                />
+                            </View>
+                            <View style={{ alignItems: isPrimary ? "flex-start" : "center" }}>
+                                <Text
+                                    style={{
+                                        color: active ? (isPrimary ? "#FFFFFF" : BRAND_GREEN_DARK) : INK,
+                                        fontWeight: active ? "800" : "700",
+                                        fontSize: isPrimary ? 15 : 13,
+                                        letterSpacing: isPrimary ? 0.1 : 0.15,
+                                    }}
+                                >
+                                    {option.label}
+                                </Text>
+                                {isPrimary && option.helper && (
+                                    <Text
+                                        style={{
+                                            marginTop: 1,
+                                            color: active ? "rgba(255,255,255,0.72)" : MUTED_INK,
+                                            fontWeight: "600",
+                                            fontSize: 11,
+                                        }}
+                                    >
+                                        {option.helper}
+                                    </Text>
+                                )}
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                );
+            })}
         </GlassContainer>
     );
 }
@@ -253,11 +360,28 @@ function LadderSection({
 }) {
     const scheduled = useQuery(api.challenges.myScheduledMatches);
     const pendingDebrief = useQuery(api.challenges.pendingDebrief);
+    const activeChallenges = useQuery(api.challenges.myChallenges);
     const doublesLadder = useQuery(api.teams.teamsByRating, { courtId });
     const singlesLadder = useQuery(api.challenges.singlesLadder, { courtId });
+    const receivedPending = Array.from(
+        new Map(
+            (activeChallenges ?? [])
+                .filter((c) => c.status === "pending")
+                .map((c) => [c._id, c])
+        ).values()
+    );
 
     return (
         <View>
+            {/* Pending challenge scheduling */}
+            {receivedPending.length > 0 && (
+                <View style={{ marginBottom: 12 }}>
+                    {receivedPending.map((challenge) => (
+                        <PendingChallengeCard key={challenge._id} challenge={challenge} />
+                    ))}
+                </View>
+            )}
+
             {/* Debrief banner */}
             {pendingDebrief && pendingDebrief.length > 0 && (
                 <TouchableOpacity
@@ -312,50 +436,15 @@ function LadderSection({
                 </View>
             )}
 
-            {/* Format toggle: Doubles · Singles */}
-            <View
-                style={{
-                    flexDirection: "row",
-                    marginBottom: 12,
-                    gap: 8,
-                }}
-            >
-                {(["doubles", "singles"] as LadderFormat[]).map((f) => (
-                    <TouchableOpacity
-                        key={f}
-                        onPress={() => onFormatChange(f)}
-                        activeOpacity={0.7}
-                    >
-                        <View
-                            style={{
-                                paddingHorizontal: 16,
-                                paddingVertical: 8,
-                                borderRadius: 20,
-                                backgroundColor:
-                                    format === f
-                                        ? "rgba(245, 158, 11, 0.15)"
-                                        : "rgba(18,23,15,0.06)",
-                                borderWidth: 1,
-                                borderColor:
-                                    format === f
-                                        ? "rgba(245, 158, 11, 0.4)"
-                                        : "rgba(18,23,15,0.08)",
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color: format === f ? "#B45309" : "#3b4332",
-                                    fontWeight: "600",
-                                    fontSize: 14,
-                                    textTransform: "capitalize",
-                                }}
-                            >
-                                {f}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            <PillSwitch
+                value={format}
+                onChange={onFormatChange}
+                options={[
+                    { value: "doubles", label: "Doubles", icon: "people-outline" },
+                    { value: "singles", label: "Singles", icon: "person-outline" },
+                ]}
+                style={{ marginBottom: 12, alignSelf: "flex-start" }}
+            />
 
             {/* Ladder rows */}
             {format === "doubles" ? (
@@ -433,43 +522,15 @@ function TeamsSection({
                 </View>
             )}
 
-            {/* Mine | Browse toggle */}
-            <View style={{ flexDirection: "row", marginBottom: 12, gap: 8 }}>
-                {(["mine", "browse"] as TeamSection[]).map((s) => (
-                    <TouchableOpacity
-                        key={s}
-                        onPress={() => onSectionChange(s)}
-                        activeOpacity={0.7}
-                    >
-                        <View
-                            style={{
-                                paddingHorizontal: 16,
-                                paddingVertical: 8,
-                                borderRadius: 20,
-                                backgroundColor:
-                                    section === s
-                                        ? "rgba(245, 158, 11, 0.15)"
-                                        : "rgba(18,23,15,0.06)",
-                                borderWidth: 1,
-                                borderColor:
-                                    section === s
-                                        ? "rgba(245, 158, 11, 0.4)"
-                                        : "rgba(18,23,15,0.08)",
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color: section === s ? "#B45309" : "#3b4332",
-                                    fontWeight: "600",
-                                    fontSize: 14,
-                                }}
-                            >
-                                {s === "mine" ? "My Teams" : "Browse"}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            <PillSwitch
+                value={section}
+                onChange={onSectionChange}
+                options={[
+                    { value: "mine", label: "My Teams", icon: "people-circle-outline" },
+                    { value: "browse", label: "Browse", icon: "search-outline" },
+                ]}
+                style={{ marginBottom: 12, alignSelf: "flex-start" }}
+            />
 
             {section === "mine" ? (
                 myTeams === undefined ? (
@@ -823,7 +884,7 @@ function InviteCard({ invite }: { invite: any }) {
             }}
         >
             <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 14 }}>
-                Team invite: "{invite.teamName}"
+                Team invite: {invite.teamName}
             </Text>
             <Text style={{ color: "#5c6454", fontSize: 13, marginTop: 2 }}>
                 from {invite.inviter?.name ?? "Someone"}
@@ -1077,6 +1138,153 @@ function BrowseEmptyState() {
             >
                 Teams from players at your home court will appear here
             </Text>
+        </GlassContainer>
+    );
+}
+
+function PendingChallengeCard({ challenge }: { challenge: any }) {
+    const me = useQuery(api.users.currentUser);
+    const challenger = useQuery(api.users.getUserById, { userId: challenge.challengerId });
+    const respond = useMutation(api.challenges.respondToChallenge);
+    const [selectedTime, setSelectedTime] = useState<number | null>(null);
+    const [loading, setLoading] = useState(false);
+    const proposedTimes = (challenge.proposedTimes ?? []) as number[];
+    const isRecipient =
+        me?._id === challenge.challengedId || me?._id === challenge.challengedPartnerId;
+
+    if (!isRecipient) return null;
+
+    return (
+        <GlassContainer
+            style={{
+                borderRadius: 16,
+                padding: 14,
+                marginBottom: 8,
+                borderWidth: 1,
+                borderColor: "rgba(245, 158, 11, 0.3)",
+            }}
+        >
+            <Text style={{ color: "#12170f", fontWeight: "700", fontSize: 14 }}>
+                Challenge from {challenger?.name ?? "Opponent"}
+            </Text>
+            <Text style={{ color: "#5c6454", fontSize: 12, marginTop: 2, marginBottom: 8 }}>
+                Pick a time that works for your side
+            </Text>
+
+            {proposedTimes.length > 0 ? (
+                <View style={{ gap: 6 }}>
+                    {proposedTimes.map((ts) => (
+                        <TouchableOpacity
+                            key={ts}
+                            activeOpacity={0.8}
+                            onPress={() => setSelectedTime(ts)}
+                            style={{
+                                paddingHorizontal: 10,
+                                paddingVertical: 8,
+                                borderRadius: 10,
+                                borderWidth: 1,
+                                borderColor:
+                                    selectedTime === ts
+                                        ? "rgba(245,158,11,0.5)"
+                                        : "rgba(18,23,15,0.12)",
+                                backgroundColor:
+                                    selectedTime === ts
+                                        ? "rgba(245,158,11,0.15)"
+                                        : "rgba(18,23,15,0.03)",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: selectedTime === ts ? "#B45309" : "#5c6454",
+                                    fontWeight: "600",
+                                    fontSize: 12,
+                                }}
+                            >
+                                {new Date(ts).toLocaleString([], {
+                                    weekday: "short",
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                })}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            ) : (
+                <Text style={{ color: "#5c6454", fontSize: 12, marginBottom: 8 }}>
+                    No slots proposed (legacy challenge).
+                </Text>
+            )}
+
+            <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    disabled={loading || (proposedTimes.length > 0 && !selectedTime)}
+                    onPress={async () => {
+                        setLoading(true);
+                        try {
+                            await respond({
+                                challengeId: challenge._id,
+                                accept: true,
+                                selectedTime: selectedTime ?? undefined,
+                            });
+                        } catch (e) {
+                            console.error(e);
+                        } finally {
+                            setLoading(false);
+                        }
+                    }}
+                    style={{
+                        flex: 1,
+                        paddingVertical: 8,
+                        borderRadius: 10,
+                        backgroundColor: "rgba(245,158,11,0.2)",
+                        borderWidth: 1,
+                        borderColor: "rgba(245,158,11,0.4)",
+                        alignItems: "center",
+                    }}
+                >
+                    {loading ? (
+                        <ActivityIndicator size="small" color="#B45309" />
+                    ) : (
+                        <Text style={{ color: "#B45309", fontWeight: "700", fontSize: 13 }}>
+                            Accept
+                        </Text>
+                    )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    disabled={loading}
+                    onPress={async () => {
+                        setLoading(true);
+                        try {
+                            await respond({
+                                challengeId: challenge._id,
+                                accept: false,
+                            });
+                        } catch (e) {
+                            console.error(e);
+                        } finally {
+                            setLoading(false);
+                        }
+                    }}
+                    style={{
+                        flex: 1,
+                        paddingVertical: 8,
+                        borderRadius: 10,
+                        backgroundColor: "rgba(18,23,15,0.04)",
+                        borderWidth: 1,
+                        borderColor: "rgba(18,23,15,0.12)",
+                        alignItems: "center",
+                    }}
+                >
+                    <Text style={{ color: "#5c6454", fontWeight: "700", fontSize: 13 }}>
+                        Decline
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </GlassContainer>
     );
 }

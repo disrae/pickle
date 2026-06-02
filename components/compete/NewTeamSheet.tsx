@@ -27,6 +27,7 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
     const [partnerId, setPartnerId] = useState<Id<"users"> | null>(
         preselectedPartnerId ?? null
     );
+    const [partnerSearch, setPartnerSearch] = useState("");
     const [sending, setSending] = useState(false);
     const [nameFocused, setNameFocused] = useState(false);
 
@@ -52,6 +53,20 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
         .filter((u) => !checkedInIds.has(u._id))
         .slice(0, 30);
 
+    const search = partnerSearch.trim().toLowerCase();
+    const matchesSearch = (name?: string | null, email?: string | null) => {
+        if (!search) return true;
+        return (
+            (name ?? "").toLowerCase().includes(search) ||
+            (email ?? "").toLowerCase().includes(search)
+        );
+    };
+
+    const visibleCheckedIn = checkedInPlayers.filter((u) =>
+        matchesSearch(u.name, u.email)
+    );
+    const visibleOthers = otherPlayers.filter((u) => matchesSearch(u.name, u.email));
+
     const handleSend = async () => {
         if (!canSubmit || !partnerId || sending) return;
         setSending(true);
@@ -59,6 +74,7 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
             await invitePartner({ inviteeId: partnerId, teamName: teamName.trim() });
             setTeamName("");
             setPartnerId(null);
+            setPartnerSearch("");
             onClose();
         } catch (e) {
             console.error(e);
@@ -118,15 +134,35 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
 
                 {/* Partner picker */}
                 <Text style={labelStyle}>Invite Partner</Text>
+                <TextInput
+                    value={partnerSearch}
+                    onChangeText={setPartnerSearch}
+                    placeholder="Search players"
+                    placeholderTextColor="#8b9382"
+                    underlineColorAndroid="transparent"
+                    className="outline-none"
+                    style={{
+                        backgroundColor: "#f3f4ef",
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: "rgba(18,23,15,0.12)",
+                        color: "#12170f",
+                        fontSize: 14,
+                        paddingHorizontal: 12,
+                        paddingVertical: 10,
+                        marginBottom: 10,
+                        ...(Platform.OS === "web" ? { outlineStyle: "none" as const } : {}),
+                    }}
+                />
 
                 {allUsers === undefined ? (
                     <ActivityIndicator color="#B45309" style={{ marginVertical: 20 }} />
                 ) : (
                     <ScrollView style={{ maxHeight: 300 }} showsVerticalScrollIndicator={false}>
-                        {checkedInPlayers.length > 0 && (
+                        {visibleCheckedIn.length > 0 && (
                             <>
                                 <Text style={sectionStyle}>At the court now</Text>
-                                {checkedInPlayers.map((u) => (
+                                {visibleCheckedIn.map((u) => (
                                     <PlayerPill
                                         key={u._id}
                                         name={u.name ?? u.email ?? "Unknown"}
@@ -136,14 +172,14 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
                                         }
                                     />
                                 ))}
-                                {otherPlayers.length > 0 && (
+                                {visibleOthers.length > 0 && (
                                     <Text style={[sectionStyle, { marginTop: 12 }]}>
                                         Other players
                                     </Text>
                                 )}
                             </>
                         )}
-                        {otherPlayers.map((u) => (
+                        {visibleOthers.map((u) => (
                             <PlayerPill
                                 key={u._id}
                                 name={u.name ?? u.email ?? "Unknown"}
@@ -153,6 +189,11 @@ export function NewTeamSheet({ isVisible, onClose, courtId, preselectedPartnerId
                                 }
                             />
                         ))}
+                        {visibleCheckedIn.length === 0 && visibleOthers.length === 0 && (
+                            <Text style={{ color: "#5c6454", textAlign: "center", marginVertical: 14 }}>
+                                No players match "{partnerSearch.trim()}"
+                            </Text>
+                        )}
                         <View style={{ height: 8 }} />
                     </ScrollView>
                 )}

@@ -138,10 +138,24 @@ export const issueChallenge = mutation({
         challengerTeamId: v.optional(v.id("teams")),
         format: v.union(v.literal("doubles"), v.literal("singles")),
         courtId: v.id("courts"),
+        proposedTimes: v.array(v.number()),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx);
         if (!userId) throw new Error("Not authenticated");
+        if (args.proposedTimes.length < 2 || args.proposedTimes.length > 3) {
+            throw new Error("Please propose 2-3 possible times");
+        }
+
+        const now = Date.now();
+        const normalizedProposed = [...new Set(args.proposedTimes.map((t) => Math.trunc(t)))]
+            .sort((a, b) => a - b);
+        if (normalizedProposed.length !== args.proposedTimes.length) {
+            throw new Error("Proposed times must be unique");
+        }
+        if (normalizedProposed.some((t) => t <= now)) {
+            throw new Error("All proposed times must be in the future");
+        }
 
         const challengeId = await ctx.db.insert("challenges", {
             challengerId: userId,
@@ -152,8 +166,9 @@ export const issueChallenge = mutation({
             challengedTeamId: args.challengedTeamId,
             format: args.format,
             courtId: args.courtId,
+            proposedTimes: normalizedProposed,
             status: "pending",
-            createdAt: Date.now(),
+            createdAt: now,
         });
 
         // Push challenged player
@@ -166,7 +181,7 @@ export const issueChallenge = mutation({
             await sendExpoPush(
                 challenged.expoPushToken,
                 "Challenge received 🏓",
-                `${challenger?.name ?? "Someone"} challenged you to a ${formatLabel} match`
+                `${challenger?.name ?? "Someone"} challenged you to a ${formatLabel} match — pick a time`
             );
         }
 
@@ -177,7 +192,7 @@ export const issueChallenge = mutation({
                 await sendExpoPush(
                     partner.expoPushToken,
                     "Challenge received 🏓",
-                    `${challenger?.name ?? "Someone"} challenged your team to a doubles match`
+                    `${challenger?.name ?? "Someone"} challenged your team to a doubles match — pick a time`
                 );
             }
         }
@@ -190,9 +205,10 @@ export const respondToChallenge = mutation({
     args: {
         challengeId: v.id("challenges"),
         accept: v.boolean(),
+        selectedTime: v.optional(v.number()),
         scheduledTime: v.optional(v.number()),
     },
-    handler: async (ctx, { challengeId, accept, scheduledTime }) => {
+    handler: async (ctx, { challengeId, accept, selectedTime, scheduledTime }) => {
         const userId = await getAuthUserId(ctx);
         if (!userId) throw new Error("Not authenticated");
 
@@ -203,15 +219,36 @@ export const respondToChallenge = mutation({
         }
         if (challenge.status !== "pending") throw new Error("Challenge already resolved");
 
+        const proposedTimes = challenge.proposedTimes ?? [];
+        const fallbackTime = scheduledTime ?? Date.now() + 2 * 60 * 60 * 1000;
+        let resolvedTime = selectedTime ?? scheduledTime;
+        if (accept) {
+            if (proposedTimes.length > 0) {
+                if (resolvedTime === undefined) {
+                    throw new Error("Select one of the proposed times");
+                }
+                if (!proposedTimes.includes(resolvedTime)) {
+                    throw new Error("Selected time must be one of the proposed slots");
+                }
+            } else {
+                // Backward-compatible fallback for old pending challenges.
+                resolvedTime = fallbackTime;
+            }
+        }
+
         const status = accept ? "accepted" : "declined";
-        await ctx.db.patch(challengeId, { status, respondedAt: Date.now() });
+        await ctx.db.patch(challengeId, {
+            status,
+            respondedAt: Date.now(),
+            selectedTime: accept ? resolvedTime : undefined,
+        });
 
         if (accept) {
             // Create scheduled match + auto planned visits
             const smId = await ctx.db.insert("scheduledMatches", {
                 challengeId,
                 courtId: challenge.courtId,
-                scheduledTime: scheduledTime ?? Date.now() + 2 * 60 * 60 * 1000, // default ~2h
+                scheduledTime: resolvedTime!,
                 p1Id: challenge.challengerId,
                 p2Id: challenge.challengerPartnerId,
                 p3Id: challenge.challengedId,
@@ -230,7 +267,7 @@ export const respondToChallenge = mutation({
                 challenge.challengedPartnerId,
             ].filter(Boolean) as string[];
 
-            const st = scheduledTime ?? Date.now() + 2 * 60 * 60 * 1000;
+            const st = resolvedTime!;
             for (const pid of participants) {
                 await ctx.db.insert("plannedVisits", {
                     userId: pid as any,
@@ -247,7 +284,7 @@ export const respondToChallenge = mutation({
                 await sendExpoPush(
                     challenger.expoPushToken,
                     "Challenge accepted! 🎉",
-                    `${me?.name ?? "Your opponent"} accepted — match is on`
+                    `${me?.name ?? "Your opponent"} accepted ${formatDateTime(st)}`
                 );
             }
 
@@ -255,6 +292,16 @@ export const respondToChallenge = mutation({
         }
     },
 });
+
+function formatDateTime(timestamp: number) {
+    return new Date(timestamp).toLocaleString([], {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+    });
+}
 
 // ---------------------------------------------------------------------------
 // Match reporting & confirmation
