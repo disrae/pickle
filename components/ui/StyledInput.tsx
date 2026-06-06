@@ -1,6 +1,7 @@
 import { useTheme } from "@/lib/theme-context";
-import React, { useState } from "react";
-import { Platform, Pressable, Text, TextInput, View } from "react-native";
+import { Host, TextInput, useNativeState } from "@expo/ui";
+import React, { useCallback, useEffect, useState } from "react";
+import { Platform, Pressable, Text, View } from "react-native";
 
 const DARK = {
     text: "#f4f7f0",
@@ -31,6 +32,25 @@ function focusRing(color: string) {
           };
 }
 
+function resolveAutoComplete(
+    autoComplete?: "email" | "password" | "username" | "name" | "off",
+    textContentType?: "emailAddress" | "password" | "username" | "name"
+) {
+    if (autoComplete) return autoComplete;
+    switch (textContentType) {
+        case "emailAddress":
+            return "email";
+        case "password":
+            return "password";
+        case "username":
+            return "username";
+        case "name":
+            return "name";
+        default:
+            return undefined;
+    }
+}
+
 export function StyledInput({
     label,
     placeholder,
@@ -57,8 +77,23 @@ export function StyledInput({
     const { theme } = useTheme();
     const [focused, setFocused] = useState(false);
     const [hidden, setHidden] = useState(!!secureTextEntry);
+    const text = useNativeState(value ?? "");
 
     const palette = theme === "dark" ? DARK : LIGHT;
+
+    useEffect(() => {
+        if (value !== undefined && value !== text.value) {
+            text.value = value;
+        }
+    }, [value, text]);
+
+    const handleChangeText = useCallback(
+        (newText: string) => {
+            text.value = newText;
+            onChangeText?.(newText);
+        },
+        [text, onChangeText]
+    );
 
     return (
         <View className="w-full">
@@ -85,28 +120,30 @@ export function StyledInput({
                         : {}),
                 }}
             >
-                <TextInput
-                    placeholder={placeholder}
-                    secureTextEntry={hidden}
-                    value={value}
-                    onChangeText={onChangeText}
-                    keyboardType={keyboardType}
-                    autoComplete={autoComplete}
-                    textContentType={textContentType}
-                    autoFocus={autoFocus}
-                    autoCapitalize="none"
-                    onFocus={() => setFocused(true)}
-                    onBlur={() => setFocused(false)}
-                    placeholderTextColor={palette.placeholder}
-                    underlineColorAndroid="transparent"
-                    className={`flex-1 outline-none ${large ? "py-5 text-lg" : "py-4 text-base"}`}
-                    style={{
-                        color: palette.text,
-                        backgroundColor: "transparent",
-                        ...(Platform.OS === "android" ? { paddingVertical: 12 } : {}),
-                        ...(Platform.OS === "web" ? { outlineStyle: "none" as const } : {}),
-                    }}
-                />
+                <Host style={{ flex: 1 }} matchContents={{ vertical: true }}>
+                    <TextInput
+                        value={text}
+                        placeholder={placeholder}
+                        secureTextEntry={hidden}
+                        onChangeText={handleChangeText}
+                        keyboardType={keyboardType}
+                        autoComplete={resolveAutoComplete(autoComplete, textContentType)}
+                        autoFocus={autoFocus}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        onFocus={() => setFocused(true)}
+                        onBlur={() => setFocused(false)}
+                        placeholderTextColor={palette.placeholder}
+                        style={{
+                            backgroundColor: "transparent",
+                            paddingVertical: large ? 12 : Platform.OS === "android" ? 12 : 16,
+                        }}
+                        textStyle={{
+                            color: palette.text,
+                            fontSize: large ? 18 : 16,
+                        }}
+                    />
+                </Host>
                 {secureTextEntry ? (
                     <Pressable onPress={() => setHidden((h) => !h)} hitSlop={10} className="pl-3">
                         <Text

@@ -7,27 +7,27 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 function LiquidGlassTabs() {
     const { hidden } = useTabBarVisibility();
     return (
         <NativeTabs tintColor="#3F7D20" {...({ hidden } as { hidden?: boolean })}>
             <NativeTabs.Trigger name="court">
-                <Label hidden>Court</Label>
-                <Icon sf="figure.pickleball.circle.fill" />
+                <NativeTabs.Trigger.Label hidden>Court</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Icon sf="figure.pickleball.circle.fill" />
             </NativeTabs.Trigger>
             <NativeTabs.Trigger name="coach">
-                <Label hidden>Coach</Label>
-                <Icon sf="bubble.left.and.bubble.right.fill" />
+                <NativeTabs.Trigger.Label hidden>Coach</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Icon sf="bubble.left.and.bubble.right.fill" />
             </NativeTabs.Trigger>
             <NativeTabs.Trigger name="compete">
-                <Label hidden>Compete</Label>
-                <Icon sf="trophy.fill" />
+                <NativeTabs.Trigger.Label hidden>Compete</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Icon sf="trophy.fill" />
             </NativeTabs.Trigger>
             <NativeTabs.Trigger name="profile">
-                <Label hidden>Profile</Label>
-                <Icon sf="person.fill" />
+                <NativeTabs.Trigger.Label hidden>Profile</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Icon sf="person.fill" />
             </NativeTabs.Trigger>
         </NativeTabs>
     );
