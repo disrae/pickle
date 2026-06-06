@@ -41,6 +41,7 @@ export function StyledButton({
     className = "",
     disabled = false,
     loading = false,
+    large = false,
 }: {
     onPress: () => void;
     title: string;
@@ -49,6 +50,7 @@ export function StyledButton({
     className?: string;
     disabled?: boolean;
     loading?: boolean;
+    large?: boolean;
 }) {
     const isDisabled = disabled || loading;
 
@@ -56,13 +58,15 @@ export function StyledButton({
         <Pressable
             onPress={isDisabled ? undefined : onPress}
             disabled={isDisabled}
-            className={`h-14 flex-row items-center justify-center rounded-2xl px-5 ${fullWidth ? "w-full" : ""} ${containerByVariant[variant]} ${isDisabled ? "opacity-50" : ""} ${className}`}
+            className={`${large ? "h-16" : "h-14"} flex-row items-center justify-center rounded-2xl px-5 ${fullWidth ? "w-full" : ""} ${containerByVariant[variant]} ${isDisabled ? "opacity-50" : ""} ${className}`}
         >
             {loading ? (
                 <ActivityIndicator color={spinnerByVariant[variant]} />
             ) : (
                 <View className="flex-row items-center justify-center gap-2">
-                    <Text className={`text-center text-base font-bold ${textByVariant[variant]}`}>
+                    <Text
+                        className={`text-center font-bold ${large ? "text-lg" : "text-base"} ${textByVariant[variant]}`}
+                    >
                         {title}
                     </Text>
                 </View>

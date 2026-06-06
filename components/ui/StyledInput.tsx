@@ -41,6 +41,7 @@ export function StyledInput({
     autoComplete,
     textContentType,
     autoFocus,
+    large,
 }: {
     label?: string;
     placeholder: string;
@@ -51,6 +52,7 @@ export function StyledInput({
     autoComplete?: "email" | "password" | "username" | "name" | "off";
     textContentType?: "emailAddress" | "password" | "username" | "name";
     autoFocus?: boolean;
+    large?: boolean;
 }) {
     const { theme } = useTheme();
     const [focused, setFocused] = useState(false);
@@ -61,7 +63,11 @@ export function StyledInput({
     return (
         <View className="w-full">
             {label ? (
-                <Text className="mb-2 text-sm font-semibold text-foreground">{label}</Text>
+                <Text
+                    className={`mb-2 font-semibold text-foreground ${large ? "text-base" : "text-sm"}`}
+                >
+                    {label}
+                </Text>
             ) : null}
             <View
                 className="flex-row items-center rounded-2xl px-4"
@@ -70,7 +76,7 @@ export function StyledInput({
                     borderColor: focused ? palette.borderFocused : palette.border,
                     borderWidth: 1,
                     borderCurve: "continuous",
-                    ...(focused
+                    ...(focused && Platform.OS === "web"
                         ? focusRing(
                               theme === "dark"
                                   ? "rgba(163,230,53,0.22)"
@@ -93,7 +99,7 @@ export function StyledInput({
                     onBlur={() => setFocused(false)}
                     placeholderTextColor={palette.placeholder}
                     underlineColorAndroid="transparent"
-                    className="flex-1 py-4 text-base outline-none"
+                    className={`flex-1 outline-none ${large ? "py-5 text-lg" : "py-4 text-base"}`}
                     style={{
                         color: palette.text,
                         backgroundColor: "transparent",
@@ -103,7 +109,9 @@ export function StyledInput({
                 />
                 {secureTextEntry ? (
                     <Pressable onPress={() => setHidden((h) => !h)} hitSlop={10} className="pl-3">
-                        <Text className="text-sm font-semibold text-muted-foreground">
+                        <Text
+                            className={`font-semibold text-muted-foreground ${large ? "text-base" : "text-sm"}`}
+                        >
                             {hidden ? "Show" : "Hide"}
                         </Text>
                     </Pressable>

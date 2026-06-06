@@ -4,25 +4,22 @@ import { Popup } from "@/components/ui/Popup";
 import { StyledButton } from "@/components/ui/StyledButton";
 import { StyledInput } from "@/components/ui/StyledInput";
 import { api } from "@/convex/_generated/api";
-import { useLoading } from "@/lib/loading-context";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { Redirect } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
     Keyboard,
-    KeyboardAvoidingView,
-    Platform,
     Pressable,
-    ScrollView,
     Text,
-    View,
+    View
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
-    const { top, bottom } = useSafeAreaInsets();
+    const { top } = useSafeAreaInsets();
     const { signIn } = useAuthActions();
     const user = useQuery(api.users.currentUser);
     const [email, setEmail] = useState("");
@@ -32,22 +29,16 @@ export default function LoginScreen() {
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState("");
     const [popupMessage, setPopupMessage] = useState("");
-    const { showLoading, hideLoading } = useLoading();
-
-    const isLoadingUser = user === undefined;
-    useEffect(() => {
-        if (isLoadingUser) {
-            showLoading();
-        } else {
-            hideLoading();
-        }
-    }, [isLoadingUser, showLoading, hideLoading]);
+    const authResolved = useRef(user !== undefined);
+    if (user !== undefined) {
+        authResolved.current = true;
+    }
 
     if (user !== undefined && user !== null) {
         return <Redirect href="/(authenticated)/(tabs)" />;
     }
 
-    if (isLoadingUser) {
+    if (!authResolved.current) {
         return null;
     }
 
@@ -101,33 +92,29 @@ export default function LoginScreen() {
 
     return (
         <Background>
-            <KeyboardAvoidingView
+            <KeyboardAwareScrollView
                 style={{ flex: 1 }}
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                bottomOffset={24}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    paddingTop: top + 16,
+                    paddingBottom: 24,
+                    paddingHorizontal: 24,
+                }}
             >
-                <ScrollView
-                    style={{ flex: 1 }}
-                    contentInsetAdjustmentBehavior="never"
-                    automaticallyAdjustContentInsets={false}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingTop: top + 16,
-                        paddingBottom: bottom + 24,
-                        paddingHorizontal: 24,
-                    }}
-                >
                     <View style={{ width: "100%", maxWidth: 448, alignSelf: "center" }}>
                         <View className="items-center pt-2">
                             <Image
                                 source={require("@/assets/icons/splash-icon-light.png")}
-                                style={{ width: 80, height: 80 }}
+                                style={{ width: 96, height: 96 }}
                                 contentFit="contain"
                             />
-                            <Text className="mt-5 text-4xl font-display-bold tracking-tight text-foreground">
+                            <Text className="mt-5 text-5xl font-display-bold tracking-tight text-foreground">
                                 WePickle
                             </Text>
-                            <Text className="mt-2 text-base text-muted-foreground">
+                            <Text className="mt-3 text-lg text-muted-foreground">
                                 Your court. Your crew. Your game.
                             </Text>
                         </View>
@@ -140,10 +127,10 @@ export default function LoginScreen() {
                                         <Pressable
                                             key={flow}
                                             onPress={() => setPasswordFlow(flow)}
-                                            className={`flex-1 rounded-xl py-2.5 ${active ? "bg-brand" : ""}`}
+                                            className={`flex-1 rounded-xl py-3 ${active ? "bg-brand" : ""}`}
                                         >
                                             <Text
-                                                className={`text-center font-bold ${active ? "text-brand-foreground" : "text-foreground"}`}
+                                                className={`text-center text-lg font-bold ${active ? "text-brand-foreground" : "text-foreground"}`}
                                             >
                                                 {flow === "signIn" ? "Sign In" : "Sign Up"}
                                             </Text>
@@ -154,6 +141,7 @@ export default function LoginScreen() {
 
                             <View className="gap-4">
                                 <StyledInput
+                                    large
                                     label="Email"
                                     placeholder="you@example.com"
                                     value={email}
@@ -163,6 +151,7 @@ export default function LoginScreen() {
                                     textContentType="emailAddress"
                                 />
                                 <StyledInput
+                                    large
                                     label="Password"
                                     placeholder={
                                         passwordFlow === "signUp"
@@ -183,12 +172,12 @@ export default function LoginScreen() {
                                 onPress={handlePasswordAuth}
                                 title={passwordFlow === "signUp" ? "Create account" : "Sign in"}
                                 variant="brand"
+                                large
                                 loading={submitting}
                             />
                         </GlassContainer>
                     </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
 
             <Popup
                 isVisible={showPopup}
