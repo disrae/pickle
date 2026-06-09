@@ -1,15 +1,27 @@
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import { getLocationModule } from "@/lib/location-permissions";
 import { useMutation, useQuery } from "convex/react";
 import { useEffect, useRef } from "react";
 import { AppState, Platform } from "react-native";
 
-const COURT_RADIUS_M = 200;
+const CHECK_IN_RADIUS_M = 200;
+/** Larger than check-in radius to avoid GPS jitter toggling check-in/out at the boundary */
+const CHECK_OUT_RADIUS_M = 280;
+const ACTION_COOLDOWN_MS = 60_000;
+/** Must stay inside the geofence this long before auto check-in (avoids biking/driving past) */
+const MIN_DWELL_BEFORE_CHECK_IN_MS = 3 * 60 * 1000;
+
 type LocationSubscription = { remove: () => void };
 type LocationCoords = {
     latitude: number;
     longitude: number;
+};
+
+type GeofenceTarget = {
+    courtId: Id<"courts">;
+    lat: number;
+    lng: number;
 };
 
 function distanceMeters(
@@ -29,37 +41,97 @@ function distanceMeters(
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/** Foreground/background location check-in when user is near their court */
-export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
+/** Foreground/background auto check-in/out when user is near their court */
+export function useLocationCheckIn() {
     const user = useQuery(api.users.currentUser);
-    const court = useQuery(api.courts.get, courtId ? { id: courtId } : "skip");
+    const defaultCourt = useQuery(api.courts.getDefault);
     const currentCheckIn = useQuery(api.checkIns.getCurrentUserCheckIn);
+    const checkedInCourt = useQuery(
+        api.courts.get,
+        currentCheckIn ? { id: currentCheckIn.courtId } : "skip"
+    );
     const checkIn = useMutation(api.checkIns.checkIn);
-    const lastAttempt = useRef(0);
+    const checkOut = useMutation(api.checkIns.checkOut);
+
+    const geofenceRef = useRef<GeofenceTarget | null>(null);
+    const isCheckedInRef = useRef(false);
+    const insideGeofenceSinceRef = useRef<number | null>(null);
+    const lastCheckInAttempt = useRef(0);
+    const lastCheckOutAttempt = useRef(0);
+
+    useEffect(() => {
+        isCheckedInRef.current = !!currentCheckIn;
+        if (!currentCheckIn) {
+            insideGeofenceSinceRef.current = null;
+        }
+        if (currentCheckIn && checkedInCourt) {
+            geofenceRef.current = {
+                courtId: currentCheckIn.courtId,
+                lat: checkedInCourt.location.lat,
+                lng: checkedInCourt.location.lng,
+            };
+        } else if (defaultCourt) {
+            geofenceRef.current = {
+                courtId: defaultCourt._id,
+                lat: defaultCourt.location.lat,
+                lng: defaultCourt.location.lng,
+            };
+        } else {
+            geofenceRef.current = null;
+        }
+    }, [currentCheckIn, checkedInCourt, defaultCourt]);
 
     useEffect(() => {
         if (Platform.OS === "web") return;
-        if (!user || !court || !courtId) return;
-        if (user.locationCheckInMode !== "foreground" && user.locationCheckInMode !== "background") return;
-        if (currentCheckIn) return;
+        if (!user) return;
+        if (user.locationCheckInMode !== "foreground" && user.locationCheckInMode !== "background") {
+            return;
+        }
 
         let subscription: LocationSubscription | null = null;
 
-        const tryCheckIn = async (coords: LocationCoords) => {
-            const now = Date.now();
-            if (now - lastAttempt.current < 60_000) return;
+        const handleLocation = async (coords: LocationCoords) => {
+            const target = geofenceRef.current;
+            if (!target) return;
 
             const dist = distanceMeters(
                 coords.latitude,
                 coords.longitude,
-                court.location.lat,
-                court.location.lng
+                target.lat,
+                target.lng
             );
+            const now = Date.now();
 
-            if (dist <= COURT_RADIUS_M) {
-                lastAttempt.current = now;
+            if (isCheckedInRef.current) {
+                if (dist <= CHECK_OUT_RADIUS_M) return;
+                if (now - lastCheckOutAttempt.current < ACTION_COOLDOWN_MS) return;
+
+                lastCheckOutAttempt.current = now;
                 try {
-                    await checkIn({ courtId, isPrivate: false });
+                    await checkOut();
+                } catch {
+                    // Not checked in or error
+                }
+            } else {
+                if (dist > CHECK_IN_RADIUS_M) {
+                    insideGeofenceSinceRef.current = null;
+                    return;
+                }
+
+                if (!insideGeofenceSinceRef.current) {
+                    insideGeofenceSinceRef.current = now;
+                    return;
+                }
+
+                if (now - insideGeofenceSinceRef.current < MIN_DWELL_BEFORE_CHECK_IN_MS) {
+                    return;
+                }
+
+                if (now - lastCheckInAttempt.current < ACTION_COOLDOWN_MS) return;
+
+                lastCheckInAttempt.current = now;
+                try {
+                    await checkIn({ courtId: target.courtId, isPrivate: false });
                 } catch {
                     // Already checked in or error
                 }
@@ -81,7 +153,7 @@ export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
             const loc = await location.getCurrentPositionAsync({
                 accuracy: location.Accuracy.Balanced,
             });
-            await tryCheckIn(loc.coords);
+            await handleLocation(loc.coords);
 
             subscription = await location.watchPositionAsync(
                 {
@@ -89,7 +161,7 @@ export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
                     distanceInterval: 50,
                     timeInterval: 30_000,
                 },
-                (loc) => tryCheckIn(loc.coords)
+                (loc) => handleLocation(loc.coords)
             );
         };
 
@@ -101,7 +173,7 @@ export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
                 if (!location) return;
                 return location
                     .getCurrentPositionAsync({ accuracy: location.Accuracy.Balanced })
-                    .then((loc) => tryCheckIn(loc.coords));
+                    .then((loc) => handleLocation(loc.coords));
             });
         });
 
@@ -109,5 +181,5 @@ export function useLocationCheckIn(courtId: Id<"courts"> | undefined) {
             subscription?.remove();
             appStateSub.remove();
         };
-    }, [user, court, courtId, currentCheckIn, checkIn]);
+    }, [user, checkIn, checkOut]);
 }

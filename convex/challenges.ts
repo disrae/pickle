@@ -501,6 +501,8 @@ async function applyRatingUpdates(ctx: any, match: any) {
         debriefTriggeredP1: false,
         debriefTriggeredP3: false,
     });
+
+    await ctx.scheduler.runAfter(0, internal.coach.notifyMatchDebrief, { matchId: match._id });
 }
 
 async function avgIndividual(ctx: any, playerIds: string[], fallback: number) {

@@ -24,8 +24,11 @@ interface RadarChartProps {
     size?: number;
 }
 
+const LABEL_PADDING = 44;
+
 export function RadarChart({ skillProgress, size = 320 }: RadarChartProps) {
-    const center = size / 2;
+    const svgSize = size + LABEL_PADDING * 2;
+    const center = svgSize / 2;
     const maxRadius = size / 2 - 56;
     const numSkills = SKILL_CATEGORIES.length;
 
@@ -48,7 +51,7 @@ export function RadarChart({ skillProgress, size = 320 }: RadarChartProps) {
 
     return (
         <View className="items-center justify-center">
-            <Svg width={size} height={size}>
+            <Svg width={svgSize} height={svgSize}>
                 {[0.25, 0.5, 0.75, 1].map((scale, i) => (
                     <Circle
                         key={i}

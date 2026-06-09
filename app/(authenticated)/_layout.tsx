@@ -1,10 +1,12 @@
 import { SetNamePopup } from "@/components/ui/SetNamePopup";
 import { api } from "@/convex/_generated/api";
+import { usePushNotifications } from "@/lib/use-push-notifications";
 import { useQuery } from "convex/react";
 import { Redirect, Stack } from "expo-router";
 
 export default function AuthenticatedLayout() {
     const user = useQuery(api.users.currentUser);
+    usePushNotifications(user !== null && user !== undefined);
 
     if (user === undefined) {
         return null;

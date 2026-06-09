@@ -1,8 +1,11 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import { internalMutation, mutation, query } from "./_generated/server";
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+const MIN_SESSION_FOR_DEBRIEF_MS = 5 * 60 * 1000;
+const SESSION_DEBRIEF_DELAY_MS = 15 * 60 * 1000;
 
 function isVisibleOnRoster(
     checkIn: { isPrivate?: boolean },
@@ -63,7 +66,20 @@ export const checkOut = mutation({
             throw new Error("Not checked in");
         }
 
+        const sessionMs = Date.now() - checkIn.checkedInAt;
         await ctx.db.delete(checkIn._id);
+
+        if (sessionMs >= MIN_SESSION_FOR_DEBRIEF_MS) {
+            await ctx.scheduler.runAfter(
+                SESSION_DEBRIEF_DELAY_MS,
+                internal.coach.sendSessionDebriefPush,
+                {
+                    userId,
+                    courtId: checkIn.courtId,
+                    sessionMinutes: Math.max(5, Math.round(sessionMs / 60_000)),
+                }
+            );
+        }
     },
 });
 

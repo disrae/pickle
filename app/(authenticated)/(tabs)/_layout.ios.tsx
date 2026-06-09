@@ -1,5 +1,6 @@
 import { AppTabBar } from "@/components/ui/AppTabBar";
 import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
+import { useLocationCheckIn } from "@/lib/use-location-check-in";
 import {
     TabBarVisibilityProvider,
     useTabBarVisibility,
@@ -96,6 +97,8 @@ function JsTabs() {
 }
 
 export default function TabLayout() {
+    useLocationCheckIn();
+
     return (
         <TabBarVisibilityProvider>
             {isLiquidGlassAvailable() ? <LiquidGlassTabs /> : <JsTabs />}

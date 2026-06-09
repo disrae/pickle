@@ -1,6 +1,7 @@
 import { AppTabBar } from "@/components/ui/AppTabBar";
 import { CourtTabIcon } from "@/components/ui/CourtTabIcon";
 import { WebTabBar } from "@/components/ui/WebTabBar";
+import { useLocationCheckIn } from "@/lib/use-location-check-in";
 import {
     TabBarVisibilityProvider,
     useTabBarVisibility,
@@ -13,6 +14,7 @@ const isWeb = Platform.OS === "web";
 
 function TabsLayoutInner() {
     const { hidden } = useTabBarVisibility();
+    useLocationCheckIn();
 
     return (
         <Tabs

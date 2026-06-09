@@ -13,7 +13,6 @@ import { TimePickerPopup } from "@/components/ui/TimePickerPopup";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useHeaderHeight } from "@/lib/header-layout";
-import { useLocationCheckIn } from "@/lib/use-location-check-in";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
@@ -86,8 +85,6 @@ export default function CourtsScreen() {
         api.courts.getConditionReporter,
         court?.courtReportedDryBy ? { userId: court.courtReportedDryBy } : "skip"
     );
-
-    useLocationCheckIn(court?._id);
 
     const checkInMut = useMutation(api.checkIns.checkIn);
     const checkOutMut = useMutation(api.checkIns.checkOut);

@@ -21,6 +21,31 @@ export async function hasNotificationPermissions(): Promise<boolean> {
     return status === "granted";
 }
 
+async function getExpoPushToken(): Promise<string | null> {
+    const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+
+    if (!projectId) {
+        console.error("Project ID not found");
+        return null;
+    }
+
+    try {
+        const pushToken = await Notifications.getExpoPushTokenAsync({ projectId });
+        return pushToken.data;
+    } catch (error) {
+        console.error("Error getting push token:", error);
+        return null;
+    }
+}
+
+/** Returns push token when permission is already granted; does not prompt. */
+export async function getPushTokenIfPermitted(): Promise<string | null> {
+    if (Platform.OS === "web" || !Device.isDevice) return null;
+    if (!(await hasNotificationPermissions())) return null;
+    return getExpoPushToken();
+}
+
 /**
  * Request notification permissions and register for push tokens
  * Returns the push token if successful, null otherwise
@@ -58,26 +83,7 @@ export async function requestNotificationPermissions(): Promise<string | null> {
         return null;
     }
 
-    // Get project ID
-    const projectId =
-        Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-    
-    if (!projectId) {
-        console.error("Project ID not found");
-        return null;
-    }
-
-    try {
-        // Get push token
-        const pushToken = await Notifications.getExpoPushTokenAsync({
-            projectId,
-        });
-        
-        return pushToken.data;
-    } catch (error) {
-        console.error("Error getting push token:", error);
-        return null;
-    }
+    return getExpoPushToken();
 }
 
 /**

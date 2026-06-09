@@ -4,6 +4,7 @@ import {
     requestLocationPermissionForMode,
     type LocationCheckInMode,
 } from "@/lib/location-permissions";
+import { registerCoachPushNotifications } from "@/lib/register-coach-push";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "convex/react";
 import { useState } from "react";
@@ -49,6 +50,7 @@ export function LocationCheckInModeSheet({
     onUnavailable,
 }: Props) {
     const updateLocationCheckInMode = useMutation(api.users.updateLocationCheckInMode);
+    const saveExpoPushToken = useMutation(api.users.saveExpoPushToken);
     const [saving, setSaving] = useState<LocationCheckInMode | null>(null);
 
     const handleSelect = async (mode: LocationCheckInMode) => {
@@ -65,6 +67,9 @@ export function LocationCheckInModeSheet({
                 return;
             }
             await updateLocationCheckInMode({ mode });
+            if (mode !== "off") {
+                await registerCoachPushNotifications(saveExpoPushToken);
+            }
             onDismiss();
         } catch (error) {
             console.error("Location mode error:", error);

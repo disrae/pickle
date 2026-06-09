@@ -19,6 +19,7 @@ import { useState } from "react";
 import { ActivityIndicator, ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
 import { useHeaderHeight } from "@/lib/header-layout";
 import { requestLocationPermissionForMode } from "@/lib/location-permissions";
+import { registerCoachPushNotifications } from "@/lib/register-coach-push";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
@@ -53,6 +54,7 @@ export default function ProfileScreen() {
     const deleteAccount = useMutation(api.users.deleteAccount);
     const updateAppearAtCourt = useMutation(api.users.updateAppearAtCourt);
     const updateLocationCheckInMode = useMutation(api.users.updateLocationCheckInMode);
+    const saveExpoPushToken = useMutation(api.users.saveExpoPushToken);
 
     const appearAtCourt = user?.appearAtCourt !== false;
     const locationMode = user?.locationCheckInMode ?? "off";
@@ -263,6 +265,9 @@ export default function ProfileScreen() {
                                     }
                                     if (!granted) return;
                                     await updateLocationCheckInMode({ mode });
+                                    if (mode !== "off") {
+                                        await registerCoachPushNotifications(saveExpoPushToken);
+                                    }
                                 }}
                                 className={`py-3 px-4 rounded-xl mb-2 border ${
                                     locationMode === mode

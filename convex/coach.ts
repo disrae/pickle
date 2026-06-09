@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
+import { sendExpoPush } from "./pushNotifications";
 
 export const getMessages = query({
     args: {},
@@ -154,6 +155,67 @@ export const injectDebriefContext = mutation({
         }
 
         return contextMsg;
+    },
+});
+
+/** Push coach session debrief after user leaves the court. */
+export const sendSessionDebriefPush = internalMutation({
+    args: {
+        userId: v.id("users"),
+        courtId: v.id("courts"),
+        sessionMinutes: v.number(),
+    },
+    handler: async (ctx, { userId, courtId, sessionMinutes }) => {
+        const activeCheckIn = await ctx.db
+            .query("checkIns")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .first();
+        if (activeCheckIn) return;
+
+        const user = await ctx.db.get(userId);
+        if (!user?.expoPushToken) return;
+
+        const court = await ctx.db.get(courtId);
+        const courtName = court?.name ?? "the court";
+        const coachMsg =
+            sessionMinutes >= 60
+                ? `Roughly ${Math.round(sessionMinutes / 60)} hour${sessionMinutes >= 120 ? "s" : ""} at ${courtName} — how'd it go? Who'd you play with?`
+                : `Looks like you were at ${courtName} for about ${sessionMinutes} minutes. How'd it go — who'd you play with?`;
+
+        await ctx.db.insert("coachMessages", {
+            userId,
+            role: "assistant",
+            content: coachMsg,
+            createdAt: Date.now(),
+        });
+
+        await sendExpoPush(user.expoPushToken, "Coach", coachMsg, {
+            type: "coach_session_debrief",
+        });
+    },
+});
+
+/** Push match debrief prompt when a match is confirmed. */
+export const notifyMatchDebrief = internalMutation({
+    args: { matchId: v.id("matches") },
+    handler: async (ctx, { matchId }) => {
+        const match = await ctx.db.get(matchId);
+        if (!match) return;
+
+        const playerIds = [match.p1Id, match.p2Id, match.p3Id, match.p4Id].filter(
+            (id): id is NonNullable<typeof match.p1Id> => id !== undefined
+        );
+        for (const pid of playerIds) {
+            const user = await ctx.db.get(pid);
+            if (!user || !("expoPushToken" in user) || !user.expoPushToken) continue;
+
+            await sendExpoPush(
+                user.expoPushToken,
+                "Coach",
+                "Match is in the books — what clicked out there?",
+                { type: "coach_match_debrief", matchId }
+            );
+        }
     },
 });
 
