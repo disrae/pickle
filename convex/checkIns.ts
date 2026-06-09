@@ -2,6 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 import { internalMutation, mutation, query } from "./_generated/server";
+import { ensureLeagueEnrollment } from "./leagueEnrollment";
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 const MIN_SESSION_FOR_DEBRIEF_MS = 5 * 60 * 1000;
@@ -44,6 +45,8 @@ export const checkIn = mutation({
             expiresAt: now + TWO_HOURS_MS,
             isPrivate: args.isPrivate ?? false,
         });
+
+        await ensureLeagueEnrollment(ctx, userId);
 
         return checkInId;
     },

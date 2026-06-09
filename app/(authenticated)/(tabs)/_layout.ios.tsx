@@ -15,7 +15,7 @@ function LiquidGlassTabs() {
     return (
         <NativeTabs tintColor="#3F7D20" {...({ hidden } as { hidden?: boolean })}>
             <NativeTabs.Trigger name="court">
-                <NativeTabs.Trigger.Label hidden>Court</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Label hidden>League</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon sf="figure.pickleball.circle.fill" />
             </NativeTabs.Trigger>
             <NativeTabs.Trigger name="coach">
@@ -51,7 +51,7 @@ function JsTabs() {
             <Tabs.Screen
                 name="court"
                 options={{
-                    title: "Court",
+                    title: "League",
                     tabBarIcon: ({ focused, color, size }) => (
                         <CourtTabIcon focused={focused} color={color} size={size * 1.1} />
                     ),

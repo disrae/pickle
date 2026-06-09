@@ -1,6 +1,6 @@
 import { ChallengeSheet } from "@/components/compete/ChallengeSheet";
 import { CoachPromptBanner } from "@/components/coach/CoachPromptBanner";
-import { CourtEmptyActions, CourtHero } from "@/components/court/CourtHero";
+import { LeagueEmptyActions, LeagueHero } from "@/components/court/LeagueHero";
 import { LocationCheckInPrompt } from "@/components/court/LocationCheckInPrompt";
 import { Background } from "@/components/ui/Background";
 import { CourtSelectorPopup } from "@/components/ui/CourtSelectorPopup";
@@ -56,6 +56,10 @@ export default function CourtsScreen() {
     const [challengeOpponentId, setChallengeOpponentId] = useState<Id<"users"> | null>(null);
 
     const court = useQuery(api.courts.getDefault);
+    const leagueSummary = useQuery(
+        api.league.leagueSummary,
+        court ? { courtId: court._id } : "skip"
+    );
     const currentCheckIn = useQuery(api.checkIns.getCurrentUserCheckIn);
     const checkIns = useQuery(
         api.checkIns.getCurrentCheckIns,
@@ -239,15 +243,15 @@ export default function CourtsScreen() {
             <Background>
                 <View className="flex-1 items-center justify-center px-8">
                     <Ionicons name="location-outline" size={92} color="#3F7D20" />
-                    <Text className="text-foreground text-2xl font-bold mt-6 text-center">Pick your home court</Text>
+                    <Text className="text-foreground text-2xl font-bold mt-6 text-center">Join a league</Text>
                     <Text className="text-muted-foreground text-base mt-2 text-center">
-                        Queen Elizabeth or Jericho Beach — see who&apos;s playing.
+                        Queen Elizabeth or Jericho Beach — climb the ladder.
                     </Text>
                     <TouchableOpacity
                         onPress={() => setShowCourtSelector(true)}
                         className="mt-10 bg-brand px-8 py-4 rounded-2xl"
                     >
-                        <Text className="text-brand-foreground text-lg font-bold">Browse courts</Text>
+                        <Text className="text-brand-foreground text-lg font-bold">Browse leagues</Text>
                     </TouchableOpacity>
                 </View>
                 <CourtSelectorPopup isVisible={showCourtSelector} onClose={() => setShowCourtSelector(false)} />
@@ -268,7 +272,13 @@ export default function CourtsScreen() {
                 <CoachPromptBanner />
 
                 <Animated.View entering={FadeInDown.duration(450).springify().damping(18)}>
-                    <CourtHero
+                    <LeagueHero
+                        courtName={court.name}
+                        memberCount={leagueSummary?.memberCount ?? 0}
+                        myRank={leagueSummary?.myRank ?? null}
+                        myRating={leagueSummary?.myRating ?? null}
+                        myMatchesPlayed={leagueSummary?.myMatchesPlayed ?? null}
+                        topPlayers={leagueSummary?.topPlayers ?? []}
                         hereCount={hereCount}
                         comingCount={comingCount}
                         checkIns={checkIns ?? []}
@@ -280,14 +290,17 @@ export default function CourtsScreen() {
                         onCheckOut={handleCheckOut}
                         onPlayerPress={(id) => router.push(`/profile/${id}`)}
                         onChallenge={(id) => setChallengeOpponentId(id)}
+                        onViewStandings={() => router.push("/(authenticated)/(tabs)/compete")}
                     />
                 </Animated.View>
 
                 {isEmptyCourt && (
                     <Animated.View entering={FadeInDown.delay(80).duration(450).springify().damping(18)}>
-                        <CourtEmptyActions
+                        <LeagueEmptyActions
+                            memberCount={leagueSummary?.memberCount ?? 0}
                             onHeadedThere={handleHeadedThere}
                             onPlanVisit={() => setShowTimePicker(true)}
+                            onViewStandings={() => router.push("/(authenticated)/(tabs)/compete")}
                             isLoading={isHeadedThere}
                         />
                     </Animated.View>

@@ -1,9 +1,10 @@
+import { LeagueMiniLadder } from "@/components/court/LeagueMiniLadder";
 import { GlassContainer } from "@/components/ui/GlassContainer";
-import { StyledButton } from "@/components/ui/StyledButton";
+import { leagueInviteMessage, leagueName } from "@/lib/league";
 import type { Id } from "@/convex/_generated/dataModel";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { ActivityIndicator, Platform, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, Share, Text, TouchableOpacity, View } from "react-native";
 
 const tap = () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -14,7 +15,22 @@ type CheckInRow = {
     user: { _id: string; name?: string; email?: string };
 };
 
-interface CourtHeroProps {
+type TopPlayer = {
+    rank: number;
+    userId: Id<"users">;
+    rating: number;
+    matchesPlayed: number;
+    isMe: boolean;
+    user: { _id: Id<"users">; name?: string; email?: string } | null;
+};
+
+interface LeagueHeroProps {
+    courtName: string;
+    memberCount: number;
+    myRank: number | null;
+    myRating: number | null;
+    myMatchesPlayed: number | null;
+    topPlayers: TopPlayer[];
     hereCount: number;
     comingCount: number;
     checkIns: CheckInRow[];
@@ -26,9 +42,30 @@ interface CourtHeroProps {
     onCheckOut: () => void;
     onPlayerPress: (userId: string) => void;
     onChallenge: (userId: Id<"users">) => void;
+    onViewStandings: () => void;
 }
 
-export function CourtHero({
+function standingLabel(
+    myRank: number | null,
+    myRating: number | null,
+    myMatchesPlayed: number | null
+) {
+    if (myRank != null && myRating != null) {
+        if (myMatchesPlayed === 0) {
+            return { primary: "Enrolled — play a match", secondary: `${myRating} provisional rating` };
+        }
+        return { primary: `#${myRank} · ${myRating} rating`, secondary: null };
+    }
+    return { primary: "Unranked — play a match", secondary: "Join the ladder with your first game" };
+}
+
+export function LeagueHero({
+    courtName,
+    memberCount,
+    myRank,
+    myRating,
+    myMatchesPlayed,
+    topPlayers,
     hereCount,
     comingCount,
     checkIns,
@@ -40,7 +77,22 @@ export function CourtHero({
     onCheckOut,
     onPlayerPress,
     onChallenge,
-}: CourtHeroProps) {
+    onViewStandings,
+}: LeagueHeroProps) {
+    const standing = standingLabel(myRank, myRating, myMatchesPlayed);
+    const displayLeagueName = leagueName(courtName);
+
+    const handleShare = async () => {
+        tap();
+        try {
+            await Share.share({
+                message: leagueInviteMessage(courtName, myRank),
+            });
+        } catch {
+            // user dismissed
+        }
+    };
+
     return (
         <GlassContainer
             style={{
@@ -50,14 +102,45 @@ export function CourtHero({
                 marginBottom: 14,
             }}
         >
-            <View className="flex-row items-center justify-between mb-3">
+            <View className="flex-row items-start justify-between mb-1">
+                <View className="flex-1 pr-3">
+                    <Text className="text-foreground font-display-bold text-2xl" numberOfLines={2}>
+                        {displayLeagueName}
+                    </Text>
+                    <Text className="text-muted-foreground text-base mt-1">
+                        {memberCount} {memberCount === 1 ? "member" : "members"}
+                    </Text>
+                </View>
+                <TouchableOpacity
+                    onPress={handleShare}
+                    activeOpacity={0.8}
+                    className="w-10 h-10 rounded-full items-center justify-center bg-surface"
+                    style={{ borderWidth: 1, borderColor: "rgba(18,23,15,0.10)" }}
+                >
+                    <Ionicons name="share-outline" size={20} color="#2E5C16" />
+                </TouchableOpacity>
+            </View>
+
+            <View
+                className="rounded-2xl px-4 py-3 mb-4 mt-3"
+                style={{ backgroundColor: "rgba(245,158,11,0.12)", borderWidth: 1, borderColor: "rgba(245,158,11,0.25)" }}
+            >
+                <Text style={{ color: "#B45309", fontWeight: "800", fontSize: 18 }}>{standing.primary}</Text>
+                {standing.secondary ? (
+                    <Text style={{ color: "#92400e", fontSize: 13, marginTop: 2 }}>{standing.secondary}</Text>
+                ) : null}
+            </View>
+
+            <LeagueMiniLadder topPlayers={topPlayers} onViewStandings={onViewStandings} />
+
+            <View className="flex-row items-center justify-between mb-2 mt-1">
                 <View className="flex-row items-center gap-1.5">
                     <View
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: hereCount > 0 ? "#3F7D20" : "#a8b199" }}
                     />
                     <Text className="text-sm font-semibold" style={{ color: "#2E5C16" }}>
-                        Right now at court
+                        {hereCount > 0 ? `${hereCount} playing now` : "Nobody playing now"}
                     </Text>
                 </View>
                 {comingCount > 0 && (
@@ -68,18 +151,9 @@ export function CourtHero({
                 )}
             </View>
 
-            <View className="flex-row items-baseline gap-2 mb-5">
-                <Text className="text-foreground font-display-bold" style={{ fontSize: 60, lineHeight: 62 }}>
-                    {hereCount}
-                </Text>
-                <Text className="text-muted-foreground text-lg mb-2">
-                    {hereCount === 1 ? "player here" : "players here"}
-                </Text>
-            </View>
-
             {checkIns.length > 0 ? (
-                <View className="gap-2 mb-5">
-                    {checkIns.slice(0, 8).map((checkIn) => {
+                <View className="gap-2 mb-4">
+                    {checkIns.slice(0, 6).map((checkIn) => {
                         const isSelf = checkIn.user._id === currentUserId;
                         const displayName =
                             checkIn.user.name || checkIn.user.email?.split("@")[0] || "Player";
@@ -124,8 +198,8 @@ export function CourtHero({
                     })}
                 </View>
             ) : (
-                <Text className="text-muted-foreground text-base mb-5">
-                    Nobody checked in yet — be the first or see who&apos;s coming below.
+                <Text className="text-muted-foreground text-sm mb-4">
+                    Check in when you arrive to show up on the roster and challenge players.
                 </Text>
             )}
 
@@ -161,7 +235,7 @@ export function CourtHero({
                             {isCheckingIn ? (
                                 <ActivityIndicator size="small" color="#f7fbf0" />
                             ) : (
-                                <Text className="text-brand-foreground text-base font-display">I&apos;m here</Text>
+                                <Text className="text-brand-foreground text-base font-display">I&apos;m at the court</Text>
                             )}
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -187,31 +261,57 @@ export function CourtHero({
     );
 }
 
-interface CourtEmptyActionsProps {
+interface LeagueEmptyActionsProps {
+    memberCount: number;
     onHeadedThere: () => void;
     onPlanVisit: () => void;
+    onViewStandings: () => void;
     isLoading: boolean;
 }
 
-export function CourtEmptyActions({
+export function LeagueEmptyActions({
+    memberCount,
     onHeadedThere,
     onPlanVisit,
+    onViewStandings,
     isLoading,
-}: CourtEmptyActionsProps) {
+}: LeagueEmptyActionsProps) {
     return (
         <GlassContainer style={{ padding: 20, marginBottom: 14 }}>
             <Text className="text-foreground text-lg font-bold mb-1">Court&apos;s quiet</Text>
             <Text className="text-muted-foreground mb-5">
-                Start the loop — let regulars know you&apos;re headed there.
+                {memberCount > 0
+                    ? `${memberCount} league members — challenge the ladder or let regulars know you're headed over.`
+                    : "Start the loop — let regulars know you're headed there."}
             </Text>
-            <StyledButton
-                variant="brand"
-                title="I'm headed there — notify regulars"
+            <TouchableOpacity
+                onPress={onViewStandings}
+                activeOpacity={0.85}
+                className="mb-3 h-12 rounded-2xl items-center justify-center"
+                style={{ backgroundColor: "rgba(245,158,11,0.14)", borderWidth: 1, borderColor: "rgba(245,158,11,0.30)" }}
+            >
+                <Text style={{ color: "#B45309", fontWeight: "800", fontSize: 15 }}>Challenge the ladder</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
                 onPress={onHeadedThere}
-                loading={isLoading}
-                className="mb-3"
-            />
-            <StyledButton variant="outline" title="Plan a specific time" onPress={onPlanVisit} />
+                disabled={isLoading}
+                activeOpacity={0.9}
+                className="mb-3 h-12 rounded-2xl items-center justify-center bg-brand"
+            >
+                {isLoading ? (
+                    <ActivityIndicator size="small" color="#f7fbf0" />
+                ) : (
+                    <Text className="text-brand-foreground font-bold text-base">I&apos;m headed there — notify regulars</Text>
+                )}
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={onPlanVisit}
+                activeOpacity={0.85}
+                className="h-12 rounded-2xl items-center justify-center bg-surface"
+                style={{ borderWidth: 1, borderColor: "rgba(18,23,15,0.14)" }}
+            >
+                <Text className="text-foreground font-bold text-base">Plan a specific time</Text>
+            </TouchableOpacity>
         </GlassContainer>
     );
 }

@@ -36,7 +36,7 @@ function TabsLayoutInner() {
             <Tabs.Screen
                 name="court"
                 options={{
-                    title: "Court",
+                    title: "League",
                     tabBarIcon: ({ focused, color, size }) => (
                         <CourtTabIcon focused={focused} color={color} size={size} />
                     ),

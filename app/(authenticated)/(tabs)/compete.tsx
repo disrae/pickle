@@ -8,6 +8,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useHeaderHeight } from "@/lib/header-layout";
+import { leagueName } from "@/lib/league";
 import { useTabBarHeight } from "@/lib/tab-bar-layout";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
@@ -67,8 +68,13 @@ export default function CompeteScreen() {
     const [showNewTeam, setShowNewTeam] = useState(false);
 
     const court = useQuery(api.courts.getDefault);
+    const leagueSummary = useQuery(
+        api.league.leagueSummary,
+        court ? { courtId: court._id } : "skip"
+    );
     const currentUser = useQuery(api.users.currentUser);
     const pendingConfirm = useQuery(api.challenges.pendingConfirmation);
+    const headerTitle = court ? leagueName(court.name) : "Standings";
 
     const openChallenge = (target: ChallengeTarget) => setChallengeTarget(target);
     const openReport = (target: ReportTarget) => setReportTarget(target);
@@ -133,6 +139,14 @@ export default function CompeteScreen() {
                     </View>
                 )}
 
+                {leagueSummary && (
+                    <LeagueContextStrip
+                        memberCount={leagueSummary.memberCount}
+                        myRank={leagueSummary.myRank}
+                        myRating={leagueSummary.myRating}
+                    />
+                )}
+
                 {/* Top control: Ladder | Teams */}
                 <TopControl value={topTab} onChange={setTopTab} />
 
@@ -141,6 +155,7 @@ export default function CompeteScreen() {
                         format={ladderFormat}
                         onFormatChange={setLadderFormat}
                         courtId={court?._id}
+                        courtName={court?.name}
                         router={router}
                         onChallenge={openChallenge}
                     />
@@ -149,6 +164,7 @@ export default function CompeteScreen() {
                         section={teamSection}
                         onSectionChange={setTeamSection}
                         courtId={court?._id}
+                        courtName={court?.name}
                         router={router}
                         onChallenge={openChallenge}
                         onNewTeam={() => setShowNewTeam(true)}
@@ -156,7 +172,7 @@ export default function CompeteScreen() {
                 )}
             </ScrollView>
 
-            <Header title="Compete" />
+            <Header title={headerTitle} titleSize="text-2xl" />
 
             {/* Challenge sheet */}
             {court && (
@@ -345,16 +361,50 @@ function PillSwitch<T extends string>({
 // Ladder section
 // ---------------------------------------------------------------------------
 
+function LeagueContextStrip({
+    memberCount,
+    myRank,
+    myRating,
+}: {
+    memberCount: number;
+    myRank: number | null;
+    myRating: number | null;
+}) {
+    const rankLabel =
+        myRank != null && myRating != null
+            ? `You're #${myRank} · ${myRating} rating`
+            : "Play a match to get ranked";
+
+    return (
+        <GlassContainer
+            style={{
+                borderRadius: 16,
+                padding: 14,
+                marginBottom: 12,
+                borderWidth: 1,
+                borderColor: "rgba(245,158,11,0.22)",
+            }}
+        >
+            <Text style={{ color: "#B45309", fontWeight: "800", fontSize: 14 }}>{rankLabel}</Text>
+            <Text style={{ color: "#5c6454", fontSize: 13, marginTop: 4 }}>
+                {memberCount} {memberCount === 1 ? "member" : "members"} in this league
+            </Text>
+        </GlassContainer>
+    );
+}
+
 function LadderSection({
     format,
     onFormatChange,
     courtId,
+    courtName,
     router,
     onChallenge,
 }: {
     format: LadderFormat;
     onFormatChange: (f: LadderFormat) => void;
     courtId: any;
+    courtName?: string;
     router: any;
     onChallenge: (t: ChallengeTarget) => void;
 }) {
@@ -451,7 +501,7 @@ function LadderSection({
                 doublesLadder === undefined ? (
                     <ActivityIndicator color="#B45309" style={{ marginTop: 40 }} />
                 ) : doublesLadder.length === 0 ? (
-                    <DoublesEmptyState />
+                    <DoublesEmptyState courtName={courtName} />
                 ) : (
                     <GlassContainer style={{ overflow: "hidden" }}>
                         {doublesLadder.map((team, i) => (
@@ -470,7 +520,7 @@ function LadderSection({
             ) : singlesLadder === undefined ? (
                 <ActivityIndicator color="#B45309" style={{ marginTop: 40 }} />
             ) : singlesLadder.length === 0 ? (
-                <SinglesEmptyState />
+                <SinglesEmptyState courtName={courtName} />
             ) : (
                 <GlassContainer style={{ overflow: "hidden" }}>
                     {singlesLadder.map((entry, i) => (
@@ -496,6 +546,7 @@ function TeamsSection({
     section,
     onSectionChange,
     courtId,
+    courtName,
     router,
     onChallenge,
     onNewTeam,
@@ -503,6 +554,7 @@ function TeamsSection({
     section: TeamSection;
     onSectionChange: (s: TeamSection) => void;
     courtId: any;
+    courtName?: string;
     router: any;
     onChallenge: (t: ChallengeTarget) => void;
     onNewTeam: () => void;
@@ -548,7 +600,7 @@ function TeamsSection({
             ) : browseTeams === undefined ? (
                 <ActivityIndicator color="#B45309" style={{ marginTop: 40 }} />
             ) : browseTeams.length === 0 ? (
-                <BrowseEmptyState />
+                <BrowseEmptyState courtName={courtName} />
             ) : (
                 <GlassContainer style={{ overflow: "hidden" }}>
                     {browseTeams.map((team, i) => (
@@ -973,7 +1025,8 @@ function NewTeamButton({ onPress }: { onPress: () => void }) {
     );
 }
 
-function DoublesEmptyState() {
+function DoublesEmptyState({ courtName }: { courtName?: string }) {
+    const label = courtName ? leagueName(courtName) : "your league";
     return (
         <GlassContainer
             style={{
@@ -994,7 +1047,7 @@ function DoublesEmptyState() {
                     textAlign: "center",
                 }}
             >
-                No teams ranked yet
+                No teams ranked in the {label} yet
             </Text>
             <Text
                 style={{
@@ -1011,7 +1064,8 @@ function DoublesEmptyState() {
     );
 }
 
-function SinglesEmptyState() {
+function SinglesEmptyState({ courtName }: { courtName?: string }) {
+    const label = courtName ? leagueName(courtName) : "your league";
     return (
         <GlassContainer
             style={{
@@ -1032,7 +1086,7 @@ function SinglesEmptyState() {
                     textAlign: "center",
                 }}
             >
-                No singles matches yet
+                Play a match to get ranked
             </Text>
             <Text
                 style={{
@@ -1043,7 +1097,7 @@ function SinglesEmptyState() {
                     lineHeight: 20,
                 }}
             >
-                Challenge someone to a singles match to start climbing
+                Challenge someone in the {label} to start climbing
             </Text>
         </GlassContainer>
     );
@@ -1104,7 +1158,8 @@ function MyTeamsEmptyState({ onNewTeam }: { onNewTeam: () => void }) {
     );
 }
 
-function BrowseEmptyState() {
+function BrowseEmptyState({ courtName }: { courtName?: string }) {
+    const label = courtName ? leagueName(courtName) : "your league";
     return (
         <GlassContainer
             style={{
@@ -1125,7 +1180,7 @@ function BrowseEmptyState() {
                     textAlign: "center",
                 }}
             >
-                No other teams at your court yet
+                No other teams in the {label} yet
             </Text>
             <Text
                 style={{
@@ -1136,7 +1191,7 @@ function BrowseEmptyState() {
                     lineHeight: 20,
                 }}
             >
-                Teams from players at your home court will appear here
+                Teams from players in your league will appear here
             </Text>
         </GlassContainer>
     );

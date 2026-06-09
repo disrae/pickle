@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { ensureLeagueEnrollment } from "./leagueEnrollment";
 
 export const currentUser = query({
     args: {},
@@ -25,6 +26,8 @@ export const updateSelectedCourt = mutation({
         await ctx.db.patch(userId, {
             selectedCourtId: courtId,
         });
+
+        await ensureLeagueEnrollment(ctx, userId);
     },
 });
 

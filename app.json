@@ -15,9 +15,9 @@
         "ITSAppUsesNonExemptEncryption": false,
         "SupportURL": "https://wepickle.win/support",
         "NSPhotoLibraryUsageDescription": "The app accesses your photos so you acan select a profile image which may be used as your avatar in the app. Specifically, in the chats.",
-        "NSUserNotificationsUsageDescription": "WePickle uses notifications so your coach can check in after court sessions and to keep you updated on challenges and friends at the court.",
-        "NSLocationWhenInUseUsageDescription": "WePickle uses your location to auto check you in at the court so friends can see you're there.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "WePickle can check you in at the court even when the app is in your pocket, so friends know you're playing."
+        "NSUserNotificationsUsageDescription": "WePickle uses notifications for league challenges, match results, and coach check-ins after you play.",
+        "NSLocationWhenInUseUsageDescription": "WePickle uses your location to auto check you in at the court so your league can see you're playing and challenge you.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "WePickle can check you in at the court even when the app is in your pocket, so your league knows you're playing."
       },
       "icon": {
         "dark": "./assets/icons/ios-dark.png",
@@ -80,8 +80,8 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "WePickle can check you in at the court even when the app is in your pocket, so friends know you're playing.",
-          "locationWhenInUsePermission": "WePickle uses your location to auto check you in at the court so friends can see you're there.",
+          "locationAlwaysAndWhenInUsePermission": "WePickle can check you in at the court even when the app is in your pocket, so your league knows you're playing.",
+          "locationWhenInUsePermission": "WePickle uses your location to auto check you in at the court so your league can see you're playing and challenge you.",
           "isIosBackgroundLocationEnabled": true,
           "isAndroidBackgroundLocationEnabled": true
         }

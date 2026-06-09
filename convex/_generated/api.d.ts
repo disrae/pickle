@@ -28,6 +28,8 @@ import type * as drillProgress from "../drillProgress.js";
 import type * as drills from "../drills.js";
 import type * as featureRequests from "../featureRequests.js";
 import type * as http from "../http.js";
+import type * as league from "../league.js";
+import type * as leagueEnrollment from "../leagueEnrollment.js";
 import type * as plannedVisits from "../plannedVisits.js";
 import type * as pushNotifications from "../pushNotifications.js";
 import type * as ratings from "../ratings.js";
@@ -67,6 +69,8 @@ declare const fullApi: ApiFromModules<{
   drills: typeof drills;
   featureRequests: typeof featureRequests;
   http: typeof http;
+  league: typeof league;
+  leagueEnrollment: typeof leagueEnrollment;
   plannedVisits: typeof plannedVisits;
   pushNotifications: typeof pushNotifications;
   ratings: typeof ratings;

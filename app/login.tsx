@@ -200,7 +200,7 @@ export default function LoginScreen() {
                                 WePickle
                             </Text>
                             <Text className="mt-3 text-lg text-muted-foreground">
-                                Your court. Your crew. Your game.
+                                Your court&apos;s league. Climb the ladder.
                             </Text>
                         </View>
 

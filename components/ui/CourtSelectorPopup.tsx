@@ -1,5 +1,6 @@
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { leagueName } from "@/lib/league";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import React from "react";
@@ -15,8 +16,17 @@ interface CourtSelectorPopupProps {
 export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: CourtSelectorPopupProps) => {
     const { bottom } = useSafeAreaInsets();
     const courts = useQuery(api.courts.list);
+    const memberCounts = useQuery(api.league.memberCounts);
     const updateSelectedCourt = useMutation(api.users.updateSelectedCourt);
     const [isUpdating, setIsUpdating] = React.useState(false);
+
+    const countByCourt = React.useMemo(() => {
+        const map = new Map<string, number>();
+        for (const row of memberCounts ?? []) {
+            map.set(row.courtId, row.memberCount);
+        }
+        return map;
+    }, [memberCounts]);
 
     const handleSelectCourt = async (courtId: Id<"courts">) => {
         setIsUpdating(true);
@@ -50,17 +60,15 @@ export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: Court
                             elevation: 8,
                         }}
                     >
-                        {/* Header */}
                         <View className="flex-row items-center justify-between p-6 border-b border-slate-200">
                             <Text className="text-2xl font-bold text-slate-800">
-                                Select a Court
+                                Join a league
                             </Text>
                             <TouchableOpacity onPress={onClose}>
                                 <Ionicons name="close" size={28} color="#64748b" />
                             </TouchableOpacity>
                         </View>
 
-                        {/* Courts list */}
                         <ScrollView className="px-4 py-2">
                             {!courts ? (
                                 <View className="py-8 items-center">
@@ -69,12 +77,13 @@ export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: Court
                             ) : courts.length === 0 ? (
                                 <View className="py-8 items-center">
                                     <Text className="text-slate-500 text-center">
-                                        No courts available
+                                        No leagues available
                                     </Text>
                                 </View>
                             ) : (
                                 courts.map((court) => {
                                     const isSelected = court._id === currentCourtId;
+                                    const members = countByCourt.get(court._id) ?? 0;
                                     return (
                                         <TouchableOpacity
                                             key={court._id}
@@ -83,9 +92,14 @@ export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: Court
                                             className={`py-4 px-4 border-b border-slate-100 flex-row items-center justify-between ${isSelected ? "bg-brand/10" : "active:bg-slate-50"
                                                 }`}
                                         >
-                                            <Text className={`text-lg ${isSelected ? "text-brand-strong font-semibold" : "text-slate-700"}`}>
-                                                {court.name}
-                                            </Text>
+                                            <View className="flex-1 pr-3">
+                                                <Text className={`text-lg ${isSelected ? "text-brand-strong font-semibold" : "text-slate-700"}`}>
+                                                    {leagueName(court.name)}
+                                                </Text>
+                                                <Text className="text-slate-500 text-sm mt-0.5">
+                                                    {members} {members === 1 ? "player" : "players"} · doubles ladder
+                                                </Text>
+                                            </View>
                                             {isSelected && (
                                                 <Ionicons name="checkmark-circle" size={24} color="#3F7D20" />
                                             )}
@@ -100,4 +114,3 @@ export const CourtSelectorPopup = ({ isVisible, onClose, currentCourtId }: Court
         </Modal>
     );
 };
-
